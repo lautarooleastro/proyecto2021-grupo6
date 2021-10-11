@@ -1,5 +1,8 @@
 # ignore all __pycache__ folders
 **/__pycache__
 
+# ignore all flask_session folders
+**/flask_session
+
 # ignore all .DS_Store files
 *.DS_Store
