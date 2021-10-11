@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    <title>{% block title %}{% endblock %}</title>
-    {% endblock %}
-  </head>
-  <body>
-    <div id="navbar">
-      {% block navbar %}
-      {% endblock %}
-    </div>
-    <div id="content">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <ul class=flashes>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-          </ul>
-        {% endif %}
-      {% endwith %}
 
-      {% block content %}
-      {% endblock %}
+<head>
+  {% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <title>{% block title %}{% endblock %}</title>
+  {% endblock %}
+</head>
+
+<body>
+  <div id="navbar">
+    {% block navbar %}
+    <a href="{{ url_for('home') }}" class="link">Home</a>
+    <a href="{{ url_for('issue_index') }}" class="link">Consultas</a>
+    {% if is_authenticated(session) %}
+    <a href="{{ url_for('user_index') }}" class="link">Usuarios</a>
+    <div style="float: right;">
+      <a>Logueado como: </a>
+      <a style="padding-right: 30px; font-weight: bold;"> {{ session.user }} </a>
+      <a href="{{ url_for('auth_logout') }}" class="link">Cerrar sesión</a>
     </div>
-    <div id="footer">
-      {% block footer %}
-      {% endblock %}
+    {% else %}
+    <div style="float: right;">
+      <a style="padding-right: 30px;"> Sin autenticar </a>
+      <a href="{{ url_for('auth_login') }}" class="link">Iniciar sesión</a>
     </div>
-  </body>
+    {% endif %}
+    {% endblock %}
+  </div>
+  <div id="content">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+  </div>
+  <div id="footer">
+    {% block footer %}
+    {% endblock %}
+  </div>
+</body>
+
 </html>

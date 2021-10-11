@@ -4,12 +4,24 @@ body {
   background-color: #4B7399;
   font-family: 'Montserrat', Helvetica, sans-serif;
   font-size: 14px;
+  margin: 0;
 }
 
 .clear {
   clear: both;
   height: 0;
   overflow: hidden;
+}
+
+#navbar {
+  background-color: #3d5c79;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 30px;
+}
+
+#content {
+  margin: 30px;
 }
 
 #footer {
@@ -30,16 +42,16 @@ body {
 
 a.link {
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 12px;
   background-color: #92a4ad;
   padding: 10px 15px;
   border-radius: 0;
-  color: #416475;
+  color: #000000;
   display: inline-block;
   margin-right: 5px;
   margin-bottom: 5px;
   line-height: 1.5;
   text-decoration: none;
-  margin-top: 50px;
+  margin-top: 30px;
   letter-spacing: 1px;
 }
