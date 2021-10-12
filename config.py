@@ -32,6 +32,10 @@ class DevelopmentConfig(Config):
     DB_USER = environ.get("DB_USER", "MY_DB_USER")
     DB_PASS = environ.get("DB_PASS", "MY_DB_PASS")
     DB_NAME = environ.get("DB_NAME", "grupo6")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:3306/{DB_NAME}"
+    )
 
 
 class TestingConfig(Config):
@@ -48,5 +52,5 @@ config = dict(
     development=DevelopmentConfig, test=TestingConfig, production=ProductionConfig
 )
 
-## More information
+# More information
 # https://flask.palletsprojects.com/en/2.0.x/config/
