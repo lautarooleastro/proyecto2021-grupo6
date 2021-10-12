@@ -4,6 +4,8 @@ from app.db import db
 
 
 class User(db.Model):
+    """ Define una entidad User que se corresponde con la tabla users de la BD. """
+
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     first_name = Column(String(30), unique=True)
