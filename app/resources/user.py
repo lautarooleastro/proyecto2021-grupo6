@@ -2,6 +2,8 @@ from flask import redirect, render_template, request, url_for, session, abort
 from app.models.user import User
 from app.helpers.auth import authenticated
 
+from app.db import db
+
 # Protected resources
 
 
@@ -31,5 +33,14 @@ def create():
 
     # conn = connection()
     # User.create(conn, request.form)
+
+    # creamos el usuario con los parametros del diccionario request.form
+    new_user = User(**request.form)
+
+    # agregamos el usuario
+    db.session.add(new_user)
+
+    # efectuamos los cambios
+    db.session.commit()
 
     return redirect(url_for("user_index"))
