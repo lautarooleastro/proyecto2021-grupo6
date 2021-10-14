@@ -10,5 +10,8 @@ class Role(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(30), unique=True)
 
+    # permissions = relationship('Permission', secondary=role_has_permission_table,
+    #                          backref=backref('roles', lazy=True), lazy=True)
+
     def __init__(self, name=None):
         self.name = name
