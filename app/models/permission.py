@@ -2,12 +2,21 @@ from sqlalchemy.sql.schema import Table
 from app.db import db
 from sqlalchemy import Column, Integer, String, ForeignKey
 
-role_has_permission_table = Table('role_has_permission', db.metadata,
-                                  Column('role_id', Integer,
-                                         ForeignKey('roles.id')),
-                                  Column('permission_id', Integer,
-                                         ForeignKey('permissions.id')),
-                                  )
+# LISTA DE PERMISOS (formato: modulo_accion)
+#
+# - usuario_index
+# - usuario_new
+# - usuario_update
+# - usuario_destroy
+# - usuario_show
+#
+# - configuracion_update
+#
+# - punto_encuentro_index
+# - punto_encuentro_show
+# - punto_encuentro_update
+# - punto_encuentro_new
+# - punto_encuentro_destroy
 
 
 class Permission(db.Model):

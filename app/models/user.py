@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from app.db import db
@@ -21,6 +21,7 @@ class User(db.Model):
     last_name = Column(String(30), unique=True)
     email = Column(String(30), unique=True)
     password = Column(String(30), unique=True)
+    active = Column(Boolean)
 
     roles = relationship('Role', secondary=user_has_role_table,
                          backref=backref('users', lazy=True), lazy=True)
