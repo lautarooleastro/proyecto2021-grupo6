@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import backref, relationship
 from app.db import db
+from app.models.permission import Permission
 
 role_has_permission_table = Table('role_has_permission', db.metadata,
                                   Column('role_id', Integer,
