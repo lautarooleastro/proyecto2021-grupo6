@@ -13,11 +13,7 @@ def index():
     if not authenticated(session):
         abort(401)
 
-    # Antes de usar ORM, se conectaba asi:
-    # conn = connection()
-    # users = User.all(conn)
-
-    users = User.query.all()
+    users = User.all()
 
     return render_template("user/index.html", users=users)
 
@@ -37,24 +33,15 @@ def hasAllParams(params):
     return all(lista)
 
 
-def alreadyExists(new_user):
-    """ Devuelve True si ya existe un usuario con el mismo mail que new_user. False caso contrario. """
-    query = User.query.filter(User.email == new_user.email).first()
-    return (query != None)
-
-
 def create():
     if not authenticated(session):
         abort(401)
-
-    # conn = connection()
-    # User.create(conn, request.form)
 
     if (hasAllParams(request.form)):
         # creamos el usuario con los parametros del diccionario request.form
         new_user = User(**request.form)
 
-        if (alreadyExists(new_user)):
+        if (User.with_email(new_user.email)):
             flash("Ya existe un usuario con mail: '" + new_user.email + "'.")
         else:
             # por default, lo iniciamos como operador
