@@ -1,5 +1,6 @@
 from flask import redirect, render_template, request, url_for, session, abort
 from flask.helpers import flash
+from app.models.role import Role
 from app.models.user import User
 from app.helpers.auth import authenticated
 
@@ -56,11 +57,16 @@ def create():
         if (alreadyExists(new_user)):
             flash("Ya existe un usuario con mail: '" + new_user.email + "'.")
         else:
-            flash("Creado con éxito.")
+            # por default, lo iniciamos como operador
+            default_role = Role.query.filter(Role.name == "Operador").first()
+            new_user.roles.append(default_role)
+
             # agregamos el usuario
             db.session.add(new_user)
+
             # efectuamos los cambios
             db.session.commit()
+            flash("Creado con éxito.")
             return redirect(url_for("user_index"))
 
     else:
