@@ -75,8 +75,12 @@ def destroy():
 
     try:
         user = User.with_id(request.form['destroy_id'])
+        if user.email == authenticated(session):
+            raise ValueError("No se puede eliminar al usuario actual.")
         User.destroy(user)
         flash("Se elimino al usuario con mail: "+user.email)
+    except ValueError as e:
+        flash(e)
     except:
         flash("No se pudo eliminar al usuario con mail: "+user.email)
 
