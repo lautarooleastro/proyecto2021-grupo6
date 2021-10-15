@@ -38,15 +38,19 @@ def create_app(environment="development"):
 
     # Rutas de Consultas
     app.add_url_rule("/consultas", "issue_index", issue.index)
-    app.add_url_rule("/consultas", "issue_create", issue.create, methods=["POST"])
+    app.add_url_rule("/consultas", "issue_create",
+                     issue.create, methods=["POST"])
     app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    app.add_url_rule("/usuarios/eliminar", "user_destroy",
+                     user.destroy, methods=["POST"])
 
     # Ruta para el Home (usando decorator)
+
     @app.route("/")
     def home():
         return render_template("home.html")
