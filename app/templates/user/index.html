@@ -8,8 +8,10 @@
 {% for user in users %}
 <form action="" method="POST">
   <li>{{ user.email }} - {{ user.first_name }} - {{ user.last_name }} - {{ user.password }} -
+    {% if check_permissions(current_user(session),"usuario_destroy") %}
     <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}"
       type="submit">Eliminar</a>
+      {% endif %}
   </li>
 </form>
 {% endfor %}
