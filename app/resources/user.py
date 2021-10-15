@@ -1,5 +1,6 @@
 from flask import redirect, render_template, request, url_for, session, abort
 from flask.helpers import flash
+from sqlalchemy.sql.functions import user
 from app.models.role import Role
 from app.models.user import User
 from app.helpers.auth import authenticated
@@ -22,6 +23,9 @@ def new():
     if not authenticated(session):
         abort(401)
 
+    if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
+        abort(401)
+
     return render_template("user/new.html")
 
 
@@ -41,7 +45,7 @@ def create():
         # creamos el usuario con los parametros del diccionario request.form
         new_user = User(**request.form)
 
-        if (User.with_email(new_user.email)):
+        if (User.already_exists(new_user.email)):
             flash("Ya existe un usuario con mail: '" + new_user.email + "'.")
         else:
             # por default, lo iniciamos como operador
@@ -60,3 +64,24 @@ def create():
         flash("Faltan parametros.")
 
     return redirect(url_for("user_new"))
+
+
+def destroy():
+    if not authenticated(session):
+        abort(401)
+
+    if not User.check_permission(User.with_email(session.get('user')), 'usuario_destroy'):
+        abort(401)
+
+    try:
+        user = User.with_id(request.form['destroy_id'])
+        if user.email == authenticated(session):
+            raise ValueError("No se puede eliminar al usuario actual.")
+        User.destroy(user)
+        flash("Se elimino al usuario con mail: "+user.email)
+    except ValueError as e:
+        flash(e)
+    except:
+        flash("No se pudo eliminar al usuario con mail: "+user.email)
+
+    return redirect(url_for("user_index"))
