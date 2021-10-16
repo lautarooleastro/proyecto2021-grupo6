@@ -4,17 +4,60 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>usuarios</h1>
-{% for user in users %}
-<form action="" method="POST">
-  <li>{{ user.email }} - {{ user.first_name }} - {{ user.last_name }} - {{ user.password }} -
-    {% if check_permissions(current_user(session),"usuario_destroy") %}
-    <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}"
-      type="submit">Eliminar</a>
+<div>
+  <h1>Usuarios</h1>
+  <a href="{{ url_for('user_new') }}"><button class="btn btn-success">Nuevo</button></a>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th class="table-dark">Email</th>
+      <th class="table-dark">Nombre</th>
+      <th class="table-dark">Apellido</th>
+      <th class="table-dark">Contraseña</th>
+      <th class="table-dark">Roles</th>
+      <th class="table-dark">Activo/Inactivo</th>
+      <th class="table-dark">Acciones</th>
+      <th class="table-dark"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td class="table-light">{{user.email}}</td>
+      <td class="table-light">{{user.first_name}}</td>
+      <td class="table-light">{{user.last_name}}</td>
+      <td class="table-light">{{user.password}}</td>
+      <td class="table-light">
+        {% for rol in user.roles %}
+        {{ rol.name }}
+        {% endfor %}
+      </td>
+      {% if user.active %}
+      <th class="table-light">Activo</td>
+        {% else %}
+      <td class="table-light">Inactivo</td>
+      Inactivo
       {% endif %}
-  </li>
-</form>
-{% endfor %}
-<a href="{{ url_for('home') }}" class="link">Volver</a>
-<a href="{{ url_for('user_new') }}" class="link">Nuevo</a>
+
+
+      <td class="table-light">
+        <form action="" method="POST">
+          {% if check_permissions(current_user(session),"usuario_destroy") %}
+          <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}" type="submit"
+            class="btn btn-danger">Eliminar</a>
+            {% endif %}
+        </form>
+      </td>
+      <td class="table-light">
+        <form action="" method="POST">
+          {% if check_permissions(current_user(session),"usuario_update") %}
+          <button name="edit_id" value="{{ user.id }}" formaction="" type="submit" class="btn btn-secondary">Editar</a>
+            {% endif %}
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
