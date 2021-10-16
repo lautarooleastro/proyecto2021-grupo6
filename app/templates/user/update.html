@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<h1>Editar usuario</h1>
+<div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px; width: fit-content;">
+    <form action="{{ url_for('user_update') }}" method="POST">
+        <div class="col">
+            <label class="form-label">Email</label>
+            <input required value="{{user.email}}" name="email" type="email" class="form-control">
+        </div>
+        <br>
+        <div class="col">
+            <label class="form-label">Contraseña</label>
+            <input required value="{{user.password}}" name="password" class="form-control">
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Nombre</label>
+                <input required value="{{user.first_name}}" name="first_name" class="form-control">
+            </div>
+            <div class="col">
+                <label class="form-label">Apellido</label>
+                <input required value="{{user.last_name}}" name="last_name" class="form-control">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <input class="form-check-input" name="active" type="checkbox">
+                <label class="form-check-label"> Activo</label>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Roles</h6>
+                {% for rol in user.roles %}
+                <p class="card-text">- {{rol.name}} </p>
+                {% endfor %}
+                <a href="#" class="card-link">Administrar</a>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col"><a href="{{ url_for('user_index') }}">
+                    <button type="button" class="btn btn-light">Cancelar y volver</button>
+                </a></div>
+            <div class="col">
+                <button name="edit_id" value="{{user.id}}" type="submit" class="btn btn-primary">Aplicar
+                    cambios</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

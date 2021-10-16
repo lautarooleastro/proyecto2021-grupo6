@@ -1,6 +1,8 @@
+from operator import methodcaller
 from os import path, environ
 from flask import Flask, render_template, g, Blueprint
 from flask_session import Session
+from app.models.user import User
 from config import config
 from app import db
 from app.resources import issue
@@ -28,6 +30,8 @@ def create_app(environment="development"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
+    app.jinja_env.globals.update(current_user=helper_auth.current_user)
+    app.jinja_env.globals.update(check_permissions=User.check_permission)
 
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
@@ -38,15 +42,23 @@ def create_app(environment="development"):
 
     # Rutas de Consultas
     app.add_url_rule("/consultas", "issue_index", issue.index)
-    app.add_url_rule("/consultas", "issue_create", issue.create, methods=["POST"])
+    app.add_url_rule("/consultas", "issue_create",
+                     issue.create, methods=["POST"])
     app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    app.add_url_rule("/usuarios/editar", "user_edit",
+                     user.edit, methods=['POST'])
+    app.add_url_rule("/usuarios/editar/confirmado", "user_update",
+                     user.update, methods=['POST'])
+    app.add_url_rule("/usuarios/eliminar", "user_destroy",
+                     user.destroy, methods=["POST"])
 
     # Ruta para el Home (usando decorator)
+
     @app.route("/")
     def home():
         return render_template("home.html")
