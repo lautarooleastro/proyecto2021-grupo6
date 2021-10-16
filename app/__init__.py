@@ -1,3 +1,4 @@
+from operator import methodcaller
 from os import path, environ
 from flask import Flask, render_template, g, Blueprint
 from flask_session import Session
@@ -49,6 +50,10 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    app.add_url_rule("/usuarios/editar", "user_edit",
+                     user.edit, methods=['POST'])
+    app.add_url_rule("/usuarios/editar/confirmado", "user_update",
+                     user.update, methods=['POST'])
     app.add_url_rule("/usuarios/eliminar", "user_destroy",
                      user.destroy, methods=["POST"])
 
