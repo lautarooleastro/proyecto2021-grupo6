@@ -14,6 +14,7 @@ from app.helpers import auth as helper_auth
 
 
 def create_app(environment="production"):
+
     # Configuración inicial de la app
     app = Flask(__name__)
 
