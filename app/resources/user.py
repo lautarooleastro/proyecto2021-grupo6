@@ -29,6 +29,32 @@ def new():
     return render_template("user/new.html")
 
 
+def edit():
+    if not authenticated(session):
+        abort(401)
+
+    if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
+        abort(401)
+    print('entro aca')
+
+    user_to_update = User.with_id(request.form['edit_id'])
+
+    return render_template("user/update.html", user=user_to_update)
+
+
+def update():
+    data = request.form
+    try:
+        updated_user = User.update(data['edit_id'], data)
+        flash("Se actualizo al usuario: "+data['email'])
+    except Exception as e:
+        print(e)
+        flash("No se pudo editar al usuario: "+data['email'])
+
+    return render_template("user/update.html", user=updated_user)
+    # return redirect(url_for("user_edit"))
+
+
 def hasAllParams(params):
     """ Metodo para chequear que el issue tiene todos los params que necesita para ser creado. """
     lista = []
