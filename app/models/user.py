@@ -59,3 +59,32 @@ class User(db.Model):
             for perm in role.permissions:
                 user_permissions.append(perm.name)
         return(permission in user_permissions)
+
+    def toString(self):
+        print("Email: "+self.email)
+        print("Contraseña: "+self.password)
+        print("Nombre: "+self.first_name)
+        print("Apellido: "+self.last_name)
+        if self.active:
+            print("Activo")
+        else:
+            print("Inactivo")
+        print("Roles: ")
+        for rol in self.roles:
+            print("- "+rol.name)
+
+    def update(user_id, data):
+        """ 
+            Recibe un id de User y un diccionario. 
+            Busca el usuario por id y edita los valores que hay en el diccionario. 
+            Luego inserta el usuario con los cambios en la bd. 
+            Retorna el usuario con los cambios hechos.
+        """
+
+        user = User.with_id(user_id)
+        user.email = data['email']
+        user.password = data['password']
+        user.first_name = data['first_name']
+        user.last_name = data['last_name']
+        db.session.commit()
+        return user
