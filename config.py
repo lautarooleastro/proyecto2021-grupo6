@@ -33,8 +33,8 @@ class DevelopmentConfig(Config):
     """Development configuration."""
 
     DB_HOST = environ.get("DB_HOST", "localhost")
-    DB_USER = environ.get("DB_USER", "MY_DB_USER")
-    DB_PASS = environ.get("DB_PASS", "MY_DB_PASS")
+    DB_USER = environ.get("DB_USER")
+    DB_PASS = environ.get("DB_PASS")
     DB_NAME = environ.get("DB_NAME", "grupo6")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = (
