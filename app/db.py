@@ -12,7 +12,6 @@ def config_db(app):
     @app.before_first_request
     def init_database():
         """ Se ejecuta con el primer request (gracias al decorador). Es de SQLAlchemy que crea las tables a partir de los modelos que tenga. Requiere que la BD esta creada. """
-        db.drop_all()
         db.create_all()
 
     @app.teardown_request
