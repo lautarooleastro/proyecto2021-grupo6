@@ -23,3 +23,9 @@ class Role(db.Model):
 
     def __init__(self, name=None):
         self.name = name
+
+    def get_all():
+        return Role.query.all()
+
+    def with_name(role_name):
+        return Role.query.filter(Role.name == role_name).first()
