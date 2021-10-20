@@ -111,3 +111,17 @@ def destroy():
         flash("No se pudo eliminar al usuario con mail: "+user.email)
 
     return redirect(url_for("user_index"))
+
+
+def toggle(user_email):
+    print("se ejecuta el toggle")
+
+    if not authenticated(session):
+        abort(401)
+
+    if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
+        abort(401)
+
+    print("paso el chequeo")
+    User.toggle(User.with_email(user_email))
+    return redirect(url_for("user_index"))
