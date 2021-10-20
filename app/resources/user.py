@@ -74,6 +74,9 @@ def create():
     if not authenticated(session):
         abort(401)
 
+    if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
+        abort(401)
+
     if (hasAllParams(request.form)):
         # creamos el usuario con los parametros del diccionario request.form
         new_user = User(**request.form)
@@ -81,10 +84,6 @@ def create():
         if (User.already_exists(new_user.email)):
             flash("Ya existe un usuario con mail: '" + new_user.email + "'.")
         else:
-            # por default, lo iniciamos como operador
-            default_role = Role.query.filter(Role.name == "Operador").first()
-            new_user.roles.append(default_role)
-
             # agregamos el usuario
             db.session.add(new_user)
 
