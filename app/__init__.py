@@ -57,6 +57,8 @@ def create_app(environment="production"):
                      user.update, methods=['POST'])
     app.add_url_rule("/usuarios/eliminar", "user_destroy",
                      user.destroy, methods=["POST"])
+    app.add_url_rule("/usuarios/cambiar_estado_<string:user_email>", "user_toggle",
+                     user.toggle, methods=["GET"])
 
     # Ruta para el Home (usando decorator)
 

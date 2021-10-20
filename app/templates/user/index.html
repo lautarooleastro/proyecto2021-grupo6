@@ -33,12 +33,17 @@
         {{ rol.name }}
         {% endfor %}
       </td>
-      {% if user.active %}
-      <th class="table-light">Activo</td>
-        {% else %}
-      <td class="table-light">Inactivo</td>
-      {% endif %}
 
+      <td class="table-light">
+        {% if user.active %}
+        Activo
+        {% else %}
+        Inactivo
+        {% endif %}
+        <a href="{{url_for('user_toggle',user_email=user.email)}}">
+          (cambiar)
+        </a>
+      </td>
 
       <td class="table-light">
         <form action="" method="POST">

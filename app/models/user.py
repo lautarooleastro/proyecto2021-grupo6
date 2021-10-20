@@ -88,3 +88,7 @@ class User(db.Model):
         user.last_name = data['last_name']
         db.session.commit()
         return user
+
+    def toggle(user):
+        user.active = not user.active
+        db.session.commit()
