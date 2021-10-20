@@ -80,12 +80,17 @@ class User(db.Model):
             Luego inserta el usuario con los cambios en la bd. 
             Retorna el usuario con los cambios hechos.
         """
+        roles = []
+        for role_name in data.keys():
+            if data[role_name] == 'role':
+                roles.append(Role.with_name(role_name))
 
         user = User.with_id(user_id)
         user.email = data['email']
         user.password = data['password']
         user.first_name = data['first_name']
         user.last_name = data['last_name']
+        user.roles = roles
         db.session.commit()
         return user
 

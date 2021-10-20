@@ -6,7 +6,7 @@
 {% block content %}
 <h1>Editar usuario</h1>
 <div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px; width: fit-content;">
-    <form action="{{ url_for('user_update') }}" method="POST">
+    <form id="applyChanges" action="{{ url_for('user_update') }}" method="POST">
         <div class="col">
             <label class="form-label">Email</label>
             <input required value="{{user.email}}" name="email" type="email" class="form-control">
@@ -28,20 +28,23 @@
             </div>
         </div>
         <br>
-        <div class="row">
-            <div class="col">
-                <input class="form-check-input" name="active" type="checkbox">
-                <label class="form-check-label"> Activo</label>
-            </div>
-        </div>
-        <br>
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title">Roles</h6>
-                {% for rol in user.roles %}
-                <p class="card-text">- {{rol.name}} </p>
-                {% endfor %}
-                <a href="#" class="card-link">Administrar</a>
+                <h6 class="card-title">Roles del usuario</h6>
+                <div class="row">
+
+                    {% for role in roles %}
+                    <div class="col-sm-6">
+                        {% if role in user.roles %}
+                        <input id="{{role.name}}" type="checkbox" value="role" name="{{role.name}}" checked>
+                        {% else %}
+                        <input id="{{role.name}}" type="checkbox" value="role" name="{{role.name}}">
+                        {% endif %}
+                        <label for="{{role.name}}" class="card-text">{{role.name}}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+
             </div>
         </div>
         <br>
@@ -50,7 +53,8 @@
                     <button type="button" class="btn btn-light">Cancelar y volver</button>
                 </a></div>
             <div class="col">
-                <button name="edit_id" value="{{user.id}}" type="submit" class="btn btn-primary">Aplicar
+                <button form="applyChanges" name="edit_id" value="{{user.id}}" type="submit"
+                    class="btn btn-primary">Aplicar
                     cambios</button>
             </div>
         </div>

@@ -35,14 +35,20 @@ def edit():
 
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
         abort(401)
-    print('entro aca')
 
     user_to_update = User.with_id(request.form['edit_id'])
+    all_roles = Role.get_all()
 
-    return render_template("user/update.html", user=user_to_update)
+    return render_template("user/update.html", user=user_to_update, roles=all_roles)
 
 
 def update():
+    if not authenticated(session):
+        abort(401)
+
+    if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
+        abort(401)
+
     data = request.form
     try:
         updated_user = User.update(data['edit_id'], data)
@@ -51,8 +57,9 @@ def update():
         print(e)
         flash("No se pudo editar al usuario: "+data['email'])
 
-    return render_template("user/update.html", user=updated_user)
-    # return redirect(url_for("user_edit"))
+    all_roles = Role.get_all()
+
+    return render_template("user/update.html", user=updated_user, roles=all_roles)
 
 
 def hasAllParams(params):
@@ -67,6 +74,9 @@ def create():
     if not authenticated(session):
         abort(401)
 
+    if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
+        abort(401)
+
     if (hasAllParams(request.form)):
         # creamos el usuario con los parametros del diccionario request.form
         new_user = User(**request.form)
@@ -74,10 +84,6 @@ def create():
         if (User.already_exists(new_user.email)):
             flash("Ya existe un usuario con mail: '" + new_user.email + "'.")
         else:
-            # por default, lo iniciamos como operador
-            default_role = Role.query.filter(Role.name == "Operador").first()
-            new_user.roles.append(default_role)
-
             # agregamos el usuario
             db.session.add(new_user)
 
