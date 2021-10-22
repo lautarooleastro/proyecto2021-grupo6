@@ -1,0 +1,81 @@
+{% block navbar %}
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon">
+            </span>
+        </button>
+        <div class="navbar-brand ">
+            <a href="{{ url_for('home') }}" class="navbar-brand d-none d-sm-block d-lg-none">(LOGO)</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}" class="navbar-brand d-none d-lg-block d-xl-none">(LOGO)</a>
+                </li>
+                <li>
+                    <hr style="color: white;" class="dropdown-divider">
+                </li>
+                {% if is_authenticated(session) %}
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}" class="nav-link active">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('user_index') }}" class="nav-link active">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">Puntos de encuentro</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">Zonas inundables</a>
+                </li>
+                <li>
+                    <hr style="color: white;" class="dropdown-divider">
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <ul class="navbar-nav">
+            {% if is_authenticated(session) %}
+            <span class="navbar-text d-none d-lg-block d-xl-none">Logueado como: </span>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+                    aria-expanded="false">
+                    <svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                        <path fill-rule="evenodd"
+                            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                    </svg>
+                    {{ session.user }}
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Mi perfil</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar sesion</a></li>
+                </ul>
+            </li>
+            {% else %}
+            <li>
+                <a href="{{ url_for('auth_login') }}" class="nav-link active">
+                    <svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
+                        <path fill-rule="evenodd"
+                            d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                    </svg>
+                    Iniciar sesion
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+
+
+{% endblock %}
