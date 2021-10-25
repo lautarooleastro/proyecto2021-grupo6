@@ -17,6 +17,7 @@ def create_app(environment="production"):
 
     # Configuración inicial de la app
     app = Flask(__name__)
+    app.secret_key = b'a7114859260f52e390e77ac5e319d15acacf527cc7c63b60c72d7e2c966ede14'
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
