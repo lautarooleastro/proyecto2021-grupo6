@@ -12,7 +12,7 @@ from app.resources import auth
 from app.resources.api.issue import issue_api
 from app.helpers import handler
 from app.helpers import auth as helper_auth
-from flask_login import LoginManager
+from app.helpers.login import login_manager
 
 
 def create_app(environment="production"):
@@ -32,13 +32,7 @@ def create_app(environment="production"):
     # Configure db
     db.init_app(app)
 
-    # Configure Flask-Login manager
-    login_manager = LoginManager()
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.with_id(user_id)
-
+    # Start Flask-Login manager
     login_manager.init_app(app)
 
     # Funciones que se exportan al contexto de Jinja2
