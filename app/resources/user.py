@@ -1,5 +1,6 @@
 from flask import redirect, render_template, request, url_for, session, abort
 from flask.helpers import flash
+from flask_login.utils import login_required
 from sqlalchemy.sql.functions import user
 from app.models.role import Role
 from app.models.user import User
@@ -10,29 +11,23 @@ from app.db import db
 # Protected resources
 
 
+@login_required
 def index():
-    if not authenticated(session):
-        abort(401)
-
     users = User.all()
 
     return render_template("user/index.html", users=users)
 
 
+@login_required
 def new():
-    if not authenticated(session):
-        abort(401)
-
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
         abort(401)
 
     return render_template("user/new.html")
 
 
+@login_required
 def edit():
-    if not authenticated(session):
-        abort(401)
-
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
         abort(401)
 
@@ -42,10 +37,8 @@ def edit():
     return render_template("user/update.html", user=user_to_update, roles=all_roles)
 
 
+@login_required
 def update():
-    if not authenticated(session):
-        abort(401)
-
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
         abort(401)
 
@@ -70,10 +63,8 @@ def hasAllParams(params):
     return all(lista)
 
 
+@login_required
 def create():
-    if not authenticated(session):
-        abort(401)
-
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
         abort(401)
 
@@ -98,10 +89,8 @@ def create():
     return redirect(url_for("user_new"))
 
 
+@login_required
 def destroy():
-    if not authenticated(session):
-        abort(401)
-
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_destroy'):
         abort(401)
 
@@ -119,12 +108,8 @@ def destroy():
     return redirect(url_for("user_index"))
 
 
+@login_required
 def toggle(user_email):
-    print("se ejecuta el toggle")
-
-    if not authenticated(session):
-        abort(401)
-
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
         abort(401)
 

@@ -46,20 +46,20 @@
       </td>
 
       <td class="table-light">
+        {% if check_permission(current_user, "usuario_destroy") %}
         <form action="" method="POST">
-          {% if check_permissions(current_user(session),"usuario_destroy") %}
           <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}" type="submit"
             class="btn btn-danger">Eliminar</a>
-            {% endif %}
         </form>
+        {% endif %}
       </td>
       <td class="table-light">
+        {% if check_permission(current_user, "usuario_update") %}
         <form action="" method="POST">
-          {% if check_permissions(current_user(session),"usuario_update") %}
           <button name="edit_id" value="{{ user.id }}" formaction="{{ url_for('user_edit') }}" type="submit"
             class="btn btn-secondary">Editar</a>
-            {% endif %}
         </form>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

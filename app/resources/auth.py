@@ -1,6 +1,8 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
+from flask_login import login_manager
 from sqlalchemy.sql.functions import user
 from app.models.user import User
+from flask_login import login_user
 
 
 def login():
@@ -22,6 +24,8 @@ def authenticate():
     if (not user) or (user.password != params["password"]):
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("auth_login"))
+
+    login_user(user)
 
     session["user"] = user.email
     flash("La sesión se inició correctamente.")
