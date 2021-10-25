@@ -26,7 +26,7 @@ def new():
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
         abort(401)
 
-    return render_template("user/new.html")
+    return render_template("user/new.html", roles=Role.get_all())
 
 
 def edit():
