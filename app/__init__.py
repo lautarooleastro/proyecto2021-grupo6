@@ -3,7 +3,6 @@ from os import environ
 from flask import Flask, render_template, Blueprint
 from flask_session import Session
 
-from app.models.user import User
 from config import config
 from app import db
 from app.resources.api.issue import issue_api
@@ -11,6 +10,7 @@ from app.resources.api.issue import issue_api
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.helpers.login import set_login
+from app.helpers.permission import check_permission
 
 from app.routes import set_routes
 
@@ -38,7 +38,7 @@ def create_app(environment="production"):
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(current_user=helper_auth.current_user)
-    app.jinja_env.globals.update(check_permission=User.check_permission)
+    app.jinja_env.globals.update(check_permission=check_permission)
 
     # Seteo de todas las rutas de la aplicacion
     set_routes(app)
