@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout/layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
 {{ super() }}
@@ -33,28 +33,33 @@
         {{ rol.name }}
         {% endfor %}
       </td>
-      {% if user.active %}
-      <th class="table-light">Activo</td>
-        {% else %}
-      <td class="table-light">Inactivo</td>
-      {% endif %}
-
 
       <td class="table-light">
+        {% if user.active %}
+        Activo
+        {% else %}
+        Inactivo
+        {% endif %}
+        <a href="{{url_for('user_toggle',user_email=user.email)}}">
+          (cambiar)
+        </a>
+      </td>
+
+      <td class="table-light">
+        {% if check_permission(current_user, "usuario_destroy") %}
         <form action="" method="POST">
-          {% if check_permissions(current_user(session),"usuario_destroy") %}
           <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}" type="submit"
             class="btn btn-danger">Eliminar</a>
-            {% endif %}
         </form>
+        {% endif %}
       </td>
       <td class="table-light">
+        {% if check_permission(current_user, "usuario_update") %}
         <form action="" method="POST">
-          {% if check_permissions(current_user(session),"usuario_update") %}
           <button name="edit_id" value="{{ user.id }}" formaction="{{ url_for('user_edit') }}" type="submit"
             class="btn btn-secondary">Editar</a>
-            {% endif %}
         </form>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

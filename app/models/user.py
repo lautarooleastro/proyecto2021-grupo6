@@ -49,7 +49,6 @@ class User(db.Model):
 
     def destroy(user):
         """ Elimina un usuario de la BD. """
-        print("se quiere eliminar: {user.id}")
         db.session.delete(user)
         db.session.commit()
 
@@ -60,19 +59,6 @@ class User(db.Model):
                 user_permissions.append(perm.name)
         return(permission in user_permissions)
 
-    def toString(self):
-        print("Email: "+self.email)
-        print("Contraseña: "+self.password)
-        print("Nombre: "+self.first_name)
-        print("Apellido: "+self.last_name)
-        if self.active:
-            print("Activo")
-        else:
-            print("Inactivo")
-        print("Roles: ")
-        for rol in self.roles:
-            print("- "+rol.name)
-
     def update(user_id, data):
         """ 
             Recibe un id de User y un diccionario. 
@@ -80,11 +66,35 @@ class User(db.Model):
             Luego inserta el usuario con los cambios en la bd. 
             Retorna el usuario con los cambios hechos.
         """
+        roles = []
+        for role_name in data.keys():
+            if data[role_name] == 'role':
+                roles.append(Role.with_name(role_name))
 
         user = User.with_id(user_id)
         user.email = data['email']
         user.password = data['password']
         user.first_name = data['first_name']
         user.last_name = data['last_name']
+        user.roles = roles
         db.session.commit()
         return user
+
+    def toggle(user):
+        user.active = not user.active
+        db.session.commit()
+
+    @property
+    def is_active(self):
+        return self.active
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id

@@ -1,6 +1,7 @@
 from flask import redirect, render_template, request, url_for, session, abort
 from flask.helpers import flash
-from sqlalchemy.sql.functions import user
+from flask_login.utils import login_required
+from app.helpers.permission import permission_required
 from app.models.role import Role
 from app.models.user import User
 from app.helpers.auth import authenticated
@@ -10,49 +11,42 @@ from app.db import db
 # Protected resources
 
 
+@login_required
+@permission_required('usuario_index')
 def index():
-    if not authenticated(session):
-        abort(401)
-
     users = User.all()
 
     return render_template("user/index.html", users=users)
 
 
+@login_required
+@permission_required('usuario_new')
 def new():
-    if not authenticated(session):
-        abort(401)
-
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
-        abort(401)
-
-    return render_template("user/new.html")
+    return render_template("user/new.html", roles=Role.get_all())
 
 
+@login_required
+@permission_required('usuario_update')
 def edit():
-    if not authenticated(session):
-        abort(401)
-
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
-        abort(401)
-    print('entro aca')
-
     user_to_update = User.with_id(request.form['edit_id'])
+    all_roles = Role.get_all()
 
-    return render_template("user/update.html", user=user_to_update)
+    return render_template("user/update.html", user=user_to_update, roles=all_roles)
 
 
+@login_required
+@permission_required('usuario_update')
 def update():
     data = request.form
     try:
         updated_user = User.update(data['edit_id'], data)
         flash("Se actualizo al usuario: "+data['email'])
     except Exception as e:
-        print(e)
         flash("No se pudo editar al usuario: "+data['email'])
 
-    return render_template("user/update.html", user=updated_user)
-    # return redirect(url_for("user_edit"))
+    all_roles = Role.get_all()
+
+    return render_template("user/update.html", user=updated_user, roles=all_roles)
 
 
 def hasAllParams(params):
@@ -63,10 +57,9 @@ def hasAllParams(params):
     return all(lista)
 
 
+@login_required
+@permission_required('usuario_new')
 def create():
-    if not authenticated(session):
-        abort(401)
-
     if (hasAllParams(request.form)):
         # creamos el usuario con los parametros del diccionario request.form
         new_user = User(**request.form)
@@ -74,10 +67,6 @@ def create():
         if (User.already_exists(new_user.email)):
             flash("Ya existe un usuario con mail: '" + new_user.email + "'.")
         else:
-            # por default, lo iniciamos como operador
-            default_role = Role.query.filter(Role.name == "Operador").first()
-            new_user.roles.append(default_role)
-
             # agregamos el usuario
             db.session.add(new_user)
 
@@ -92,13 +81,9 @@ def create():
     return redirect(url_for("user_new"))
 
 
+@login_required
+@permission_required('usuario_destroy')
 def destroy():
-    if not authenticated(session):
-        abort(401)
-
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_destroy'):
-        abort(401)
-
     try:
         user = User.with_id(request.form['destroy_id'])
         if user.email == authenticated(session):
@@ -110,4 +95,11 @@ def destroy():
     except:
         flash("No se pudo eliminar al usuario con mail: "+user.email)
 
+    return redirect(url_for("user_index"))
+
+
+@login_required
+@permission_required('usuario_update')
+def toggle(user_email):
+    User.toggle(User.with_email(user_email))
     return redirect(url_for("user_index"))

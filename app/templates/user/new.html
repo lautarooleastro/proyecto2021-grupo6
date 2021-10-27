@@ -1,31 +1,58 @@
-{% extends "layout.html" %}
+{% extends "layout/layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
 {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>Crear un usuario</h1>
-<form action="{{ url_for('user_create') }}" method="POST">
-  <p>
-    <label>Email<label></br>
-        <input required name="email" placeholder="Correo" />
-  </p>
-  <p>
-    <label>Clave<label></br>
-        <input required type="password" name="password" placeholder="Clave" />
-  </p>
-  <p>
-    <label>Nombre<label></br>
-        <input required name="first_name" placeholder="Nombre" />
-  </p>
-  <p>
-    <label>Apellido<label></br>
-        <input required name="last_name" placeholder="Apellido" />
-  </p>
-  <p>
-    <input type="submit" value="Crear">
-    <button type="reset">Limpiar</button>
-  </p>
-</form>
-<a href="{{ url_for('user_index') }}" class="link">Volver</a>
+<div class="d-block">
+  <h1 class="text-center text-white" style="padding: 15px;">
+    Crear nuevo usuario
+  </h1>
+</div>
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+  <form action="{{ url_for('user_create') }}" method="POST">
+    <div class="col">
+      <label class="form-label">Email</label>
+      <input required name="email" type="email" class="form-control">
+    </div>
+    <br>
+    <div class="col">
+      <label class="form-label">Contraseña</label>
+      <input required name="password" class="form-control">
+    </div>
+    <br>
+    <div class="row">
+      <div class="col">
+        <label class="form-label">Nombre</label>
+        <input required name="first_name" class="form-control">
+      </div>
+      <div class="col">
+        <label class="form-label">Apellido</label>
+        <input required name="last_name" class="form-control">
+      </div>
+    </div>
+    <br>
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">Roles del usuario</h6>
+        <div class="row">
+          <p class="card-text">Por defecto, los usuarios se crean sin roles. Una vez creado el usuario, debe
+            asignarle
+            un rol desde "Editar usuario".</p>
+        </div>
+
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col"><a href="{{ url_for('user_index') }}">
+          <button type="button" class="btn btn-light">Cancelar y volver</button>
+        </a></div>
+      <div class="col">
+        <button form="applyChanges" type="submit" class="btn btn-primary">Aplicar
+          cambios</button>
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}
