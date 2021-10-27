@@ -49,7 +49,6 @@ class User(db.Model):
 
     def destroy(user):
         """ Elimina un usuario de la BD. """
-        print("se quiere eliminar: {user.id}")
         db.session.delete(user)
         db.session.commit()
 
@@ -59,19 +58,6 @@ class User(db.Model):
             for perm in role.permissions:
                 user_permissions.append(perm.name)
         return(permission in user_permissions)
-
-    def toString(self):
-        print("Email: "+self.email)
-        print("Contraseña: "+self.password)
-        print("Nombre: "+self.first_name)
-        print("Apellido: "+self.last_name)
-        if self.active:
-            print("Activo")
-        else:
-            print("Inactivo")
-        print("Roles: ")
-        for rol in self.roles:
-            print("- "+rol.name)
 
     def update(user_id, data):
         """ 

@@ -47,7 +47,6 @@ def update():
         updated_user = User.update(data['edit_id'], data)
         flash("Se actualizo al usuario: "+data['email'])
     except Exception as e:
-        print(e)
         flash("No se pudo editar al usuario: "+data['email'])
 
     all_roles = Role.get_all()
@@ -112,7 +111,5 @@ def destroy():
 def toggle(user_email):
     if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
         abort(401)
-
-    print("paso el chequeo")
     User.toggle(User.with_email(user_email))
     return redirect(url_for("user_index"))
