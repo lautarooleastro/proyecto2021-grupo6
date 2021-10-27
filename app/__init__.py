@@ -1,16 +1,18 @@
 from os import environ
+
 from flask import Flask, render_template, Blueprint
 from flask_session import Session
+
 from app.models.user import User
 from config import config
 from app import db
-from app.resources import issue
-from app.resources import user
-from app.resources import auth
 from app.resources.api.issue import issue_api
+
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.helpers.login import set_login
+
+from app.routes import set_routes
 
 
 def create_app(environment="production"):
@@ -38,33 +40,8 @@ def create_app(environment="production"):
     app.jinja_env.globals.update(current_user=helper_auth.current_user)
     app.jinja_env.globals.update(check_permission=User.check_permission)
 
-    # Autenticación
-    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
-    app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    app.add_url_rule(
-        "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
-    )
-
-    # Rutas de Consultas
-    app.add_url_rule("/consultas", "issue_index", issue.index)
-    app.add_url_rule("/consultas", "issue_create",
-                     issue.create, methods=["POST"])
-    app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
-
-    # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
-    app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    app.add_url_rule("/usuarios/editar", "user_edit",
-                     user.edit, methods=['POST'])
-    app.add_url_rule("/usuarios/editar/confirmado", "user_update",
-                     user.update, methods=['POST'])
-    app.add_url_rule("/usuarios/eliminar", "user_destroy",
-                     user.destroy, methods=["POST"])
-    app.add_url_rule("/usuarios/cambiar_estado_<string:user_email>", "user_toggle",
-                     user.toggle, methods=["GET"])
-
-    # Ruta para el Home (usando decorator)
+    # Seteo de todas las rutas de la aplicacion
+    set_routes(app)
 
     @app.route("/")
     def home():
