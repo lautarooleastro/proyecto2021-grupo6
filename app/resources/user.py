@@ -1,6 +1,6 @@
 from flask import redirect, render_template, request, url_for, session, abort
 from flask.helpers import flash
-from flask_login.utils import login_required
+from flask_login.utils import login_required, current_user
 from sqlalchemy.sql.functions import user
 from app.models.role import Role
 from app.models.user import User
@@ -20,7 +20,7 @@ def index():
 
 @login_required
 def new():
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
+    if not User.check_permission(current_user, 'usuario_new'):
         abort(401)
 
     return render_template("user/new.html", roles=Role.get_all())
@@ -28,7 +28,7 @@ def new():
 
 @login_required
 def edit():
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
+    if not User.check_permission(current_user, 'usuario_update'):
         abort(401)
 
     user_to_update = User.with_id(request.form['edit_id'])
@@ -39,7 +39,7 @@ def edit():
 
 @login_required
 def update():
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
+    if not User.check_permission(current_user, 'usuario_update'):
         abort(401)
 
     data = request.form
@@ -64,7 +64,7 @@ def hasAllParams(params):
 
 @login_required
 def create():
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_new'):
+    if not User.check_permission(current_user, 'usuario_new'):
         abort(401)
 
     if (hasAllParams(request.form)):
@@ -90,7 +90,7 @@ def create():
 
 @login_required
 def destroy():
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_destroy'):
+    if not User.check_permission(current_user, 'usuario_destroy'):
         abort(401)
 
     try:
@@ -109,7 +109,7 @@ def destroy():
 
 @login_required
 def toggle(user_email):
-    if not User.check_permission(User.with_email(session.get('user')), 'usuario_update'):
+    if not User.check_permission(current_user, 'usuario_update'):
         abort(401)
     User.toggle(User.with_email(user_email))
     return redirect(url_for("user_index"))
