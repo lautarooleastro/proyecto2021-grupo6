@@ -1,5 +1,6 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
 from flask_login import login_manager
+from flask_login.utils import logout_user
 from sqlalchemy.sql.functions import user
 from app.models.user import User
 from flask_login import login_user
@@ -37,5 +38,5 @@ def logout():
     del session["user"]
     session.clear()
     flash("La sesión se cerró correctamente.")
-
+    logout_user()
     return redirect(url_for("auth_login"))

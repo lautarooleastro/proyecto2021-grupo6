@@ -1,7 +1,5 @@
-from operator import methodcaller
-from os import path, environ
-from flask import Flask, render_template, g, Blueprint
-from flask_login import login_manager
+from os import environ
+from flask import Flask, render_template, Blueprint
 from flask_session import Session
 from app.models.user import User
 from config import config
@@ -12,7 +10,7 @@ from app.resources import auth
 from app.resources.api.issue import issue_api
 from app.helpers import handler
 from app.helpers import auth as helper_auth
-from app.helpers.login import login_manager
+from app.helpers.login import set_login
 
 
 def create_app(environment="production"):
@@ -33,7 +31,7 @@ def create_app(environment="production"):
     db.init_app(app)
 
     # Start Flask-Login manager
-    login_manager.init_app(app)
+    set_login(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
