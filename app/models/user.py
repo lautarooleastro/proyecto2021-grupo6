@@ -99,6 +99,7 @@ class User(db.Model):
     def toggle(user):
         user.active = not user.active
         db.session.commit()
+        return user.active
 
     @property
     def is_active(self):
