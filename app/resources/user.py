@@ -103,3 +103,14 @@ def destroy():
 def toggle(user_email):
     User.toggle(User.with_email(user_email))
     return redirect(url_for("user_index"))
+
+
+@login_required
+def profile():
+    return render_template("user/profile.html")
+
+
+@login_required
+@permission_required('usuario_update')
+def profile_edit():
+    return render_template("user/profile_edit.html")

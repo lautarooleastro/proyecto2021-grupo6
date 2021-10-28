@@ -51,7 +51,7 @@
                     {{ current_user.email }}
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Mi perfil</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('user_profile') }}">Mi perfil</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>

@@ -1,0 +1,63 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Mi perfil
+    </h1>
+</div>
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Email</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ current_user.email }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Contraseña</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ current_user.password }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Nombre</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ current_user.first_name }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Apellido</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ current_user.last_name }}</div>
+            </div>
+        </li>
+    </ul>
+    <div class="card">
+        <div class="card-body">
+            <h6 class="card-title" style="font-weight: bold;">Mis roles</h6>
+            <div class="row">
+                {% for role in current_user.roles %}
+                <div class="ms-2">
+                    - {{ role.name }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <div class="row">
+            <a class="btn btn-primary" href="{{ url_for('user_profile_edit') }}">Editar</a>
+        </div>
+    </div>
+    <br>
+
+
+</div>
+
+{% endblock %}
