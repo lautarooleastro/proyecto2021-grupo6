@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
 from sqlalchemy.orm import backref, query, relationship, session
-from sqlalchemy.sql.functions import user
+from flask_login import current_user
 from app.db import db
 from app.models.role import Role
 
@@ -66,6 +66,8 @@ class User(db.Model):
             Luego inserta el usuario con los cambios en la bd. 
             Retorna el usuario con los cambios hechos.
         """
+        # TODO: juntar con el metodo update_profile()
+
         roles = []
         for role_name in data.keys():
             if data[role_name] == 'role':
@@ -79,6 +81,16 @@ class User(db.Model):
         user.roles = roles
         db.session.commit()
         return user
+
+    def update_profile(data):
+        """ Actualiza mail, contraseña, nombre y apellido del usuario actual. """
+        # TODO: juntar con el metodo update()
+
+        current_user.email = data['email']
+        current_user.password = data['password']
+        current_user.first_name = data['first_name']
+        current_user.last_name = data['last_name']
+        db.session.commit()
 
     def toggle(user):
         user.active = not user.active

@@ -16,3 +16,5 @@ def set_routes(app):
     app.add_url_rule("/usuarios/mi-perfil", "user_profile", user.profile)
     app.add_url_rule("/usuarios/mi-perfil/editar",
                      "user_profile_edit", user.profile_edit)
+    app.add_url_rule("/usuarios/mi-perfil/editar/confirmado",
+                     "user_profile_update", user.profile_update, methods=['POST'])

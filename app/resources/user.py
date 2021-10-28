@@ -114,3 +114,17 @@ def profile():
 @permission_required('usuario_update')
 def profile_edit():
     return render_template("user/profile_edit.html")
+
+
+@login_required
+@permission_required('usuario_update')
+def profile_update():
+
+    form = request.form
+    for key in form.keys():
+        print(key+': '+form[key])
+
+    # Pendiente agregar chequeo con wtforms y juntar ambos update en un mismo metodo
+    User.update_profile(form)
+
+    return redirect(url_for("user_profile"))
