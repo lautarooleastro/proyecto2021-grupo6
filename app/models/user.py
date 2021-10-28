@@ -66,7 +66,9 @@ class User(db.Model):
             Luego inserta el usuario con los cambios en la bd. 
             Retorna el usuario con los cambios hechos.
         """
-        # TODO: juntar con el metodo update_profile()
+        # TODO:
+        # - juntar con el metodo update_profile()
+        # - agregar validaciones
 
         roles = []
         for role_name in data.keys():
@@ -84,7 +86,9 @@ class User(db.Model):
 
     def update_profile(data):
         """ Actualiza mail, contraseña, nombre y apellido del usuario actual. """
-        # TODO: juntar con el metodo update()
+        # TODO:
+        # - juntar con el metodo update()
+        # - agregar validaciones
 
         current_user.email = data['email']
         current_user.password = data['password']
