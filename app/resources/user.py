@@ -75,7 +75,7 @@ def create():
 
             # efectuamos los cambios
             db.session.commit()
-            flash("Creado con éxito.", "success")
+            flash("Creado con éxito. Email: "+new_user.email+".", "success")
             return redirect(url_for("user_index"))
 
     else:
