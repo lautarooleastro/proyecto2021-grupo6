@@ -1,9 +1,9 @@
-from app.models.user import User
+from flask_login import current_user
 
 
-def authenticated(session):
-    return session.get("user")
+def authenticated():
+    return current_user.is_authenticated
 
 
-def current_user(session):
-    return User.with_email(authenticated(session))
+def logged_user():
+    return current_user
