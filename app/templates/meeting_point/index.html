@@ -1,0 +1,37 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <h1 class="col-10">Puntos de encuentro</h1>
+    <a class="col" href=""><button class="btn btn-success">Nuevo punto</button></a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="table-dark">Nombre</th>
+            <th class="table-dark">Direccion</th>
+            <th class="table-dark">Coordenadas</th>
+            <th class="table-dark">Estado</th>
+            <th class="table-dark">Telefono</th>
+            <th class="table-dark">Email</th>
+            <th class="table-dark">Detalle</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for meeting_point in meeting_points %}
+        <tr>
+            <td class="table-light">{{meeting_point.name}}</td>
+            <td class="table-light">{{meeting_point.adress}}</td>
+            <td class="table-light">{{meeting_point.coordinates}}</td>
+            <td class="table-light">{{meeting_point.status}}</td>
+            <td class="table-light">{{meeting_point.phone}}</td>
+            <td class="table-light">{{meeting_point.email}}</td>
+            <td class="table-light"></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
