@@ -19,3 +19,6 @@ class MeetingPoint(db.Model):
         self.status = status
         self.phone = phone
         self.email = email
+
+    def get_all():
+        return MeetingPoint.query.all()
