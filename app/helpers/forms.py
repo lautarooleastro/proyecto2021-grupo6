@@ -8,9 +8,9 @@ class SignupForm(Form):
     last_name = StringField(u'Apellido', validators=[
                             validators.input_required()])
     email = StringField(u'E-Mail', validators=[
-                        validators.input_required, validators.email])
+                        validators.input_required()])
     password = StringField(u'Contraseña', validators=[
-                           validators.input_required, validators.Length(min=6, max=24)])
+                           validators.input_required(), validators.Length(min=6, max=24)])
 
 
 class NewPointForm(Form):
@@ -22,3 +22,6 @@ class NewPointForm(Form):
     status = BooleanField(u'Estado', validators=[validators.input_required()])
     phone = StringField(u'Telefono', validators=[validators.input_required()])
     email = StringField(u'E-mail', validators=[validators.input_required()])
+
+    # def validate_coordinates():
+    #    return True

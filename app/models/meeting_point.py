@@ -22,3 +22,8 @@ class MeetingPoint(db.Model):
 
     def get_all():
         return MeetingPoint.query.all()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
