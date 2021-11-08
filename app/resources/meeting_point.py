@@ -39,3 +39,9 @@ def create():
             flash(form.errors, "error")
 
     return redirect(url_for('meeting_point_index'))
+
+
+@login_required
+def detail(id):
+    meeting_point = MeetingPoint.with_id(id)
+    return render_template("meeting_point/detail.html", meeting_point=meeting_point)
