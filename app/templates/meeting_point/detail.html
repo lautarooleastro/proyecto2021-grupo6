@@ -1,0 +1,74 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Detalle Punto de Encuentro
+    </h1>
+</div>
+
+{% if meeting_point is not none %}
+
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Nombre</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.name }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Direccion</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.adress }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Coordenadas</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.coordinates }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Telefono</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.phone }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">E-Mail</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.email }}</div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col text-center">
+                <a class="btn btn-secondary" href="{{ url_for('meeting_point_index') }}">Volver</a>
+            </div>
+            <div class="col text-center">
+                <a class="btn btn-danger" href="#">Eliminar</a>
+            </div>
+            <div class="col text-center">
+                <a class="btn btn-warning" href="#">Editar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <h4>El punto de encuentro no existe</h4>
+</div>
+{% endif %}
+
+
+
+{% endblock %}
