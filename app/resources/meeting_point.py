@@ -3,7 +3,7 @@ from flask_login.utils import login_required
 from flask.helpers import flash, url_for
 from wtforms.validators import ValidationError
 from app.helpers.permission import permission_required
-from app.helpers.forms import NewPointForm
+from app.helpers.forms.meeting_point import NewPointForm
 from app.models.meeting_point import MeetingPoint
 
 
