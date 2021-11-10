@@ -11,3 +11,5 @@ def set_routes(app):
 
     app.add_url_rule("/puntos_de_encuentro/detalle/<int:id>",
                      "meeting_point_detail", meeting_point.detail, methods=["GET"])
+    app.add_url_rule("/puntos_de_encuentro/eliminar/<int:id>",
+                     "meeting_point_destroy", meeting_point.delete, methods=["POST"])
