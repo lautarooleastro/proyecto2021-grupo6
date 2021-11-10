@@ -1,7 +1,7 @@
 from flask import render_template, redirect, request
+import flask
 from flask_login.utils import login_required
 from flask.helpers import flash, url_for
-from wtforms.validators import ValidationError
 from app.helpers.permission import permission_required
 from app.helpers.forms.meeting_point import NewPointForm
 from app.models.meeting_point import MeetingPoint
@@ -45,3 +45,15 @@ def create():
 def detail(id):
     meeting_point = MeetingPoint.with_id(id)
     return render_template("meeting_point/detail.html", meeting_point=meeting_point)
+
+@login_required
+@permission_required('punto_encuentro_destroy')
+def delete(id):
+    print(id)
+    meeting_point = MeetingPoint.with_id(id)
+    try:
+        meeting_point.destroy()
+        flash("Se elimino el punto de encuentro: "+meeting_point.name, "success")
+    except:
+        flash("No se pudo eliminar el punto de encuentro: "+meeting_point.name, "error")
+    return redirect(url_for('meeting_point_index'))

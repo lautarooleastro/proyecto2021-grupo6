@@ -80,7 +80,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar y volver</button>
-                <button type="button" class="btn btn-danger">Eliminar</button>
+                <form action="{{ url_for('meeting_point_destroy', id=meeting_point.id) }}" method="POST">
+
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
             </div>
         </div>
     </div>
