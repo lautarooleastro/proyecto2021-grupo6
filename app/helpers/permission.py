@@ -22,9 +22,9 @@ def permission_required(permission):
         Caso contrario, lanza error 401.
     """
     def requires_permission_decorator(f):
-        def check():
+        def check(**kwargs):
             if check_permission(current_user, permission):
-                return f()
+                return f(**kwargs)
             else:
                 abort(401)
         return check
