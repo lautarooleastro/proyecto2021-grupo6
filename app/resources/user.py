@@ -2,13 +2,11 @@ from flask import redirect, render_template, request, url_for, session, abort
 from flask.helpers import flash
 from flask_login.utils import login_required
 from flask_login import current_user
-from app.helpers.auth import authenticated, logged_user
+from app.helpers.forms.user import UserForm
 from app.helpers.permission import permission_required
 from app.models.role import Role
 from app.models.user import User
 
-
-from app.db import db
 
 # Protected resources
 
@@ -62,26 +60,34 @@ def hasAllParams(params):
 @login_required
 @permission_required('usuario_new')
 def create():
-    if (hasAllParams(request.form)):
-        # creamos el usuario con los parametros del diccionario request.form
-        new_user = User(**request.form)
+    data = request.form
+    user = User()
+    form = UserForm(data)
+    print(data)
 
-        if (User.already_exists(new_user.email)):
-            flash("Ya existe un usuario con mail: '" +
-                  new_user.email + "'.", "error")
-        else:
-            # agregamos el usuario
-            db.session.add(new_user)
+    if User.already_exists(form.email.data):
+        flash("Ya existe el usuario con mail: "+form.email.data, "error")
+        return redirect(url_for("user_new"))
 
-            # efectuamos los cambios
-            db.session.commit()
-            flash("Creado con éxito. Email: "+new_user.email+".", "success")
-            return redirect(url_for("user_index"))
-
+    if (data and form.validate()):
+        try:
+            form.populate_obj(user)
+            roles = []
+            for role_name in data.keys():
+                if data[role_name] == 'role':
+                    roles.append(Role.with_name(role_name))
+            user.roles = roles
+            user.save()
+            flash("Se creo correctamente al usuario: "+user.email, "success")
+        except:
+            flash("Ocurrió un error. No se pudo crear al usuario.", "error")
     else:
-        flash("Faltan parametros.", "error")
+        for field in form.errors:
+            for error in form.errors[field]:
+                flash(error, "error")
+        return redirect(url_for("user_new"))
 
-    return redirect(url_for("user_new"))
+    return redirect(url_for("user_index"))
 
 
 @login_required

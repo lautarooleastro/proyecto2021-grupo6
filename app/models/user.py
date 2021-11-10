@@ -36,6 +36,10 @@ class User(db.Model):
     def all():
         return User.query.all()
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
     def with_email(email):
         return User.query.filter(User.email == email).first()
 
