@@ -6,7 +6,7 @@
 {% block content %}
 <h1>Editar usuario</h1>
 <div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px; width: fit-content;">
-    <form id="applyChanges" action="{{ url_for('user_update') }}" method="POST">
+    <form id="applyChanges" action="{{ url_for('user_update', id=user.id) }}" method="POST">
         <div class="col">
             <label class="form-label">Email</label>
             <input required value="{{user.email}}" name="email" type="email" class="form-control">
@@ -14,7 +14,14 @@
         <br>
         <div class="col">
             <label class="form-label">Contraseña</label>
-            <input required value="{{user.password}}" name="password" class="form-control">
+            <input required value="{{user.password}}" name="password" class="form-control" type="password" minlength="6"
+                maxlength="32">
+        </div>
+        <br>
+        <div class="col">
+            <label class="form-label">Repetir contraseña</label>
+            <input required value="{{user.password}}" name="confirm_password" class="form-control" type="password"
+                minlength="6" maxlength="32">
         </div>
         <br>
         <div class="row">
@@ -53,8 +60,7 @@
                     <button type="button" class="btn btn-light">Cancelar y volver</button>
                 </a></div>
             <div class="col">
-                <button form="applyChanges" name="edit_id" value="{{user.id}}" type="submit"
-                    class="btn btn-primary">Aplicar
+                <button form="applyChanges" type="submit" class="btn btn-primary">Aplicar
                     cambios</button>
             </div>
         </div>

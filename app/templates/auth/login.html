@@ -4,10 +4,27 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>Iniciar sesión</h1>
-<form action="{{ url_for('auth_authenticate') }}" method="POST">
-  <input name="email" placeholder="Correo" required />
-  <input type="password" name="password" placeholder="Clave" required />
-  <input type="submit" value="Login">
-</form>
+<div class="d-block">
+  <h1 class="text-center text-white" style="padding: 15px;">
+    Iniciar sesión </h1>
+</div>
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+
+  <form action="{{ url_for('auth_authenticate') }}" method="POST">
+    <div class="col">
+      <div class="row mb-4">
+        <label for="email" class="form-label">Email</label>
+        <input name="email" class="form-control" type="email" placeholder="ejemplo@mail.com" required />
+      </div>
+      <div class="row mb-4">
+        <label for="password" class="form-label">Contraseña</label>
+        <input name="password" class="form-control" type="password" placeholder="Ingrese su contraseña..." minlength="6"
+          maxlength="32" required />
+      </div>
+      <div class="row">
+        <input class="btn btn-primary" type="submit" value="Login">
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}
