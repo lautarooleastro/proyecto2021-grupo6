@@ -153,12 +153,7 @@ def profile_update():
     if form.validate():
         try:
             form.populate_obj(current_user)
-            roles = []
-            for role_name in data.keys():
-                if data[role_name] == 'role':
-                    roles.append(Role.with_name(role_name))
-            current_user.roles = roles
-            current_user.save
+            current_user.save()
             flash("Su perfil se actualizó correctamente.", "success")
         except:
             flash("Ocurrió un error. No se pudo actualizar su perfil.", "error")
