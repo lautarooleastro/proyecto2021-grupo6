@@ -27,8 +27,8 @@ def new():
 
 @login_required
 @permission_required('usuario_update')
-def edit():
-    user_to_update = User.with_id(request.form['edit_id'])
+def edit(id):
+    user_to_update = User.with_id(id)
     all_roles = Role.get_all()
 
     return render_template("user/update.html", user=user_to_update, roles=all_roles)
@@ -36,25 +36,35 @@ def edit():
 
 @login_required
 @permission_required('usuario_update')
-def update():
+def update(id):
     data = request.form
-    try:
-        updated_user = User.update(data['edit_id'], data)
-        flash("Se actualizo al usuario: "+data['email'], 'success')
-    except Exception as e:
-        flash("No se pudo editar al usuario: "+data['email'], 'error')
+    form = UserForm(request.form)
+    user = User.with_id(id)
 
-    all_roles = Role.get_all()
+    if form.email.data != user.email:
+        if User.already_exists(form.email.data):
+            flash("Ya existe el usuario con mail: "+form.email.data, "error")
+            return redirect(url_for("user_edit", id=id))
 
-    return render_template("user/update.html", user=updated_user, roles=all_roles)
+    if (data and form.validate()):
+        try:
+            form.populate_obj(user)
+            roles = []
+            for role_name in data.keys():
+                if data[role_name] == 'role':
+                    roles.append(Role.with_name(role_name))
+            user.roles = roles
+            user.save()
+            flash("Se actualizo al usuario: "+user.email, 'success')
+        except Exception as e:
+            flash("No se pudo editar al usuario: "+user.email, 'error')
+    else:
+        for field in form.errors:
+            for error in form.errors[field]:
+                flash(error, "error")
+        return redirect(url_for("user_edit", id=id))
 
-
-def hasAllParams(params):
-    """ Metodo para chequear que el issue tiene todos los params que necesita para ser creado. """
-    lista = []
-    for param in params.keys():
-        lista.append(params.get(param) != '')
-    return all(lista)
+    return redirect(url_for("user_index"))
 
 
 @login_required
@@ -63,7 +73,6 @@ def create():
     data = request.form
     user = User()
     form = UserForm(data)
-    print(data)
 
     if User.already_exists(form.email.data):
         flash("Ya existe el usuario con mail: "+form.email.data, "error")

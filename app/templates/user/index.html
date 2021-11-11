@@ -56,7 +56,7 @@
       <td class="table-light">
         {% if check_permission(current_user, "usuario_update") %}
         <form action="" method="POST">
-          <button name="edit_id" value="{{ user.id }}" formaction="{{ url_for('user_edit') }}" type="submit"
+          <button name="edit_id" value="{{ user.id }}" formaction="{{ url_for('user_edit',id=user.id) }}" type="submit"
             class="btn btn-secondary">Editar</a>
         </form>
         {% endif %}
