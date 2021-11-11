@@ -141,12 +141,31 @@ def profile_edit():
 
 
 @login_required
-@permission_required('usuario_update')
 def profile_update():
-    try:
-        # Pendiente agregar chequeo con wtforms y juntar ambos update en un mismo metodo
-        User.update_profile(request.form)
-        flash("Su perfil se actualizó correctamente.", "success")
-    except:
-        flash("Ocurrió un error. No se pudo actualizar su perfil.", "error")
+    data = request.form
+    form = UserForm(data)
+
+    if form.email.data != current_user.email:
+        if User.already_exists(form.email.data):
+            flash("Ya existe el usuario con mail: "+form.email.data, "error")
+            return redirect(url_for("user_profile_edit"))
+
+    if form.validate():
+        try:
+            form.populate_obj(current_user)
+            roles = []
+            for role_name in data.keys():
+                if data[role_name] == 'role':
+                    roles.append(Role.with_name(role_name))
+            current_user.roles = roles
+            current_user.save
+            flash("Su perfil se actualizó correctamente.", "success")
+        except:
+            flash("Ocurrió un error. No se pudo actualizar su perfil.", "error")
+    else:
+        for field in form.errors:
+            for error in form.errors[field]:
+                flash(field+": "+error, "error")
+        return redirect(url_for("user_profile_edit"))
+
     return redirect(url_for("user_profile"))
