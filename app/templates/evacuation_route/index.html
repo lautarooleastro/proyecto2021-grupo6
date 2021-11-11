@@ -6,7 +6,11 @@
 {% block content %}
 <div class="row">
     <h1 class="col-10">Recorridos de evacuacion</h1>
-    <a class="col" href="{{ url_for('evacuation_route_new') }}"><button class="btn btn-success">Nuevo punto</button></a>
+    <div class="col">
+        <a class=" btn btn-success" href="{{ url_for('evacuation_route_new') }}">
+            Nuevo recorrido
+        </a>
+    </div>
 </div>
 <table class="table">
     <thead>
