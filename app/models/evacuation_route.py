@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Table, Boolean
+from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
 from app.db import db
+from app.models.route_point import RoutePoint
 
 
 class EvacuationRoute(db.Model):
@@ -7,8 +9,8 @@ class EvacuationRoute(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(30))
     description = Column(String(255))
-    points = Column(String(255))
     status = Column(Boolean)
+    points = relationship("RoutePoint", cascade="all, delete")
 
     def __init__(self, name=None, description=None, points=None, status=True):
         self.name = name
@@ -16,6 +18,7 @@ class EvacuationRoute(db.Model):
         self.points = points
         self.status = status
 
+    @staticmethod
     def all():
         return EvacuationRoute.query.all()
 

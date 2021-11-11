@@ -5,32 +5,28 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-    <h1 class="col-10">Puntos de encuentro</h1>
+    <h1 class="col-10">Recorridos de evacuacion</h1>
     <a class="col" href="{{ url_for('evacuation_route_new') }}"><button class="btn btn-success">Nuevo punto</button></a>
 </div>
 <table class="table">
     <thead>
         <tr>
             <th class="table-dark">Nombre</th>
-            <th class="table-dark">Direccion</th>
-            <th class="table-dark">Coordenadas</th>
+            <th class="table-dark">Descripcion</th>
+            <th class="table-dark">Cantidad de puntos</th>
             <th class="table-dark">Estado</th>
-            <th class="table-dark">Telefono</th>
-            <th class="table-dark">Email</th>
             <th class="table-dark"></th>
         </tr>
     </thead>
     <tbody>
-        {% for meeting_point in meeting_points %}
+        {% for route in routes %}
         <tr>
-            <td class="table-light">{{meeting_point.name}}</td>
-            <td class="table-light">{{meeting_point.adress}}</td>
-            <td class="table-light">{{meeting_point.coordinates}}</td>
-            <td class="table-light">{{meeting_point.status}}</td>
-            <td class="table-light">{{meeting_point.phone}}</td>
-            <td class="table-light">{{meeting_point.email}}</td>
+            <td class="table-light">{{route.name}}</td>
+            <td class="table-light">{{route.description}}</td>
+            <td class="table-light"></td>
+            <td class="table-light">{{route.status}}</td>
             <td class="table-light">
-                <a class="btn btn-light" href="/puntos_de_encuentro/detalle/{{meeting_point.id}}">
+                <a class="btn btn-light" href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-pen-fill" viewBox="0 0 16 16">
                         <path
