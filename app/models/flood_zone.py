@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
 from app.db import db
 from sqlalchemy.orm import backref, query, relationship, session
+#from app.models.flood_point import FloodPoint 
+
 
 
 class FloodZone(db.Model):
@@ -26,6 +28,12 @@ class FloodZone(db.Model):
 
     def with_id(id):
         return FloodZone.query.filter(FloodZone.id == id).first()
+
+    def destroy(zone):
+        """ Elimina una zona de la BD. """
+        db.session.delete(zone)
+        db.session.commit()  
+        
 
     def save(self):
         db.session.add(self)

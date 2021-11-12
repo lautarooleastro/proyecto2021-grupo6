@@ -15,6 +15,7 @@
             <th class="table-dark">Nombre</th>
             <th class="table-dark">Puntos</th>
             <th class="table-dark">Estado</th>
+            <th class="table-dark">Acciones</th>
             <th class="table-dark"></th>
         </tr>
     </thead>
@@ -29,12 +30,25 @@
             {% else %}
             <td class="table-light">Inactivo</td>
             {% endif %}
-            <td class="table-light">
-                
-                  <button name="edit_id" value="" formaction="" type="submit"
-                    class="btn btn-secondary">Ver</a>
-                
-            </td>
+            
+                <td class="table-light">
+                {% if check_permission(current_user, "zona_inundable_show") %}
+                    <form action="" method="POST">
+                        <button name="edit_id" value="{{flood_zone.id}}" formaction="#" type="submit"
+                        class="btn btn-secondary">Ver</a>
+                    </form>
+                {% endif %}
+                </td>
+                <td class="table-light">
+                {% if check_permission(current_user, "zona_inundable_destoy") %}
+                    <form action="" method="POST">
+                        <button name="destroy_id" value="{{flood_zone.id}}" formaction="{{ url_for('flood_zone_destroy') }}" type="submit"
+                            class="btn btn-danger">Eliminar</a>
+                    
+                    </form>
+                {% endif %}
+                </td>
+            
         </tr>
         {% endfor %}
     </tbody>

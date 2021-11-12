@@ -24,6 +24,11 @@ class FloodPoint(db.Model):
     def get_all():
         return FloodPoint.query.all()
 
+    def destroy(point):
+        """ Elimina un punto de la BD. """
+        db.session.delete(point)
+        db.session.commit() 
+
     def save(self):
         db.session.add(self)
         db.session.commit()
