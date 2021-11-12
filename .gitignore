@@ -117,3 +117,8 @@ coc-settings.json
 
 # ignore configuration module
 config.py
+
+
+
+# ignore personal files
+/app/helpers/flood_charge.py

@@ -1,11 +1,42 @@
 {% extends "layout/layout.html" %}
-{% block title %}Usuarios{% endblock %}
+{% block title %}Zonas Inundables{% endblock %}
 {% block head %}
 {{ super() }}
 {% endblock %}
 {% block content %}
 <div class="row">
     <h1 class="col-10">Zonas inundables</h1>
-    
+    <a class="col" href="#"><button class="btn btn-success">Nueva zona</button></a>
 </div>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="table-dark">Código</th>
+            <th class="table-dark">Nombre</th>
+            <th class="table-dark">Puntos</th>
+            <th class="table-dark">Estado</th>
+            <th class="table-dark"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for flood_zone in flood_zones %}
+        <tr>
+            <td class="table-light">{{flood_zone.code}}</td>
+            <td class="table-light">{{flood_zone.name}}</td>
+            <td class="table-light">{{flood_zone.flood_points|length}}</td>
+            {% if flood_zone.status %}
+            <td class="table-light">Activo</td>
+            {% else %}
+            <td class="table-light">Inactivo</td>
+            {% endif %}
+            <td class="table-light">
+                
+                  <button name="edit_id" value="" formaction="" type="submit"
+                    class="btn btn-secondary">Ver</a>
+                
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

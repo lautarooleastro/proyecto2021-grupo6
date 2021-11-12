@@ -9,4 +9,4 @@ from app.models.flood_zone import FloodZone
 #@permission_required('zona_inundable_index')
 def index():
     flood_zones = FloodZone.get_all()
-    return render_template("flood_zone/index.html", flood_zone=flood_zones)
+    return render_template("flood_zone/index.html", flood_zones=flood_zones)
