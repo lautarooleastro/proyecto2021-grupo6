@@ -7,23 +7,18 @@ from app.models.flood_zone import FloodZone
 class FloodPoint(db.Model):
     __tablename__ = 'flood_points'
     id = Column(Integer, primary_key=True)
-    coordinates = Column(String(41))
+    latitude = Column(String(20))
+    longitude = Column(String(20))
     flood_zone_id = Column(Integer, ForeignKey('flood_zones.id'))
     flood_zone = relationship('FloodZone', 
                                 backref=backref('flood_points', 
                                 uselist=True,
                                 cascade='delete,all'))
     
-    """
-    Mod ambos extremos
-    flood_zone = relationship('FloodZone', 
-                                back_populates('flood_points', 
-                                uselist=True,
-                                cascade='delete,all'))
-    """
 
-    def __init__(self, coordinates=None, flood_zone_id=None):
-        self.coordinates = coordinates
+    def __init__(self, latitude=None, longitude=None, flood_zone_id=None):
+        self.latitude = latitude
+        self.longitude = longitude
         self.flood_zone_id = flood_zone_id
 
     def get_all():
