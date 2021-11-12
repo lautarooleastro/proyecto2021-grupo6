@@ -7,8 +7,8 @@ from app.models.flood_zone import FloodZone
 class FloodPoint(db.Model):
     __tablename__ = 'flood_points'
     id = Column(Integer, primary_key=True)
-    latitude = Column(String(20))
-    longitude = Column(String(20))
+    latitude = Column(String(25))
+    longitude = Column(String(25))
     flood_zone_id = Column(Integer, ForeignKey('flood_zones.id'))
     flood_zone = relationship('FloodZone', 
                                 backref=backref('flood_points', 
