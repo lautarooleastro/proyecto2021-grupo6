@@ -14,7 +14,7 @@ def index():
     return render_template("flood_zone/index.html", flood_zones=flood_zones)
 
 @login_required
-@permission_required('zona_inundable_destoy')
+@permission_required('zona_inundable_destroy')
 def destroy():
     try:
         zone = FloodZone.with_id(request.form['destroy_id'])

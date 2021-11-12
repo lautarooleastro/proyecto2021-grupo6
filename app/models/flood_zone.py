@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
 from app.db import db
 from sqlalchemy.orm import backref, query, relationship, session
-#from app.models.flood_point import FloodPoint 
 
 
 

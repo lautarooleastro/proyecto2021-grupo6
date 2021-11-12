@@ -20,7 +20,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 # - zona_inundable_index - 12
 # - zona_inundable_show - 13
 # - zona_inundable_import - 14
-# - zona_inundable_destoy - 21
+# - zona_inundable_destroy - 21
 
 
 class Permission(db.Model):

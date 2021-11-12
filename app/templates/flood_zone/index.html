@@ -40,7 +40,7 @@
                 {% endif %}
                 </td>
                 <td class="table-light">
-                {% if check_permission(current_user, "zona_inundable_destoy") %}
+                {% if check_permission(current_user, "zona_inundable_destroy") %}
                     <form action="" method="POST">
                         <button name="destroy_id" value="{{flood_zone.id}}" formaction="{{ url_for('flood_zone_destroy') }}" type="submit"
                             class="btn btn-danger">Eliminar</a>
