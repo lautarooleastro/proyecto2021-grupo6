@@ -2,7 +2,7 @@ from flask import render_template, redirect, request
 from flask.helpers import flash, url_for
 from flask_login.utils import login_required
 from wtforms import form
-from app.helpers.forms.evacuation_route import EvacuationRouteForm
+from app.helpers.forms.evacuation_route import EditEvacuationRouteForm, EvacuationRouteForm
 from app.models.evacuation_route import EvacuationRoute
 from app.models.route_point import RoutePoint
 from app.helpers.permission import permission_required
@@ -74,10 +74,23 @@ def destroy(id):
 @login_required
 @permission_required('recorrido_evacuacion_update')
 def edit(id):
-    pass
+    return render_template("evacuation_route/update.html",
+                           route=EvacuationRoute.with_id(id))
 
 
 @login_required
 @permission_required('recorrido_evacuacion_update')
-def update():
-    pass
+def update(id):
+    form = EditEvacuationRouteForm(request.form)
+
+    if form.validate():
+        route = EvacuationRoute.with_id(id)
+        form.populate_obj(route)
+        route.save()
+        flash("Se actualizo correctamente la ruta: "+route.name, "success")
+    else:
+        for error in form.errors:
+            flash(form.errors[error], "error")
+        return redirect(url_for("evacuation_route_edit", id=id))
+
+    return redirect(url_for("evacuation_route_detail", id=route.id))
