@@ -10,8 +10,9 @@ def index():
     return render_template("evacuation_route/index.html", routes=EvacuationRoute.all())
 
 
-def detail():
-    pass
+def detail(id):
+    return render_template("evacuation_route/detail.html",
+                           route=EvacuationRoute.with_id(id))
 
 
 def new():
@@ -51,7 +52,7 @@ def destroy():
     pass
 
 
-def edit():
+def edit(id):
     pass
 
 

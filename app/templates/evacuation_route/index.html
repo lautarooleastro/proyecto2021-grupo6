@@ -15,9 +15,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th class="table-dark">ID</th>
             <th class="table-dark">Nombre</th>
             <th class="table-dark">Descripcion</th>
-            <th class="table-dark">Cantidad de puntos</th>
             <th class="table-dark">Estado</th>
             <th class="table-dark"></th>
         </tr>
@@ -25,12 +25,18 @@
     <tbody>
         {% for route in routes %}
         <tr>
+            <td class="table-light">{{route.id}}</td>
             <td class="table-light">{{route.name}}</td>
             <td class="table-light">{{route.description}}</td>
-            <td class="table-light"></td>
-            <td class="table-light">{{route.status}}</td>
             <td class="table-light">
-                <a class="btn btn-light" href="#">
+                {% if route.status %}
+                Publicado
+                {% else %}
+                No publicado
+                {% endif %}
+            </td>
+            <td class="table-light">
+                <a class="btn btn-light" href="{{ url_for('evacuation_route_detail', id=route.id) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-pen-fill" viewBox="0 0 16 16">
                         <path

@@ -27,3 +27,7 @@ class EvacuationRoute(db.Model):
 
     def get_published():
         return EvacuationRoute.query.filter(EvacuationRoute.status == True)
+
+    @staticmethod
+    def with_id(id):
+        return EvacuationRoute.query.filter(EvacuationRoute.id == id).first()
