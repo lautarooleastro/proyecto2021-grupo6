@@ -12,10 +12,9 @@ class EvacuationRoute(db.Model):
     status = Column(Boolean)
     points = relationship("RoutePoint", cascade="all, delete")
 
-    def __init__(self, name=None, description=None, points=None, status=True):
+    def __init__(self, name=None, description=None, status=True):
         self.name = name
         self.description = description
-        self.points = points
         self.status = status
 
     @staticmethod
