@@ -15,4 +15,4 @@ def set_routes(app):
     app.add_url_rule("/recorrido_de_evacuacion/editar/<int:id>",
                      "evacuation_route_edit", evacuation_route.edit, methods=['POST'])
     app.add_url_rule("/recorrido_de_evacuacion/editar/<int:id>",
-                     "evacuation_route_update", evacuation_route.update)
+                     "evacuation_route_update", evacuation_route.update, methods=['POST'])

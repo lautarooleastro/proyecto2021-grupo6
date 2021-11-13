@@ -1,24 +1,34 @@
 from flask import render_template, redirect, request
 from flask.helpers import flash, url_for
+from flask_login.utils import login_required
 from wtforms import form
 from app.helpers.forms.evacuation_route import EvacuationRouteForm
 from app.models.evacuation_route import EvacuationRoute
 from app.models.route_point import RoutePoint
+from app.helpers.permission import permission_required
 
 
+@login_required
+@permission_required('recorrido_evacuacion_index')
 def index():
     return render_template("evacuation_route/index.html", routes=EvacuationRoute.all())
 
 
+@login_required
+@permission_required('recorrido_evacuacion_show')
 def detail(id):
     return render_template("evacuation_route/detail.html",
                            route=EvacuationRoute.with_id(id))
 
 
+@login_required
+@permission_required('recorrido_evacuacion_new')
 def new():
     return render_template("evacuation_route/new.html")
 
 
+@login_required
+@permission_required('recorrido_evacuacion_new')
 def create():
     data = request.form
     form = EvacuationRouteForm(request.form)
@@ -48,6 +58,8 @@ def create():
     return redirect(url_for("evacuation_route_new"))
 
 
+@login_required
+@permission_required('recorrido_evacuacion_destroy')
 def destroy(id):
     route = EvacuationRoute.with_id(id)
     if route:
@@ -59,9 +71,13 @@ def destroy(id):
     return redirect(url_for("evacuation_route_index"))
 
 
+@login_required
+@permission_required('recorrido_evacuacion_update')
 def edit(id):
     pass
 
 
+@login_required
+@permission_required('recorrido_evacuacion_update')
 def update():
     pass
