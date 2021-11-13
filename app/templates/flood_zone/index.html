@@ -1,0 +1,56 @@
+{% extends "layout/layout.html" %}
+{% block title %}Zonas Inundables{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <h1 class="col-10">Zonas inundables</h1>
+    <a class="col" href="#"><button class="btn btn-success">Nueva zona</button></a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="table-dark">Código</th>
+            <th class="table-dark">Nombre</th>
+            <th class="table-dark">Puntos</th>
+            <th class="table-dark">Estado</th>
+            <th class="table-dark">Acciones</th>
+            <th class="table-dark"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for flood_zone in flood_zones %}
+        <tr>
+            <td class="table-light">{{flood_zone.code}}</td>
+            <td class="table-light">{{flood_zone.name}}</td>
+            <td class="table-light">{{flood_zone.flood_points|length}}</td>
+            {% if flood_zone.status %}
+            <td class="table-light">Publicado</td>
+            {% else %}
+            <td class="table-light">Despublicado</td>
+            {% endif %}
+            
+                <td class="table-light">
+                {% if check_permission(current_user, "zona_inundable_show") %}
+                    <form action="" method="POST">
+                        <button name="edit_id" value="{{flood_zone.id}}" formaction="#" type="submit"
+                        class="btn btn-secondary">Ver</a>
+                    </form>
+                {% endif %}
+                </td>
+                <td class="table-light">
+                {% if check_permission(current_user, "zona_inundable_destroy") %}
+                    <form action="" method="POST">
+                        <button name="destroy_id" value="{{flood_zone.id}}" formaction="{{ url_for('flood_zone_destroy') }}" type="submit"
+                            class="btn btn-danger">Eliminar</a>
+                    
+                    </form>
+                {% endif %}
+                </td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
