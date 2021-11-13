@@ -48,8 +48,15 @@ def create():
     return redirect(url_for("evacuation_route_new"))
 
 
-def destroy():
-    pass
+def destroy(id):
+    route = EvacuationRoute.with_id(id)
+    if route:
+        route.destroy()
+        flash("Se elimino correctamente", "success")
+    else:
+        flash("No existe la ruta con id; "+id, "error")
+
+    return redirect(url_for("evacuation_route_index"))
 
 
 def edit(id):

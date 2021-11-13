@@ -31,3 +31,7 @@ class EvacuationRoute(db.Model):
     @staticmethod
     def with_id(id):
         return EvacuationRoute.query.filter(EvacuationRoute.id == id).first()
+
+    def destroy(self):
+        db.session.delete(self)
+        db.session.commit()
