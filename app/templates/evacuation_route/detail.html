@@ -1,0 +1,108 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Detalle Recorrido de evacuacion
+    </h1>
+</div>
+
+{% if meeting_point is not none %}
+
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Nombre</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ route.name }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Descripcion</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ route.description }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Estado</div>
+                <div class="col-sm-9 text-sm-end text-start">
+                    {% if route.status %}
+                    Publicado
+                    {% else %}
+                    No publicado
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-3" style="font-weight: bold;">Puntos</div>
+            </div>
+            {% for point in route.points %}
+            <div class="row container">
+                <div class="col">{{ point.lat }}</div>
+                <div class="col">{{ point.long }}</div>
+            </div>
+            {% endfor %}
+        </li>
+    </ul>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col text-center">
+                <a class="btn btn-secondary" href="{{ url_for('evacuation_route_index') }}">Volver</a>
+            </div>
+            <div class="col text-center">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#confirmDeleteModal">
+                    Eliminar
+                </button>
+            </div>
+            <div class="col text-center">
+                <form action="{{ url_for('evacuation_route_edit', id=route.id) }}" method="POST">
+                    <button class="btn btn-warning" type="submit">
+                        Editar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Eliminar punto de encuentro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Usted quiere eliminar la ruta: "{{ route.name }}".</p>
+                <p>Esta accion no se puede deshacer.</p>
+                <p>¿Esta seguro/a que desea eliminarlo?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar y volver</button>
+                <form action="{{ url_for('evacuation_route_destroy', id=route.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <h4>El punto de encuentro no existe</h4>
+</div>
+{% endif %}
+
+
+
+{% endblock %}
