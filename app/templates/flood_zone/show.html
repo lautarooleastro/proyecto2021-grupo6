@@ -1,0 +1,111 @@
+{% extends "layout/layout.html" %}
+{% block title %}Detalle zona inundable{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <h1 class="col-10">Zonas inundables</h1>
+    <a class="col" href="#"><button class="btn btn-success">Nueva zona</button></a>
+</div>
+
+<div class="container-md col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <div class="row">
+        <div class="col-5">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Nombre</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ zone.name }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Código</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ zone.code }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Publicado</div>
+                        <div class="col-sm-9 text-sm-end text-start">
+                            {% if zone.status %}
+                            Si
+                            {% else %}
+                            No
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Puntos</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{zone.flood_points|length}}</div>
+                    </div>
+                    <br>
+                    <p>
+                        <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            Ver coordenadas
+                        </button>
+                    </p>
+                    <div class="collapse" id="collapseExample">
+                        <div class="card card-body">
+                            {% set count = namespace(value=1) %}
+                            {% for point in zone.flood_points %}
+                                <div>
+                                    nº{{ count.value }}: [{{ point.latitude }},{{ point.longitude }}]
+                                </div>
+                                <br>
+                                {% set count.value = count.value + 1 %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col text-center">
+                        <a class="btn btn-primary" href="{{ url_for('flood_zone_index') }}">Volver</a>
+                    </div>
+                    {% if check_permission(current_user, "zona_inundable_destroy") %}
+                    <div class="col text-center">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal">
+                            Eliminar
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            MAPA
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Eliminar zona {{ zone.code }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Usted va a <b>eliminar</b> {{ zone.name }}.</p>
+                <p class="text-center">¿Confirma la acción?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="" method="POST">
+                    <button name="destroy_id" value="{{zone.id}}" formaction="{{ url_for('flood_zone_destroy') }}" type="submit"
+                                class="btn btn-danger">Confirmar</a>
+                </form> 
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
