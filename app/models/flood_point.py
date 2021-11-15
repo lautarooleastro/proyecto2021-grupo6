@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
 from app.db import db
 from sqlalchemy.orm import backref, query, relationship, session
-from app.models.flood_zone import FloodZone 
 
 
 class FloodPoint(db.Model):
@@ -10,10 +9,7 @@ class FloodPoint(db.Model):
     latitude = Column(String(25))
     longitude = Column(String(25))
     flood_zone_id = Column(Integer, ForeignKey('flood_zones.id'))
-    flood_zone = relationship('FloodZone', 
-                                backref=backref('flood_points', 
-                                uselist=True,
-                                cascade='delete,all'))
+
     
 
     def __init__(self, latitude=None, longitude=None, flood_zone_id=None):

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
 from app.db import db
 from sqlalchemy.orm import backref, query, relationship, session
-
+from app.models.flood_point import FloodPoint 
 
 
 class FloodZone(db.Model):
@@ -11,6 +11,7 @@ class FloodZone(db.Model):
     code = Column(String(10), unique=True)  # código de la zona inundable
     status = Column(Boolean)    # Publicado o no
     color = Column(String(6))   # Color RGB
+    flood_points = relationship("FloodPoint", cascade="all, delete") 
 
     
     def __init__(self, name=None, code=None, status=False, color=None):
