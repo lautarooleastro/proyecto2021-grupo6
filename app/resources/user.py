@@ -2,13 +2,11 @@ from flask import redirect, render_template, request, url_for, session, abort
 from flask.helpers import flash
 from flask_login.utils import login_required
 from flask_login import current_user
-from app.helpers.auth import authenticated, logged_user
+from app.helpers.forms.user import UserForm
 from app.helpers.permission import permission_required
 from app.models.role import Role
 from app.models.user import User
 
-
-from app.db import db
 
 # Protected resources
 
@@ -29,8 +27,8 @@ def new():
 
 @login_required
 @permission_required('usuario_update')
-def edit():
-    user_to_update = User.with_id(request.form['edit_id'])
+def edit(id):
+    user_to_update = User.with_id(id)
     all_roles = Role.get_all()
 
     return render_template("user/update.html", user=user_to_update, roles=all_roles)
@@ -38,50 +36,67 @@ def edit():
 
 @login_required
 @permission_required('usuario_update')
-def update():
+def update(id):
     data = request.form
-    try:
-        updated_user = User.update(data['edit_id'], data)
-        flash("Se actualizo al usuario: "+data['email'], 'success')
-    except Exception as e:
-        flash("No se pudo editar al usuario: "+data['email'], 'error')
+    form = UserForm(request.form)
+    user = User.with_id(id)
 
-    all_roles = Role.get_all()
+    if form.email.data != user.email:
+        if User.already_exists(form.email.data):
+            flash("Ya existe el usuario con mail: "+form.email.data, "error")
+            return redirect(url_for("user_edit", id=id))
 
-    return render_template("user/update.html", user=updated_user, roles=all_roles)
+    if (data and form.validate()):
+        try:
+            form.populate_obj(user)
+            roles = []
+            for role_name in data.keys():
+                if data[role_name] == 'role':
+                    roles.append(Role.with_name(role_name))
+            user.roles = roles
+            user.save()
+            flash("Se actualizo al usuario: "+user.email, 'success')
+        except Exception as e:
+            flash("No se pudo editar al usuario: "+user.email, 'error')
+    else:
+        for field in form.errors:
+            for error in form.errors[field]:
+                flash(error, "error")
+        return redirect(url_for("user_edit", id=id))
 
-
-def hasAllParams(params):
-    """ Metodo para chequear que el issue tiene todos los params que necesita para ser creado. """
-    lista = []
-    for param in params.keys():
-        lista.append(params.get(param) != '')
-    return all(lista)
+    return redirect(url_for("user_index"))
 
 
 @login_required
 @permission_required('usuario_new')
 def create():
-    if (hasAllParams(request.form)):
-        # creamos el usuario con los parametros del diccionario request.form
-        new_user = User(**request.form)
+    data = request.form
+    user = User()
+    form = UserForm(data)
 
-        if (User.already_exists(new_user.email)):
-            flash("Ya existe un usuario con mail: '" +
-                  new_user.email + "'.", "error")
-        else:
-            # agregamos el usuario
-            db.session.add(new_user)
+    if User.already_exists(form.email.data):
+        flash("Ya existe el usuario con mail: "+form.email.data, "error")
+        return redirect(url_for("user_new"))
 
-            # efectuamos los cambios
-            db.session.commit()
-            flash("Creado con éxito. Email: "+new_user.email+".", "success")
-            return redirect(url_for("user_index"))
-
+    if (data and form.validate()):
+        try:
+            form.populate_obj(user)
+            roles = []
+            for role_name in data.keys():
+                if data[role_name] == 'role':
+                    roles.append(Role.with_name(role_name))
+            user.roles = roles
+            user.save()
+            flash("Se creo correctamente al usuario: "+user.email, "success")
+        except:
+            flash("Ocurrió un error. No se pudo crear al usuario.", "error")
     else:
-        flash("Faltan parametros.", "error")
+        for field in form.errors:
+            for error in form.errors[field]:
+                flash(error, "error")
+        return redirect(url_for("user_new"))
 
-    return redirect(url_for("user_new"))
+    return redirect(url_for("user_index"))
 
 
 @login_required
@@ -126,12 +141,26 @@ def profile_edit():
 
 
 @login_required
-@permission_required('usuario_update')
 def profile_update():
-    try:
-        # Pendiente agregar chequeo con wtforms y juntar ambos update en un mismo metodo
-        User.update_profile(request.form)
-        flash("Su perfil se actualizó correctamente.", "success")
-    except:
-        flash("Ocurrió un error. No se pudo actualizar su perfil.", "error")
+    data = request.form
+    form = UserForm(data)
+
+    if form.email.data != current_user.email:
+        if User.already_exists(form.email.data):
+            flash("Ya existe el usuario con mail: "+form.email.data, "error")
+            return redirect(url_for("user_profile_edit"))
+
+    if form.validate():
+        try:
+            form.populate_obj(current_user)
+            current_user.save()
+            flash("Su perfil se actualizó correctamente.", "success")
+        except:
+            flash("Ocurrió un error. No se pudo actualizar su perfil.", "error")
+    else:
+        for field in form.errors:
+            for error in form.errors[field]:
+                flash(field+": "+error, "error")
+        return redirect(url_for("user_profile_edit"))
+
     return redirect(url_for("user_profile"))

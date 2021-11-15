@@ -5,9 +5,9 @@ def set_routes(app):
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    app.add_url_rule("/usuarios/editar", "user_edit",
-                     user.edit, methods=['POST'])
-    app.add_url_rule("/usuarios/editar/confirmado", "user_update",
+    app.add_url_rule("/usuarios/editar/<int:id>", "user_edit",
+                     user.edit, methods=['POST', 'GET'])
+    app.add_url_rule("/usuarios/actualizar/<int:id>", "user_update",
                      user.update, methods=['POST'])
     app.add_url_rule("/usuarios/eliminar", "user_destroy",
                      user.destroy, methods=["POST"])

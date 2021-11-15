@@ -1,7 +1,7 @@
-from flask import redirect, render_template, request, url_for, abort, session, flash
-from flask_login import login_manager
+from flask import redirect, render_template, request, url_for, flash
 from flask_login.utils import logout_user
-from sqlalchemy.sql.functions import user
+from wtforms import form
+from app.helpers.forms.auth import SignInForm
 from app.models.user import User
 from flask_login import login_user
 
@@ -11,24 +11,23 @@ def login():
 
 
 def authenticate():
-    # conn = connection()
-    # params = request.form
-    # user = User.find_by_email_and_pass(conn, params["email"], params["password"])
+    data = request.form
+    form = SignInForm(data)
 
-    # Me traigo los parametros del formulario
-    params = request.form
+    if form.validate():
+        user = User.with_email(form.email.data)
+        if user:
+            if user.password == form.password.data:
+                login_user(user)
+                flash("Ha iniciado sesion con: "+user.email, "success")
+                return redirect(url_for("home"))
+        flash("Usuario o contraseña incorrectos", "error")
+    else:
+        for field in form.errors:
+            for error in form.errors[field]:
+                flash(field+": "+error, "error")
 
-    user = User.query.filter(
-        User.email == params["email"] and User.password == params["password"]
-    ).first()
-
-    if (not user) or (user.password != params["password"]):
-        flash("Usuario o clave incorrecto.")
-        return redirect(url_for("auth_login"))
-
-    login_user(user)
-
-    return redirect(url_for("home"))
+    return redirect(url_for("auth_login"))
 
 
 def logout():

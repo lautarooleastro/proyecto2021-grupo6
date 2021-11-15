@@ -7,7 +7,7 @@
 
 <div class="d-block">
     <h1 class="text-center text-white" style="padding: 15px;">
-        Detalle Punto de Encuentro
+        Detalle Recorrido de evacuacion
     </h1>
 </div>
 
@@ -19,39 +19,44 @@
         <li class="list-group-item">
             <div class="row">
                 <div class="col-3" style="font-weight: bold;">Nombre</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.name }}</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ route.name }}</div>
             </div>
         </li>
         <li class="list-group-item">
             <div class="row">
-                <div class="col-3" style="font-weight: bold;">Direccion</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.adress }}</div>
+                <div class="col-3" style="font-weight: bold;">Descripcion</div>
+                <div class="col-sm-9 text-sm-end text-start">{{ route.description }}</div>
             </div>
         </li>
         <li class="list-group-item">
             <div class="row">
-                <div class="col-3" style="font-weight: bold;">Coordenadas</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.coordinates }}</div>
+                <div class="col-3" style="font-weight: bold;">Estado</div>
+                <div class="col-sm-9 text-sm-end text-start">
+                    {% if route.status %}
+                    Publicado
+                    {% else %}
+                    No publicado
+                    {% endif %}
+                </div>
             </div>
         </li>
         <li class="list-group-item">
             <div class="row">
-                <div class="col-3" style="font-weight: bold;">Telefono</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.phone }}</div>
+                <div class="col-3" style="font-weight: bold;">Puntos</div>
             </div>
-        </li>
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-3" style="font-weight: bold;">E-Mail</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.email }}</div>
+            {% for point in route.points %}
+            <div class="row container">
+                <div class="col">{{ point.lat }}</div>
+                <div class="col">{{ point.long }}</div>
             </div>
+            {% endfor %}
         </li>
     </ul>
 
     <div class="container mt-4">
         <div class="row">
             <div class="col text-center">
-                <a class="btn btn-secondary" href="{{ url_for('meeting_point_index') }}">Volver</a>
+                <a class="btn btn-secondary" href="{{ url_for('evacuation_route_index') }}">Volver</a>
             </div>
             <div class="col text-center">
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
@@ -60,7 +65,7 @@
                 </button>
             </div>
             <div class="col text-center">
-                <form action="{{ url_for('meeting_point_edit', id=meeting_point.id) }}" method="POST">
+                <form action="{{ url_for('evacuation_route_edit', id=route.id) }}" method="POST">
                     <button class="btn btn-warning" type="submit">
                         Editar
                     </button>
@@ -78,13 +83,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Usted quiere eliminar el punto de encuentro: "{{ meeting_point.name }}".</p>
+                <p>Usted quiere eliminar la ruta: "{{ route.name }}".</p>
                 <p>Esta accion no se puede deshacer.</p>
                 <p>¿Esta seguro/a que desea eliminarlo?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar y volver</button>
-                <form action="{{ url_for('meeting_point_destroy', id=meeting_point.id) }}" method="POST">
+                <form action="{{ url_for('evacuation_route_destroy', id=route.id) }}" method="POST">
                     <button type="submit" class="btn btn-danger">Eliminar</button>
                 </form>
             </div>

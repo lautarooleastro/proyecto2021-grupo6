@@ -1,0 +1,42 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Editar Recorrido de evacuacion
+    </h1>
+</div>
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form action="{{ url_for('evacuation_route_update', id=route.id) }}" method="POST">
+        <div class="col">
+            <label class="form-label">Nombre</label>
+            <input required name="name" class="form-control" value="{{ route.name }}">
+        </div>
+        <br>
+        <div class="col">
+            <label class="form-label">Descripcion</label>
+            <input required name="description" class="form-control" value="{{ route.description }}">
+        </div>
+        <br>
+        <div class="row">
+            <div class="container">
+                Las coordenadas de los puntos no se deben modificar. Si quiere cambiar la ruta, debe crear una ruta
+                nueva.
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col"><a href="{{ url_for('evacuation_route_detail', id=route.id) }}">
+                    <button type="button" class="btn btn-light">Cancelar y volver</button>
+                </a></div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Editar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

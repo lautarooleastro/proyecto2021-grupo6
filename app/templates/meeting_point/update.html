@@ -1,0 +1,66 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Editar Punto de Encuentro
+    </h1>
+</div>
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form action="{{ url_for('meeting_point_update', id=meeting_point.id) }}" method="POST">
+        <div class="col">
+            <label class="form-label">Nombre</label>
+            <input required name="name" class="form-control" value="{{ meeting_point.name }}">
+        </div>
+        <br>
+        <div class="col">
+            <label class="form-label">Direccion</label>
+            <input required name="adress" class="form-control" value="{{ meeting_point.adress }}">
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Coordenadas</label>
+                <input required name="coordinates" type="text" class="form-control"
+                    value="{{ meeting_point.coordinates }}">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Telefono</label>
+                <input required name="phone" class="form-control" type="number" value="{{ meeting_point.phone }}">
+            </div>
+            <div class="col">
+                <label class="form-label">E-Mail</label>
+                <input required name="email" class="form-control" type="email" value="{{ meeting_point.email }}">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <div class="form-check">
+                    <input name="status" class="form-check-input" type="checkbox" {% if meeting_point.status %} checked
+                        {% endif %}>
+                    <label class="form-check-label">
+                        Iniciar como punto Activo
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col"><a href="{{ url_for('meeting_point_detail', id=meeting_point.id) }}">
+                    <button type="button" class="btn btn-light">Cancelar y volver</button>
+                </a></div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Editar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

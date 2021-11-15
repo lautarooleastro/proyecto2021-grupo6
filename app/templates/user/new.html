@@ -18,7 +18,12 @@
     <br>
     <div class="col">
       <label class="form-label">Contraseña</label>
-      <input required name="password" class="form-control">
+      <input required name="password" class="form-control" type="password" minlength="6" maxlength="32">
+    </div>
+    <br>
+    <div class="col">
+      <label class="form-label">Repetir contraseña</label>
+      <input required name="confirm_password" class="form-control" type="password" minlength="6" maxlength="32">
     </div>
     <br>
     <div class="row">
@@ -36,11 +41,13 @@
       <div class="card-body">
         <h6 class="card-title">Roles del usuario</h6>
         <div class="row">
-          <p class="card-text">Por defecto, los usuarios se crean sin roles. Una vez creado el usuario, debe
-            asignarle
-            un rol desde "Editar usuario".</p>
+          {% for role in roles %}
+          <div class="col-sm-6">
+            <input id="{{role.name}}" type="checkbox" value="role" name="{{role.name}}">
+            <label for="{{role.name}}" class="card-text">{{role.name}}</label>
+          </div>
+          {% endfor %}
         </div>
-
       </div>
     </div>
     <br>

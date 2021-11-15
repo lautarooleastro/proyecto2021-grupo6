@@ -1,4 +1,4 @@
-from app.routes import auth, issue, user, helper, handler, meeting_point, flood_zone
+from app.routes import auth, issue, user, helper, handler, meeting_point, flood_zone, evacuation_route
 from flask import render_template
 
 
@@ -10,6 +10,7 @@ def set_routes(app):
     handler.set_routes(app)
     meeting_point.set_routes(app)
     flood_zone.set_routes(app)
+    evacuation_route.set_routes(app)
 
     @app.route("/")
     def home():
