@@ -82,7 +82,6 @@ def edit(id):
 @permission_required('recorrido_evacuacion_update')
 def update(id):
     form = EditEvacuationRouteForm(request.form)
-
     if form.validate():
         route = EvacuationRoute.with_id(id)
         form.populate_obj(route)
