@@ -36,6 +36,10 @@ def create():
         data = dict((key, request.form.getlist(key))
                     for key in request.form.keys())
 
+        # print(data)
+        # OUTPUT >>
+        # {...,'latitude':['x1','x2','x3', ... ], 'longitude':['y1','y2','y3',...]}
+
         if (len(data['latitude']) >= 3):
             route_points = []
             for pos in range(len(data['latitude'])):
