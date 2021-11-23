@@ -1,0 +1,85 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Configuracion del sistema
+    </h1>
+</div>
+
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+
+    <form id="editConfigForm" action="{{ url_for('configuration_update') }}" method="POST">
+
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-6" style="font-weight: bold;">Elementos por pagina</div>
+                    <input class="col-sm-6" type="number" class="form-control" name="elements_per_page"
+                        value="{{ configuration.elements_per_page }}" required>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-6" style="font-weight: bold;">Colores (Privada)</div>
+                    <div class="col-sm-6 text-sm-end text-start">
+
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-6" style="font-weight: bold;">Colores (Publica)</div>
+                    <div class="col-sm-6 text-sm-end text-start">
+
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col text-center">
+                    <a class="btn btn-secondary" href="{{ url_for('configuration_index') }}">
+                        Volver
+                    </a>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-success" form="editConfigForm" type="submit">
+                        Aplicar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Eliminar punto de encuentro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Usted quiere eliminar la ruta: "".</p>
+                <p>Esta accion no se puede deshacer.</p>
+                <p>¿Esta seguro/a que desea eliminarlo?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar y volver</button>
+                <form action="#" method="POST">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
