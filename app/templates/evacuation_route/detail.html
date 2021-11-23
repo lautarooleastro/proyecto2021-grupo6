@@ -58,12 +58,15 @@
             <div class="col text-center">
                 <a class="btn btn-secondary" href="{{ url_for('evacuation_route_index') }}">Volver</a>
             </div>
+            {% if check_permission(current_user, "recorrido_evacuacion_destroy") %}
             <div class="col text-center">
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#confirmDeleteModal">
                     Eliminar
                 </button>
             </div>
+            {% endif %}
+            {% if check_permission(current_user, "recorrido_evacuacion_update") %}
             <div class="col text-center">
                 <form action="{{ url_for('evacuation_route_edit', id=route.id) }}" method="POST">
                     <button class="btn btn-warning" type="submit">
@@ -71,6 +74,7 @@
                     </button>
                 </form>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
