@@ -15,12 +15,14 @@ def index():
 
 
 @login_required
-@permission_required('configuracion_index')
+@permission_required('configuracion_update')
 def edit():
     configuration = Configuration().get()
     return render_template("configuration/edit.html", configuration=configuration)
 
 
+@login_required
+@permission_required('configuracion_update')
 def update():
     form = ConfigurationForm(request.form)
     if form.validate():

@@ -36,6 +36,11 @@ class User(db.Model):
     def all():
         return User.query.all()
 
+    @staticmethod
+    def all_paginated(page, elements_per_page):
+        return User.query.filter(User.email != current_user.email).paginate(
+            page=page, per_page=elements_per_page)
+
     def save(self):
         db.session.add(self)
         db.session.commit()

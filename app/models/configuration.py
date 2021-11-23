@@ -26,3 +26,7 @@ class Configuration(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    @staticmethod
+    def per_page():
+        return Configuration.get().elements_per_page
