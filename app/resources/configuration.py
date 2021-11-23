@@ -24,7 +24,7 @@ def edit():
 def update():
     form = ConfigurationForm(request.form)
     if form.validate():
-        configuration = Configuration().get()
+        configuration = Configuration.get()
         form.populate_obj(configuration)
         configuration.save()
         flash("Se actualizo correctamente", "success")
