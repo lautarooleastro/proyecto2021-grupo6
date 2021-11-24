@@ -22,6 +22,18 @@
         </li>
         <li class="list-group-item">
             <div class="row">
+                <div class="col-6" style="font-weight: bold;">Orden</div>
+                <div class="col-sm-6 text-sm-end text-start">
+                    {% if configuration.order=='ASC' %}
+                    Ascendente
+                    {% else %}
+                    Descendente
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
                 <div class="col-6" style="font-weight: bold;">Colores (Privada)</div>
                 <div class="col-sm-6 text-sm-end text-start">
 

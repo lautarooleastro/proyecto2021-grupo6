@@ -25,6 +25,8 @@ def edit():
 @permission_required('configuracion_update')
 def update():
     form = ConfigurationForm(request.form)
+    #import pdb
+    # pdb.set_trace()
     if form.validate():
         configuration = Configuration.get()
         form.populate_obj(configuration)

@@ -16,8 +16,7 @@ class Configuration(db.Model):
     __tablename__ = "configuration"
     id = Column(Integer, primary_key=True)
     elements_per_page = Column(Integer)
-    public_app_colors = relationship("Colour", cascade="all, delete")
-    private_app_colors = relationship("Colour", cascade="all, delete")
+    order = Column(String(10))
 
     @staticmethod
     def get():

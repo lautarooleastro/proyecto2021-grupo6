@@ -25,6 +25,21 @@
             </li>
             <li class="list-group-item">
                 <div class="row">
+                    <div class="col-6" style="font-weight: bold;">Orden</div>
+                    <div class="col-6">
+                        <select class="form-select" name="order" form="editConfigForm" required>
+                            <option value="ASC" {% if configuration.order=='ASC' %} selected {% endif %}>
+                                Ascendente
+                            </option>
+                            <option value="DESC" {% if configuration.order=='DESC' %} selected {% endif %}>
+                                Descendente
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
                     <div class="col-6" style="font-weight: bold;">Colores (Privada)</div>
                     <div class="col-sm-6 text-sm-end text-start">
 
