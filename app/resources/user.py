@@ -21,9 +21,8 @@ def index():
     # users.remove(current_user)
 
     page = request.args.get('page', 1, type=int)
-    elements_per_page = Configuration.per_page()
 
-    users = User.all_paginated(page, elements_per_page)
+    users = User.all_paginated(page, Configuration.get())
 
     return render_template("user/index.html", users=users)
 

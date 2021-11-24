@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean, desc
 from sqlalchemy.orm import backref, query, relationship, session
 from flask_login import current_user
+from sqlalchemy.sql.functions import user
 from app.db import db
 from app.models.role import Role
 
@@ -33,13 +34,15 @@ class User(db.Model):
         self.password = password
         self.active = active
 
-    def all():
-        return User.query.all()
-
     @staticmethod
-    def all_paginated(page, elements_per_page):
-        return User.query.filter(User.email != current_user.email).paginate(
-            page=page, per_page=elements_per_page)
+    def all_paginated(page, config):
+        if config.order == 'ASC':
+            query = User.query.filter(User.email != current_user.email).paginate(
+                page=page, per_page=config.elements_per_page)
+        else:
+            query = User.query.filter(User.email != current_user.email).order_by(desc(User.id)).paginate(
+                page=page, per_page=config.elements_per_page)
+        return query
 
     def save(self):
         db.session.add(self)
