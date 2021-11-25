@@ -5,8 +5,14 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-    <h1 class="col-10">Zonas inundables</h1>
-    <a class="col" href="#"><button class="btn btn-success">Nueva zona</button></a>
+    <h1 class="col-9">Zonas inundables</h1>
+    {% if check_permission(current_user, "zona_inundable_new") %}
+    <div class="col" ><a class="btn btn-success" href="{{ url_for('flood_zone_new') }}">Nueva zona</a></div>
+    {% endif %}
+    {% if check_permission(current_user, "zona_inundable_import") %}
+    <div class="col"><a class="btn btn-success" href="{{ url_for('flood_zone_import') }}">Importar zonas</a></div>
+    {% endif %}
+
 </div>
 <table class="table">
     <thead>
