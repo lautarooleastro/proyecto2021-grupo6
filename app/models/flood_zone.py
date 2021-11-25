@@ -26,8 +26,12 @@ class FloodZone(db.Model):
     def with_name(name):
         return FloodZone.query.filter(FloodZone.name == name).first()
 
+    def with_code(code):
+        return FloodZone.query.filter(FloodZone.code == code).first()
+    
     def with_id(id):
         return FloodZone.query.filter(FloodZone.id == id).first()
+    
 
     def destroy(zone):
         """ Elimina una zona de la BD. """

@@ -4,6 +4,8 @@ from flask.helpers import flash, url_for
 from wtforms.validators import ValidationError
 from app.helpers.permission import permission_required
 from app.models.flood_zone import FloodZone
+from wtforms import form
+from app.helpers.forms.flood_zone import NewFloodZoneForm
 
 @login_required
 @permission_required('zona_inundable_index')
@@ -32,3 +34,49 @@ def destroy():
         flash("Se elimino la zona "+zone.code+"-"+zone.name, "error")
 
     return redirect(url_for("flood_zone_index"))
+
+
+@login_required
+@permission_required('zona_inundable_new')
+def new():
+    return render_template("flood_zone/new.html")
+
+
+@login_required
+@permission_required('zona_inundable_new')
+def create():
+
+    form = NewFloodZoneForm(request.form, csrf_enabled=False)
+    
+    #Verificar 
+    if (FloodZone.with_code(form.data.get('code')) != None):
+            flash("Código de zona ya existente", "error")
+            return redirect(url_for("flood_zone_new"))
+    
+    if (FloodZone.with_name(form.data.get('name')) != None):
+            flash("Nombre de zona ya existente", "error")
+            return redirect(url_for("flood_zone_new"))
+
+    flash(form.data.get('color'),"error")
+    dat = (request.form.get("color")).replace("#","").upper()
+    flash( dat ,"success")
+
+    data = request.form
+    if (form.validate()):
+        data.to_dict(flat=False)
+        flood_zone= FloodZone()
+        form.populate_obj(flood_zone)
+        flood_zone.status="estado" in request.form  #revisar, checkbox debe manejarse de otra manera
+        flood_zone.color=flood_zone.color.replace("#","").upper()  #revisar, el caracter # debe ser eliminado antes
+        flood_zone.save()
+        if FloodZone.with_id(flood_zone.id)!= None:
+            flash("Se creo el recorrido de evacuacion correctamente", "success")
+            return redirect(url_for("flood_zone_index"))
+        else:
+            flash("No fue posible crear la zona", "error")
+            return redirect(url_for("flood_zone_new"))
+        
+    else:
+        for error in form.errors:
+            flash(form.errors[error], "error")
+    return redirect(url_for("flood_zone_new"))

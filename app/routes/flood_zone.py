@@ -8,3 +8,10 @@ def set_routes(app):
                      "flood_zone_show", flood_zone.show, methods=['POST', 'GET'])
     app.add_url_rule("/zonas_inundables/eliminar", "flood_zone_destroy",
                      flood_zone.destroy, methods=["POST"])
+    app.add_url_rule("/zonas_inundables/nuevo", "flood_zone_new",
+                     flood_zone.new)
+    app.add_url_rule("/zonas_inundables/nuevo", "flood_zone_add",
+                     flood_zone.create, methods=["POST"])
+
+    app.add_url_rule("/zonas_inundables/importar", "flood_zone_import",
+                     flood_zone.new)
