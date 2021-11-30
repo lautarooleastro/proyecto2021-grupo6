@@ -13,7 +13,6 @@
         <tr>
             <th class="table-dark">Nombre</th>
             <th class="table-dark">Direccion</th>
-            <th class="table-dark">Coordenadas</th>
             <th class="table-dark">Estado</th>
             <th class="table-dark">Telefono</th>
             <th class="table-dark">Email</th>
@@ -25,8 +24,13 @@
         <tr>
             <td class="table-light">{{meeting_point.name}}</td>
             <td class="table-light">{{meeting_point.adress}}</td>
-            <td class="table-light">{{meeting_point.coordinates}}</td>
-            <td class="table-light">{{meeting_point.status}}</td>
+            <td class="table-light">
+                {% if meeting_point.status %}
+                Activo
+                {% else %}
+                Inactivo
+                {% endif %}
+            </td>
             <td class="table-light">{{meeting_point.phone}}</td>
             <td class="table-light">{{meeting_point.email}}</td>
             <td class="table-light">

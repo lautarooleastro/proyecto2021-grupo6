@@ -26,6 +26,8 @@ def create():
 
     meeting_point = MeetingPoint()
     form = NewPointForm(request.form)
+
+    print(form.data)
     try:
         if form.validate():
             form.populate_obj(meeting_point)
