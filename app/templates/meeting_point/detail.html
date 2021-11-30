@@ -77,10 +77,39 @@
                 <a class="btn btn-secondary" href="{{ url_for('meeting_point_index') }}">Volver</a>
             </div>
             <div class="col text-center">
-                <a class="btn btn-danger" href="#">Eliminar</a>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#confirmDeleteModal">
+                    Eliminar
+                </button>
             </div>
             <div class="col text-center">
-                <a class="btn btn-warning" href="#">Editar</a>
+                <form action="{{ url_for('meeting_point_edit', id=meeting_point.id) }}" method="POST">
+                    <button class="btn btn-warning" type="submit">
+                        Editar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Eliminar punto de encuentro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Usted quiere eliminar el punto de encuentro: "{{ meeting_point.name }}".</p>
+                <p>Esta accion no se puede deshacer.</p>
+                <p>¿Esta seguro/a que desea eliminarlo?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar y volver</button>
+                <form action="{{ url_for('meeting_point_destroy', id=meeting_point.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
             </div>
         </div>
     </div>
