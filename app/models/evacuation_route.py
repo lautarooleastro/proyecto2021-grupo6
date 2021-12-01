@@ -35,3 +35,13 @@ class EvacuationRoute(db.Model):
     def destroy(self):
         db.session.delete(self)
         db.session.commit()
+
+    def as_dict(self):
+        ret = {}
+        for attr in self.__table__.columns:
+            ret[attr.name] = getattr(self, attr.name)
+        points = []
+        for point in self.points:
+            points.append(point.as_list())
+        ret['points'] = points
+        return ret
