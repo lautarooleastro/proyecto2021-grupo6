@@ -3,10 +3,14 @@ const mapLayerUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 export class MapPath {
     #drawnItems;
 
-    constructor({ selector, lat, lng }) {
+    constructor({ selector, lat, lng, initialLatLngs = null, enableEdit = true }) {
         this.#drawnItems = new L.FeatureGroup();
+        if (initialLatLngs) {
+            var polyline = L.polyline(initialLatLngs, { color: 'red' });
+            this.#drawnItems.addLayer(polyline);
+        }
 
-        this.#initializeMap(selector, lat, lng);
+        this.#initializeMap(selector, lat, lng, enableEdit);
 
         this.map.on(L.Draw.Event.CREATED, (e) => {
             this.#createHandler(e, this.map, this.#drawnItems, this.editControls, this.createControls)
@@ -17,11 +21,13 @@ export class MapPath {
         });
     }
 
-    #initializeMap(selector, lat, lng) {
+    #initializeMap(selector, lat, lng, enableEdit) {
         this.map = L.map(selector).setView([lat, lng], 12);
         L.tileLayer(mapLayerUrl).addTo(this.map);
         this.map.addLayer(this.#drawnItems);
-        this.map.addControl(this.createControls);
+        if (enableEdit) {
+            this.map.addControl(this.createControls);
+        }
     }
 
     #createHandler(e, map, drawnItems, editControls, createControls) {

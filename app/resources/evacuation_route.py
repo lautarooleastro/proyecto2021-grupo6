@@ -2,7 +2,7 @@ from flask import render_template, redirect, request
 from flask.helpers import flash, url_for
 from flask_login.utils import login_required
 from wtforms import form
-from app.helpers.forms.evacuation_route import EditEvacuationRouteForm, EvacuationRouteForm
+from app.helpers.forms.evacuation_route import EvacuationRouteForm
 from app.models.evacuation_route import EvacuationRoute
 from app.models.route_point import RoutePoint
 from app.helpers.permission import permission_required
@@ -18,8 +18,14 @@ def index():
 @login_required
 @permission_required('recorrido_evacuacion_show')
 def detail(id):
+    evacuation_route = EvacuationRoute.with_id(id)
+    points_list = []
+    for point in evacuation_route.points:
+        points_list.append(point.toJSONstringify())
+    points = ",".join(points_list)
+    points = "["+points+"]"
     return render_template("evacuation_route/detail.html",
-                           route=EvacuationRoute.with_id(id))
+                           route=evacuation_route, points=points)
 
 
 @login_required
@@ -78,7 +84,7 @@ def edit(id):
 @login_required
 @permission_required('recorrido_evacuacion_update')
 def update(id):
-    form = EditEvacuationRouteForm(request.form)
+    form = EvacuationRouteForm(request.form)
     if form.validate():
         route = EvacuationRoute.with_id(id)
         form.populate_obj(route)

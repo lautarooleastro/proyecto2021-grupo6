@@ -12,3 +12,6 @@ class RoutePoint(db.Model):
     def __init__(self, lat=None, lng=None):
         self.lat = lat
         self.lng = lng
+
+    def toJSONstringify(self):
+        return '{"lat":'+self.lat+',"lng":'+self.lng+'}'

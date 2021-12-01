@@ -24,7 +24,7 @@ const submitHandler = (event, map) => {
         fetch('/recorrido_de_evacuacion/crear', {
             method: 'POST',
             body: formData
-        });
+        }).then();
     }
 }
 
