@@ -6,7 +6,7 @@ def set_routes(app):
                      "evacuation_route_index", evacuation_route.index)
     app.add_url_rule("/recorrido_de_evacuacion/nueva",
                      "evacuation_route_new", evacuation_route.new)
-    app.add_url_rule("/recorrido_de_evacuacion",
+    app.add_url_rule("/recorrido_de_evacuacion/crear",
                      "evacuation_route_create", evacuation_route.create, methods=['POST'])
     app.add_url_rule("/recorrido_de_evacuacion/detalle/<int:id>",
                      "evacuation_route_detail", evacuation_route.detail, methods=['POST', 'GET'])

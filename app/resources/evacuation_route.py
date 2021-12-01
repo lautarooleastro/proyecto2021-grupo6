@@ -6,6 +6,7 @@ from app.helpers.forms.evacuation_route import EditEvacuationRouteForm, Evacuati
 from app.models.evacuation_route import EvacuationRoute
 from app.models.route_point import RoutePoint
 from app.helpers.permission import permission_required
+import json
 
 
 @login_required
@@ -30,27 +31,19 @@ def new():
 @login_required
 @permission_required('recorrido_evacuacion_new')
 def create():
-    data = request.form
     form = EvacuationRouteForm(request.form)
     if (form.validate()):
-        data = dict((key, request.form.getlist(key))
-                    for key in request.form.keys())
-
-        # print(data)
-        # OUTPUT >>
-        # {...,'latitude':['x1','x2','x3', ... ], 'longitude':['y1','y2','y3',...]}
-
-        if (len(data['latitude']) >= 3):
+        coordinates_list = json.loads(request.form.to_dict()['coordinates'])
+        if (len(coordinates_list) >= 3):
             route_points = []
-            for pos in range(len(data['latitude'])):
-                point = RoutePoint(data['latitude'][pos],
-                                   data['longitude'][pos])
-                route_points.append(point)
+
+            for coordinates in coordinates_list:
+                route_points.append(RoutePoint(
+                    lat=coordinates['lat'], lng=coordinates['lng']))
 
             evacuation_route = EvacuationRoute()
             form.populate_obj(evacuation_route)
             evacuation_route.points = route_points
-
             evacuation_route.save()
             flash("Se creo el recorrido de evacuacion correctamente", "success")
             return redirect(url_for("evacuation_route_index"))
@@ -62,8 +55,8 @@ def create():
     return redirect(url_for("evacuation_route_new"))
 
 
-@login_required
-@permission_required('recorrido_evacuacion_destroy')
+@ login_required
+@ permission_required('recorrido_evacuacion_destroy')
 def destroy(id):
     route = EvacuationRoute.with_id(id)
     if route:
@@ -75,8 +68,8 @@ def destroy(id):
     return redirect(url_for("evacuation_route_index"))
 
 
-@login_required
-@permission_required('recorrido_evacuacion_update')
+@ login_required
+@ permission_required('recorrido_evacuacion_update')
 def edit(id):
     return render_template("evacuation_route/update.html",
                            route=EvacuationRoute.with_id(id))
