@@ -2,6 +2,17 @@
 {% block title %}Usuarios{% endblock %}
 {% block head %}
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<script type="module" src="{{ url_for('static', filename='js/meeting_point/edit.js') }}"></script>
+
 {% endblock %}
 {% block content %}
 <div class="d-block">
@@ -9,58 +20,62 @@
         Editar Punto de Encuentro
     </h1>
 </div>
-<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
-    <form action="{{ url_for('meeting_point_update', id=meeting_point.id) }}" method="POST">
-        <div class="col">
-            <label class="form-label">Nombre</label>
-            <input required name="name" class="form-control" value="{{ meeting_point.name }}">
-        </div>
-        <br>
-        <div class="col">
-            <label class="form-label">Direccion</label>
-            <input required name="adress" class="form-control" value="{{ meeting_point.adress }}">
-        </div>
-        <br>
+<div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form action="{{ url_for('meeting_point_update', id=meeting_point.id) }}" method="POST"
+        id="edit-meeting-point-form">
         <div class="row">
-            <div class="col">
-                <label class="form-label">Coordenadas</label>
-                <input required name="coordinates" type="text" class="form-control"
-                    value="{{ meeting_point.coordinates }}">
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col">
-                <label class="form-label">Telefono</label>
-                <input required name="phone" class="form-control" type="number" value="{{ meeting_point.phone }}">
-            </div>
-            <div class="col">
-                <label class="form-label">E-Mail</label>
-                <input required name="email" class="form-control" type="email" value="{{ meeting_point.email }}">
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col">
-                <div class="form-check">
-                    <input name="status" class="form-check-input" type="checkbox" {% if meeting_point.status %} checked
-                        {% endif %}>
-                    <label class="form-check-label">
-                        Iniciar como punto Activo
-                    </label>
+            <div class="col col-md-6">
+                <div class="col">
+                    <label class="form-label" style="font-weight: bold;">Nombre</label>
+                    <input required name="name" class="form-control" value="{{ meeting_point.name }}">
+                </div>
+                <br>
+                <div class="col">
+                    <label class="form-label" style="font-weight: bold;">Direccion</label>
+                    <input required name="adress" class="form-control" value="{{ meeting_point.adress }}">
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label" style="font-weight: bold;">Telefono</label>
+                        <input required name="phone" class="form-control" type="number"
+                            value="{{ meeting_point.phone }}">
+                    </div>
+                    <div class="col">
+                        <label class="form-label" style="font-weight: bold;">E-Mail</label>
+                        <input required name="email" class="form-control" type="email"
+                            value="{{ meeting_point.email }}">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-check">
+                            <input name="status" class="form-check-input" type="checkbox" {% if meeting_point.status %}
+                                checked {% endif %}>
+                            <label class="form-check-label">
+                                Activo
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col"><a href="{{ url_for('meeting_point_detail', id=meeting_point.id) }}">
-                    <button type="button" class="btn btn-light">Cancelar y volver</button>
-                </a></div>
-            <div class="col">
-                <button type="submit" class="btn btn-primary">Editar</button>
+            <div class="col-md-6">
+                <label style="font-weight: bold;">Punto en el mapa</label>
+                <div id="map" style="height: 80%; min-height: 280px;"></div>
+                <input class="d-none" type="text" id="lat" name="lat" value="{{ meeting_point.lat }}">
+                <input class="d-none" type="text" id="lng" name="lng" value="{{ meeting_point.lng }}">
             </div>
         </div>
     </form>
+    <div class="row mt-4">
+        <div class="col"><a href="{{ url_for('meeting_point_detail', id=meeting_point.id) }}">
+                <button type="button" class="btn btn-light">Cancelar y volver</button>
+            </a></div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary" form="edit-meeting-point-form">Editar</button>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
