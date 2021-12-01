@@ -15,3 +15,6 @@ def set_routes(app):
 
     app.add_url_rule("/zonas_inundables/importar", "flood_zone_import",
                      flood_zone.new)
+    """
+    app.add_url_rule("/zonas_inundables/editar", "flood_zone_edit",
+                     flood_zone.edit, methods=["POST"])"""

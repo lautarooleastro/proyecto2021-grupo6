@@ -57,20 +57,15 @@ def create():
             flash("Nombre de zona ya existente", "error")
             return redirect(url_for("flood_zone_new"))
 
-    flash(form.data.get('color'),"error")
-    dat = (request.form.get("color")).replace("#","").upper()
-    flash( dat ,"success")
-
     data = request.form
     if (form.validate()):
         data.to_dict(flat=False)
         flood_zone= FloodZone()
         form.populate_obj(flood_zone)
-        flood_zone.status="estado" in request.form  #revisar, checkbox debe manejarse de otra manera
         flood_zone.color=flood_zone.color.replace("#","").upper()  #revisar, el caracter # debe ser eliminado antes
         flood_zone.save()
         if FloodZone.with_id(flood_zone.id)!= None:
-            flash("Se creo el recorrido de evacuacion correctamente", "success")
+            flash("Se creó la zona "+flood_zone.code+" correctamente", "success")
             return redirect(url_for("flood_zone_index"))
         else:
             flash("No fue posible crear la zona", "error")

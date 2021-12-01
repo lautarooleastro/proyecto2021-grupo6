@@ -10,7 +10,7 @@ class NewFloodZoneForm(Form):
     name = StringField('Nombre', validators=[DataRequired()])
     code = StringField('Código', validators=[DataRequired(), Length(max=10), Length(min=6)])
     color = StringField('Color', validators=[DataRequired(), Length(max=7)])
-    status = BooleanField('Publicar')
+    status = BooleanField('Publicar', default=False)
 
     
 
