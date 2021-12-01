@@ -2,7 +2,7 @@ from wtforms import Form, validators
 from wtforms.fields.core import BooleanField, StringField
 
 
-class NewPointForm(Form):
+class PointForm(Form):
     name = StringField(u'Nombre', validators=[validators.input_required()])
     adress = StringField(u'Direccion', validators=[
                          validators.input_required()])

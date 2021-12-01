@@ -15,7 +15,7 @@ export function MapSingleMarker({ selector, addSearch, lat, lng }) {
     function initializeMap(selector, lat, lng) {
         map = L.map(selector).setView([lat, lng], 12);
         L.tileLayer(mapLayerUrl).addTo(map);
-        //marker = L.marker([lat, lng]).addTo(map);
+        marker = L.marker([lat, lng]).addTo(map);
     };
 
     function addMarker({ lat, lng }) {
