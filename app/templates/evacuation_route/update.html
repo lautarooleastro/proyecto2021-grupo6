@@ -2,6 +2,23 @@
 {% block title %}Usuarios{% endblock %}
 {% block head %}
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="{{ url_for('static', filename='js/evacuation_route/edit.js') }}"></script>
+<!-- END Render mapa -->
+
 {% endblock %}
 {% block content %}
 <div class="d-block">
@@ -9,26 +26,32 @@
         Editar Recorrido de evacuacion
     </h1>
 </div>
-<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
-    <form action="{{ url_for('evacuation_route_update', id=route.id) }}" method="POST">
-        <div class="col">
-            <label class="form-label">Nombre</label>
-            <input required name="name" class="form-control" value="{{ route.name }}">
-        </div>
-        <br>
-        <div class="col">
-            <label class="form-label">Descripcion</label>
-            <input required name="description" class="form-control" value="{{ route.description }}">
-        </div>
-        <br>
+<div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form action="{{ url_for('evacuation_route_update', id=route.id) }}" method="POST" id="edit-evacuation-route-form">
         <div class="row">
-            <div class="container">
-                Las coordenadas de los puntos no se deben modificar. Si quiere cambiar la ruta, debe crear una ruta
-                nueva.
+            <div class="col-md-6">
+                <input id="route-id" type="text" value="{{ route.id }}" class="d-none">
+                <div class="col">
+                    <label class="form-label">Nombre</label>
+                    <input id="name" name="name" class="form-control" value="{{ route.name }}" required>
+                </div>
+                <br>
+                <div class="col">
+                    <label class="form-label">Descripcion</label>
+                    <textarea id="description" name="description" class="form-control" value="{{ route.description }}"
+                        rows="7" required>{{ route.description }}</textarea>
+                </div>
+                <br>
+
+            </div>
+            <div class="col-md-6">
+                <input id="points" type="text" value="{{ points }}" class="d-none">
+                <div>Recorrido en el mapa</div>
+                <div id="map" style="height: 90%;min-height: 280px;"></div>
             </div>
         </div>
-        <br>
-        <div class="row">
+
+        <div class="row mt-4">
             <div class="col"><a href="{{ url_for('evacuation_route_detail', id=route.id) }}">
                     <button type="button" class="btn btn-light">Cancelar y volver</button>
                 </a></div>

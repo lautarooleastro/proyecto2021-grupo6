@@ -77,8 +77,14 @@ def destroy(id):
 @ login_required
 @ permission_required('recorrido_evacuacion_update')
 def edit(id):
+    evacuation_route = EvacuationRoute.with_id(id)
+    points_list = []
+    for point in evacuation_route.points:
+        points_list.append(point.toJSONstringify())
+    points = ",".join(points_list)
+    points = "["+points+"]"
     return render_template("evacuation_route/update.html",
-                           route=EvacuationRoute.with_id(id))
+                           route=evacuation_route, points=points)
 
 
 @login_required
@@ -86,10 +92,21 @@ def edit(id):
 def update(id):
     form = EvacuationRouteForm(request.form)
     if form.validate():
-        route = EvacuationRoute.with_id(id)
-        form.populate_obj(route)
-        route.save()
-        flash("Se actualizo correctamente la ruta: "+route.name, "success")
+        coordinates_list = json.loads(request.form.to_dict()['coordinates'])
+        if (len(coordinates_list) >= 3):
+            route_points = []
+
+            for coordinates in coordinates_list:
+                route_points.append(RoutePoint(
+                    lat=coordinates['lat'], lng=coordinates['lng']))
+
+            route = EvacuationRoute.with_id(id)
+            form.populate_obj(route)
+            route.points = route_points
+            route.save()
+            flash("Se actualizo correctamente la ruta: "+route.name, "success")
+        else:
+            flash("Debe seleccionar al menos 3 puntos del mapa", "error")
     else:
         for error in form.errors:
             flash(form.errors[error], "error")
