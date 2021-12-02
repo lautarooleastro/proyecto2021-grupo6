@@ -29,7 +29,11 @@
         <tr>
             <td class="table-light">{{route.id}}</td>
             <td class="table-light">{{route.name}}</td>
-            <td class="table-light">{{route.description}}</td>
+            <td class="table-light">
+                <div id="description">
+                    {{route.description}}
+                </div>
+            </td>
             <td class="table-light">
                 {% if route.status %}
                 Publicado
@@ -52,4 +56,14 @@
         {% endfor %}
     </tbody>
 </table>
+
+<script>
+    // Funcion simple para acortar descripciones si son muy largas (mas de 50 caracteres)
+    var descriptions = document.querySelectorAll('#description');
+    descriptions.forEach((d) => {
+        if (d.innerText.length > 50) {
+            d.innerText = d.innerText.substring(0, 47) + '...';
+        }
+    });
+</script>
 {% endblock %}
