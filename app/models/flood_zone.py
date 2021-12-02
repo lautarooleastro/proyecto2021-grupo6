@@ -46,3 +46,11 @@ class FloodZone(db.Model):
         db.session.add(self)
         db.session.commit()
         return self
+    
+    @staticmethod
+    def n_with_name(name):
+        return FloodZone.query.filter(FloodZone.name == name).count()
+
+    @staticmethod
+    def n_with_code(code):
+        return FloodZone.query.filter(FloodZone.code == code).count()

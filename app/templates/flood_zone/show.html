@@ -14,16 +14,17 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="row">
-                        <div class="col-3" style="font-weight: bold;">Nombre</div>
-                        <div class="col-sm-9 text-sm-end text-start">{{ zone.name }}</div>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="row">
                         <div class="col-3" style="font-weight: bold;">Código</div>
                         <div class="col-sm-9 text-sm-end text-start">{{ zone.code }}</div>
                     </div>
                 </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Nombre</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ zone.name }}</div>
+                    </div>
+                </li>
+                
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-3" style="font-weight: bold;">Publicado</div>
@@ -73,6 +74,15 @@
                             data-bs-target="#confirmDeleteModal">
                             Eliminar
                         </button>
+                    </div>
+                    {% endif %}
+                    {% if check_permission(current_user, "zona_inundable_edit") %}
+                    <div class="col text-center">
+                        <form action="{{ url_for('flood_zone_edit', id=zone.id) }}" method="POST">
+                            <button class="btn btn-warning" type="submit">
+                                Editar
+                            </button>
+                        </form>
                     </div>
                     {% endif %}
                 </div>
