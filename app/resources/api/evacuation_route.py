@@ -3,7 +3,7 @@ from flask import jsonify, Blueprint
 from app.models.evacuation_route import EvacuationRoute
 
 evacuation_route_api = Blueprint(
-    "recorridos", __name__, url_prefix="/recorridos")
+    "recorridos-evacuacion", __name__, url_prefix="/recorridos-evacuacion")
 
 
 @evacuation_route_api.get('/')
