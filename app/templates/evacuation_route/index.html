@@ -79,7 +79,7 @@
 <div class="row justify-content-center">
     <div class="col-auto">
         <div class="text-right">
-            <a href="{{ url_for('evacuation_route_index', page=routes.prev_num) }}" class="btn btn-outline-dark 
+            <a href="{{ url_for('evacuation_route_index', page=routes.prev_num, name_query=name_query) }}" class="btn btn-outline-dark 
      {% if routes.page == 1 %}disabled{% endif %}">
                 &laquo;
             </a>
@@ -88,11 +88,13 @@
             {% if page_num %}
             <!-- Tildar la pagina actual como "activa" -->
             {% if routes.page == page_num %}
-            <a href="{{ url_for('evacuation_route_index', page=page_num) }}" class="btn btn-dark">
+            <a href="{{ url_for('evacuation_route_index', page=page_num, name_query=name_query) }}"
+                class="btn btn-dark">
                 {{ page_num }}
             </a>
             {% else %}
-            <a href="{{ url_for('evacuation_route_index', page=page_num) }}" class="btn btn-outline-dark">
+            <a href="{{ url_for('evacuation_route_index', page=page_num, name_query=name_query) }}"
+                class="btn btn-outline-dark">
                 {{ page_num }}
             </a>
             {% endif %}
@@ -100,7 +102,7 @@
             ...
             {% endif %}
             {% endfor %}
-            <a href="{{ url_for('evacuation_route_index', page=routes.next_num) }}" class="btn btn-outline-dark 
+            <a href="{{ url_for('evacuation_route_index', page=routes.next_num, name_query=name_query) }}" class="btn btn-outline-dark 
      {% if routes.page == routes.pages %}disabled{% endif %}">
                 &raquo;
             </a>
