@@ -15,15 +15,8 @@ from app.models.user import User
 @login_required
 @permission_required('usuario_index')
 def index():
-    import pdb
-    # pdb.set_trace()
-    # users = User.all()
-    # users.remove(current_user)
-
     page = request.args.get('page', 1, type=int)
-
     users = User.all_paginated(page, Configuration.get())
-
     return render_template("user/index.html", users=users)
 
 
