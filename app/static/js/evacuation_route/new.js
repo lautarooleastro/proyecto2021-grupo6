@@ -24,6 +24,10 @@ const submitHandler = (event, map) => {
         fetch('/recorrido_de_evacuacion/crear', {
             method: 'POST',
             body: formData
+        }).then((response) => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
         });
     }
 }

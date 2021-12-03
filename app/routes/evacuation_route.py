@@ -14,5 +14,5 @@ def set_routes(app):
                      "evacuation_route_destroy", evacuation_route.destroy, methods=['POST', 'GET'])
     app.add_url_rule("/recorrido_de_evacuacion/editar/<int:id>",
                      "evacuation_route_edit", evacuation_route.edit, methods=['POST', 'GET'])
-    app.add_url_rule("/recorrido_de_evacuacion/actalizar/<int:id>",
+    app.add_url_rule("/recorrido_de_evacuacion/actualizar/<int:id>",
                      "evacuation_route_update", evacuation_route.update, methods=['POST'])

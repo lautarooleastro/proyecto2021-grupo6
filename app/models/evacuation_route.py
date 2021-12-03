@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, desc
 from sqlalchemy.orm import relationship
 from app.db import db
 from app.models.route_point import RoutePoint
@@ -21,6 +21,18 @@ class EvacuationRoute(db.Model):
     def all():
         return EvacuationRoute.query.all()
 
+    @staticmethod
+    def all_paginated(page, name_query, config):
+        if not name_query:
+            name_query = ''
+        if config.order == 'ASC':
+            query = EvacuationRoute.query.filter(EvacuationRoute.name.like('%'+name_query+'%')).paginate(
+                page=page, per_page=config.elements_per_page)
+        else:
+            query = EvacuationRoute.query.filter(EvacuationRoute.name.like('%'+name_query+'%')).order_by(desc(EvacuationRoute.id)).paginate(
+                page=page, per_page=config.elements_per_page)
+        return query
+
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -28,7 +40,7 @@ class EvacuationRoute(db.Model):
     def get_published():
         return EvacuationRoute.query.filter(EvacuationRoute.status == True)
 
-    @staticmethod
+    @ staticmethod
     def with_id(id):
         return EvacuationRoute.query.filter(EvacuationRoute.id == id).first()
 

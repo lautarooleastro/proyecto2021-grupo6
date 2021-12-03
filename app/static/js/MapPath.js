@@ -5,12 +5,8 @@ export class MapPath {
 
     constructor({ selector, lat, lng, initialLatLngs = null, enableEdit = true }) {
         this.#drawnItems = new L.FeatureGroup();
-        if (initialLatLngs) {
-            var polyline = L.polyline(initialLatLngs, { color: 'red' });
-            this.#drawnItems.addLayer(polyline);
-        }
 
-        this.#initializeMap(selector, lat, lng, enableEdit);
+        this.#initializeMap(selector, lat, lng, initialLatLngs, enableEdit);
 
         this.map.on(L.Draw.Event.CREATED, (e) => {
             this.#createHandler(e, this.map, this.#drawnItems, this.editControls, this.createControls)
@@ -21,12 +17,25 @@ export class MapPath {
         });
     }
 
-    #initializeMap(selector, lat, lng, enableEdit) {
+    #initializeMap(selector, lat, lng, initialLatLngs, enableEdit) {
         this.map = L.map(selector).setView([lat, lng], 12);
         L.tileLayer(mapLayerUrl).addTo(this.map);
         this.map.addLayer(this.#drawnItems);
         if (enableEdit) {
             this.map.addControl(this.createControls);
+        }
+
+        if (initialLatLngs) {
+            var polyline = L.polyline(initialLatLngs, { color: 'red' });
+            if (enableEdit) {
+                polyline.editing.enable();
+                this.#drawnItems.addLayer(polyline);
+                //this.editControls.addTo(map);
+                this.createControls.remove();
+            }
+            else {
+                this.#drawnItems.addLayer(polyline);
+            }
         }
     }
 
@@ -50,7 +59,7 @@ export class MapPath {
     }
 
     hasValidZone() {
-        return (this.drawnLayers.length === 1);
+        return (this.drawnLayers.length === 1) && (this.drawnLayers[0].getLatLngs().length >= 3);
     }
 
     get drawnLayers() {
