@@ -2,6 +2,23 @@
 {% block title %}Usuarios{% endblock %}
 {% block head %}
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="../../static/js/meeting_point/new.js"></script>
+<!-- END Render mapa -->
+
 {% endblock %}
 {% block content %}
 <div class="d-block">
@@ -10,7 +27,7 @@
     </h1>
 </div>
 <div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
-    <form action="{{ url_for('meeting_point_create') }}" method="POST">
+    <form action="{{ url_for('meeting_point_create') }}" method="POST" id="create-meeting-point-form">
         <div class="col">
             <label class="form-label">Nombre</label>
             <input required name="name" class="form-control">
@@ -23,13 +40,6 @@
         <br>
         <div class="row">
             <div class="col">
-                <label class="form-label">Coordenadas</label>
-                <input required name="coordinates" type="text" class="form-control">
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col">
                 <label class="form-label">Telefono</label>
                 <input required name="phone" class="form-control" type="number">
             </div>
@@ -38,6 +48,12 @@
                 <input required name="email" class="form-control" type="email">
             </div>
         </div>
+        <br>
+        <label class="form-label">Seleccionar en el mapa</label>
+        <div id="map" style="height: 380px; width: 100%;">
+        </div>
+        <input class=" d-none" id="lat" type="text" name="lat">
+        <input class="d-none" id="lng" type="text" name="lng">
         <br>
         <div class="row">
             <div class="col">

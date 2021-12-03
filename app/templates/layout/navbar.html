@@ -59,6 +59,12 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
+                    {% if check_permission(current_user, 'configuracion_index') %}
+                    <li><a class="dropdown-item" href="{{ url_for('configuration_index') }}">Sistema</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    {% endif %}
                     <li><a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar sesion</a></li>
                 </ul>
             </li>

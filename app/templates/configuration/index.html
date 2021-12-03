@@ -1,0 +1,68 @@
+{% extends "layout/layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Parametros del sistema
+    </h1>
+</div>
+
+<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-6" style="font-weight: bold;">Elementos por pagina</div>
+                <div class="col-sm-6 text-sm-end text-start">{{ configuration.elements_per_page }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-6" style="font-weight: bold;">Orden</div>
+                <div class="col-sm-6 text-sm-end text-start">
+                    {% if configuration.order=='ASC' %}
+                    Ascendente
+                    {% else %}
+                    Descendente
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-6" style="font-weight: bold;">Colores (Privada)</div>
+                <div class="col-sm-6 text-sm-end text-start">
+
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-6" style="font-weight: bold;">Colores (Publica)</div>
+                <div class="col-sm-6 text-sm-end text-start">
+
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    {% if check_permission(current_user, 'configuracion_update') %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col text-center">
+                <form action="{{ url_for('configuration_edit') }}" method="">
+                    <button class="btn btn-warning" type="submit">
+                        Editar
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

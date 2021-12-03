@@ -22,7 +22,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for user in users %}
+    {% for user in users.items %}
     <tr>
       <td class="table-light">{{user.email}}</td>
       <td class="table-light">{{user.first_name}}</td>
@@ -65,4 +65,36 @@
     {% endfor %}
   </tbody>
 </table>
+
+<div class="row justify-content-center">
+  <div class="col-auto">
+    <div class="text-right">
+      <a href="{{ url_for('user_index', page=users.prev_num) }}" class="btn btn-outline-dark 
+     {% if users.page == 1 %}disabled{% endif %}">
+        &laquo;
+      </a>
+      <!-- Iterar sobre el numero de paginas para mostrar un link por cada pagina -->
+      {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+      <!-- Tildar la pagina actual como "activa" -->
+      {% if users.page == page_num %}
+      <a href="{{ url_for('user_index', page=page_num) }}" class="btn btn-dark">
+        {{ page_num }}
+      </a>
+      {% else %}
+      <a href="{{ url_for('user_index', page=page_num) }}" class="btn btn-outline-dark">
+        {{ page_num }}
+      </a>
+      {% endif %}
+      {% else %}
+      ...
+      {% endif %}
+      {% endfor %}
+      <a href="{{ url_for('user_index', page=users.next_num) }}" class="btn btn-outline-dark 
+     {% if users.page == users.pages %}disabled{% endif %}">
+        &raquo;
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}

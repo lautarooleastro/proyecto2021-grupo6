@@ -2,60 +2,53 @@
 {% block title %}Usuarios{% endblock %}
 {% block head %}
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="{{ url_for('static', filename='js/evacuation_route/new.js') }}"></script>
+<!-- END Render mapa -->
+
 {% endblock %}
 {% block content %}
 <div class="d-block">
     <h1 class="text-center text-white" style="padding: 15px;">
-        Crear nueva ruta de evacuacion
+        Crear nuevo recorrido de evacuacion
     </h1>
 </div>
-<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
-    <form action="{{ url_for('evacuation_route_create') }}" method="POST">
-        <div class="col">
-            <div class="row">
-                <label class="form-label">Nombre</label>
-                <input name="name" class="form-control" type="text" placeholder="Nombre descriptivo del recorrido">
-            </div>
-            <div class="row mt-4">
-                <label class="form-label">Descripcion</label>
-                <textarea name="description" rows="5" placeholder="Describa el recorrido con palabras"
-                    class="form-control"></textarea>
-            </div>
-            <!--
-            <div class="row mt-4">
-                <label class="form-label" for="points">Puntos</label>
-                <textarea id="points" name="points" rows="5"
-                    placeholder="-XX.XXXXXX, -YY.YYYYYY; -XX.XXXXXX, -YY.YYYYYY; ... ;" class="form-control"></textarea>
-                <div class="form-text">Ingrese por lo menos 3 puntos</div>
-            </div>
-            -->
-            <div class="mt-4">
-                <label class="form-label">Puntos del recorrido (en orden)</label>
-                <div id="newPointInput">
-                    <div class="input-group mb-3">
-                        <input type="text" name="latitude" class="col form-control m-input" placeholder="Latitud"
-                            required>
-                        <input type="text" name="longitude" class="col form-control m-input" placeholder="Latitud"
-                            required>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="text" name="latitude" class="col form-control m-input" placeholder="Latitud"
-                            required>
-                        <input type="text" name="longitude" class="col form-control m-input" placeholder="Latitud"
-                            required>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="text" name="latitude" class="col form-control m-input" placeholder="Latitud"
-                            required>
-                        <input type="text" name="longitude" class="col form-control m-input" placeholder="Latitud"
-                            required>
-                    </div>
+<div class="container-md col" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form action="{{ url_for('evacuation_route_create') }}" method="POST" id="create-evacuation-route-form">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <label class="form-label">Nombre</label>
+                    <input id="name" name="name" class="form-control" type="text"
+                        placeholder="Nombre descriptivo del recorrido" required>
                 </div>
-                <button id="addPointInput" type="button" class="btn btn-success">Agregar punto</button>
+                <div class="row mt-4">
+                    <label class="form-label">Descripcion</label>
+                    <textarea id="description" name="description" rows="7"
+                        placeholder="Describa el recorrido con palabras" class="form-control" required></textarea>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div>Puntos del recorrido</div>
+                <div id="map" style="height: 90%; min-height: 280px;"></div>
             </div>
         </div>
-        <br>
-        <div class="row">
+
+        <div class="row mt-4">
             <div class="col"><a href="{{ url_for('evacuation_route_index') }}">
                     <button type="button" class="btn btn-light">Cancelar y volver</button>
                 </a></div>
@@ -64,27 +57,5 @@
             </div>
         </div>
     </form>
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        // add row
-        $("#addPointInput").click(function () {
-            var html = '';
-            html += '<div id="inputPointRow">';
-            html += '<div class="input-group mb-3">';
-            html += '<input type="text" name="latitude" class="form-control m-input" placeholder="Latitud" required>';
-            html += '<input type="text" name="longitude" class="form-control m-input" placeholder="Longitud" required>';
-            html += '<button id="removeRow" type="button" class="btn btn-danger">Eliminar</button>';
-            html += '</div>';
-            html += '</div>';
-
-            $('#newPointInput').append(html);
-        });
-
-        // remove row
-        $(document).on('click', '#removeRow', function () {
-            $(this).closest('#inputPointRow').remove();
-        });
-    </script>
 </div>
 {% endblock %}

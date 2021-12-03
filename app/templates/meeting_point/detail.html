@@ -1,7 +1,17 @@
 {% extends "layout/layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
+
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
 {% endblock %}
 {% block content %}
 
@@ -13,42 +23,67 @@
 
 {% if meeting_point is not none %}
 
-<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+<div class="container" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Nombre</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.name }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Direccion</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.adress }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Telefono</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.phone }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-3" style="font-weight: bold;">E-Mail</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.email }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-12" style="font-weight: bold;">Coordenadas </div>
+                        <div class="col-sm-6 text-start">
+                            {{ meeting_point.lat }}
+                            <input class="d-none" id="lat" value="{{ meeting_point.lat }}">
+                        </div>
+                        <div class="col-sm-6 text-start">
+                            {{ meeting_point.lng }}
+                            <input class="d-none" id="lng" value="{{ meeting_point.lng }}">
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-3" style="font-weight: bold;">Estado</div>
+                        <div class="col-sm-9 text-sm-end text-start">
+                            {% if meeting_point.status %}
+                            Activo
+                            {% else %}
+                            Inactivo
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <div id="map" style="height: 100%; min-height: 200px;"></div>
+        </div>
+    </div>
 
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-3" style="font-weight: bold;">Nombre</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.name }}</div>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-3" style="font-weight: bold;">Direccion</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.adress }}</div>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-3" style="font-weight: bold;">Coordenadas</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.coordinates }}</div>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-3" style="font-weight: bold;">Telefono</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.phone }}</div>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-3" style="font-weight: bold;">E-Mail</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ meeting_point.email }}</div>
-            </div>
-        </li>
-    </ul>
-
-    <div class="container mt-4">
+    <div class=" mt-4">
         <div class="row">
             <div class="col text-center">
                 <a class="btn btn-secondary" href="{{ url_for('meeting_point_index') }}">Volver</a>
@@ -98,6 +133,20 @@
 </div>
 {% endif %}
 
+<!-- Render mapa -->
+<script>
+    const lat = document.getElementById('lat').getAttribute('value');
+    const lng = document.getElementById('lng').getAttribute('value');
 
+    window.onload = () => {
+        var map = L.map('map', {
+            center: [lat, lng],
+            zoom: 13
+        });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([lat, lng]).addTo(map);
+    }
+</script>
+<!-- Render mapa -->
 
 {% endblock %}

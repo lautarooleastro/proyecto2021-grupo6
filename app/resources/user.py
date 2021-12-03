@@ -4,6 +4,7 @@ from flask_login.utils import login_required
 from flask_login import current_user
 from app.helpers.forms.user import UserForm
 from app.helpers.permission import permission_required
+from app.models.configuration import Configuration
 from app.models.role import Role
 from app.models.user import User
 
@@ -14,8 +15,8 @@ from app.models.user import User
 @login_required
 @permission_required('usuario_index')
 def index():
-    users = User.all()
-    users.remove(current_user)
+    page = request.args.get('page', 1, type=int)
+    users = User.all_paginated(page, Configuration.get())
     return render_template("user/index.html", users=users)
 
 
