@@ -25,9 +25,6 @@ def index():
 @ permission_required('recorrido_evacuacion_show')
 def detail(id):
     evacuation_route = EvacuationRoute.with_id(id)
-    import pdb
-    pdb.set_trace()
-
     points_list = []
     for point in evacuation_route.points:
         points_list.append(point.toJSONstringify())
