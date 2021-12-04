@@ -1,0 +1,102 @@
+{% extends "layout/layout.html" %}
+{% block title %}Editar zona inundable{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <h1 class="col-10">Zonas inundables</h1>
+</div>
+
+<div class="container-md col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <div class="row">
+        <div class="col-5">
+            <form action="{{ url_for('flood_zone_modify') }}" method="POST">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item container">
+                        <div class="row justify-content-center justify-content-md-start">
+                            <label class="form-label col" style="font-weight: bold;">Código</label>
+                            <input required name="code" class="form-control col" minlength="6" maxlength="10" placeholder="6 a 10 caracteres, no puede coincidir con uno existente" value="{{ zone.code }}">
+                        </div>                        
+                    </li>
+                    <li class="list-group-item container">
+                        <div class="row justify-content-center justify-content-md-start">
+                            <label class="form-label col" style="font-weight: bold;">Nombre</label>
+                            <input required name="name" class="form-control col" maxlength="40" placeholder="No puede coincidir con uno existente" value="{{ zone.name }}">
+                        </div>
+                    </li>
+                    
+
+                    <li class="list-group-item container">
+                        <div class="row justify-content-center justify-content-md-start">
+                            <label for="exampleColorInput" class="form-label col" style="font-weight: bold;">Color </label>
+                            <input name="color" type="color" required class="form-control form-control-color" id="exampleColorInput" value="#{{ zone.color }}" title="Seleccione un color">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="status" id="flexCheckChecked " {% if zone.status %} checked {% endif %}>
+                                <label class="form-check-label" for="flexCheckChecked"  style="font-weight: bold;">
+                                    Publicar
+                                </label>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                            <div class="row">
+                                <div class="col" style="font-weight: bold;">Puntos: {{zone.flood_points|length}}</div>
+                                <br>
+                                <br>
+                            </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <p>
+                                <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                    Ver coordenadas
+                                </button>
+                            </p>
+                            <div class="collapse" id="collapseExample">
+                                <div class="card card-body">
+                                    {% set count = namespace(value=1) %}
+                                    {% for point in zone.flood_points %}
+                                        <div>
+                                            nº{{ count.value }}: [{{ point.latitude }},{{ point.longitude }}]
+                                        </div>
+                                        <br>
+                                        {% set count.value = count.value + 1 %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <br>
+                <div class="row">
+                    <div class="col"><a href="{{ url_for('flood_zone_show', id=zone.id) }}">
+                            <button type="button" class="btn btn-primary">Cancelar y volver</button>
+                        </a>
+                    </div>                    
+                    <div class="col text-center">
+                            <button type="submit" name="modify_id" value="{{zone.id}}" class="btn btn-danger">Salvar Cambios</button>
+                    </div>
+                    
+                </div>
+                
+            </form>
+        </div>
+        <div class="col-5">
+                MAPA
+    
+        </div>
+    </div>
+    
+</div>
+
+
+
+{% endblock %}
