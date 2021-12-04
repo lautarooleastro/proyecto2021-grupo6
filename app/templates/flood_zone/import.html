@@ -1,0 +1,73 @@
+{% extends "layout/layout.html" %}
+{% block title %}Importar zonas inundables{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <h1 class="col-10">Zonas inundables</h1>
+</div>
+
+<div class="container-md col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <div class="row">
+        <div class="col-5">
+            <form enctype = "multipart/form-data" action="{{ url_for('flood_zone_imported_zones') }}" method="POST" novalidate>
+                
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item container">
+                        <div class="row justify-content-center justify-content-md-start">
+                            <label class="form-label col" style="font-weight: bold;">Patrón de Código:</label>
+                            <input required name="code" class="form-control col" minlength="6" maxlength="10" placeholder="6 a 10 caracteres, no puede coincidir con uno existente" value="{{ zone.code }}">
+                        </div> 
+                    </li>
+                    <li class="list-group-item container">
+                        <div class="row justify-content-center justify-content-md-start">
+                            <label class="form-label col" style="font-weight: bold;" for="zones_import">Zonas:</label>
+                            <input required type="file" class="form-control col " id="zones_import" name="zones_import" accept="csv">
+                        </div>
+                    </li>
+                    <li class="list-group-item container">
+                        <div class="row justify-content-center justify-content-md-start">
+                            <label for="exampleColorInput" class="form-label col" style="font-weight: bold;">Color </label>
+                            <input name="color" type="color" required class="form-control form-control-color" id="exampleColorInput" value="#{{ zone.color }}" title="Seleccione un color">
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="status" id="flexCheckChecked " {% if zone.status %} checked {% endif %}>
+                                <label class="form-check-label" for="flexCheckChecked"  style="font-weight: bold;">
+                                    Publicar
+                                </label>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <br>
+                <div class="row">
+                    <div class="col"><a href="{{ url_for('flood_zone_index') }}">
+                            <button type="button" class="btn btn-primary">Cancelar y volver</button>
+                        </a>
+                    </div>                    
+                    <div class="col text-center">
+                            <button type="submit" name="ok" value="true" class="btn btn-danger">Confirmar</button>
+                    </div>
+                    
+                </div>
+                
+            </form>
+        </div>
+        <div class="col-5">
+                MAPA
+    
+        </div>
+    </div>
+    
+</div>
+
+
+
+{% endblock %}

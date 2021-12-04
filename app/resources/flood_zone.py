@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, Flask, flash, url_for 
 from flask_login.utils import login_required
 from flask.helpers import flash, url_for
 from wtforms.validators import ValidationError
@@ -6,6 +6,9 @@ from app.helpers.permission import permission_required
 from app.models.flood_zone import FloodZone
 from wtforms import form
 from app.helpers.forms.flood_zone import NewFloodZoneForm
+from app.helpers.flood_zone_csv import getZones
+import os
+from werkzeug.utils import secure_filename
 
 @login_required
 @permission_required('zona_inundable_index')
@@ -127,3 +130,27 @@ def modify():
 
     return render_template("flood_zone/show.html",
                            zone=FloodZone.with_id(id))
+
+@login_required
+@permission_required('zona_inundable_import')
+def importZones():
+    zones=FloodZone.get_all()
+    num=len(zones)-1;
+    return render_template("flood_zone/import.html",
+                           zone=zones[num])
+
+@login_required
+@permission_required('zona_inundable_import')
+def importedZones():
+    #flash("Llegamos", "success")
+    #flash(request.form, "success")
+    
+
+    #import pdb; pdb.set_trace()
+
+    #form = NewFloodZoneForm(request.form, csrf_enabled=False)
+
+    #file=request.file['zones_import']
+
+    return redirect(url_for('flood_zone_index')) 
+    #getZones(request.form)
