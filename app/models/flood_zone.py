@@ -20,22 +20,37 @@ class FloodZone(db.Model):
         self.status = status
         self.color = color
 
+    @staticmethod
     def get_all():
         return FloodZone.query.all()
 
+    @staticmethod
     def with_name(name):
         return FloodZone.query.filter(FloodZone.name == name).first()
 
+    @staticmethod
+    def with_code(code):
+        return FloodZone.query.filter(FloodZone.code == code).first()
+    
+    @staticmethod
     def with_id(id):
         return FloodZone.query.filter(FloodZone.id == id).first()
-
+    
+    @staticmethod
     def destroy(zone):
         """ Elimina una zona de la BD. """
         db.session.delete(zone)
         db.session.commit()  
         
-
     def save(self):
         db.session.add(self)
         db.session.commit()
         return self
+    
+    @staticmethod
+    def n_with_name(name):
+        return FloodZone.query.filter(FloodZone.name == name).count()
+
+    @staticmethod
+    def n_with_code(code):
+        return FloodZone.query.filter(FloodZone.code == code).count()
