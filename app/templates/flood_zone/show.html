@@ -76,7 +76,7 @@
                         </button>
                     </div>
                     {% endif %}
-                    {% if check_permission(current_user, "zona_inundable_edit") %}
+                    {% if check_permission(current_user, "zona_inundable_update") %}
                     <div class="col text-center">
                         <form action="{{ url_for('flood_zone_edit', id=zone.id) }}" method="POST">
                             <button class="btn btn-warning" type="submit">
