@@ -7,9 +7,14 @@ from app.models.flood_zone import FloodZone
 from app.models.flood_point import FloodPoint
 from wtforms import form
 from app.helpers.forms.flood_zone import NewFloodZoneForm
-from app.helpers.flood_zone_csv import getZones
-import os
+from app.helpers.forms.flood_zone_import import FloodZoneFile
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import  FileStorage
+import csv
+import io
+import ast
+import json
+import os
 
 @login_required
 @permission_required('zona_inundable_index')
@@ -49,21 +54,10 @@ def new():
 @login_required
 @permission_required('zona_inundable_new')
 def create():
-
-    form = NewFloodZoneForm(request.form, csrf_enabled=False)
-    
-    #Verificar 
-    if (FloodZone.with_code(form.data.get('code')) != None):
-            flash("Código de zona ya existente", "error")
-            return redirect(url_for("flood_zone_new"))
-    
-    if (FloodZone.with_name(form.data.get('name')) != None):
-            flash("Nombre de zona ya existente", "error")
-            return redirect(url_for("flood_zone_new"))
-
-    
+    form = NewFloodZoneForm(request.form, csrf_enabled=False)    
     flood_zone=_newZone(form)
-    flood_zone.save()
+    if _verificar(flood_zone):
+        flood_zone.save()
     if FloodZone.with_id(flood_zone.id)!= None:
         flash("Se creó la zona "+flood_zone.code+" correctamente", "success")
         return redirect(url_for("flood_zone_index"))
@@ -78,6 +72,7 @@ def edit(id):
     return render_template("flood_zone/edit.html",
                            zone=FloodZone.with_id(id))
 
+
 @login_required
 def _newZone(form):
     data = request.form
@@ -91,6 +86,7 @@ def _newZone(form):
         for error in form.errors:
             flash(form.errors[error], "error")
         redirect(url_for("flood_zone_index"))
+
 
 
 @login_required
@@ -110,18 +106,11 @@ def modify():
             return redirect(url_for('flood_zone_show', id=oldZone.id))    
 
     flood_zone=_newZone(form)
-    """
-    for aux in flood_zone.__dict__:
-        setattr (oldZone,aux,flood_zone.__dict__[aux])"""
-    
-
     setattr (oldZone,"name",flood_zone.name)
     setattr (oldZone,"code",flood_zone.code)
     setattr (oldZone,"color",flood_zone.color)
     setattr (oldZone,"status",flood_zone.status)
 
-    """for fpoint in oldZone.flood_points :
-        flood_zone.addPoint(fpoint)"""
     try:
         oldZone.modify()
     except ValueError as e:
@@ -131,30 +120,60 @@ def modify():
     else:
         flash("No fue posible modificar la zona", "error") 
     
-
     return redirect(url_for('flood_zone_index')) 
+
+
 
 
 @login_required
 @permission_required('zona_inundable_import')
 def importZones():
-    zones=FloodZone.get_all()
-    num=len(zones)-1;
-    return render_template("flood_zone/import.html",
-                           zone=zones[num])
+    return render_template("flood_zone/import.html")
+
+
 
 @login_required
 @permission_required('zona_inundable_import')
-def importedZones():
-    #flash("Llegamos", "success")
-    #flash(request.form, "success")
+def importedZones():    
+    form = FloodZoneFile(request.form, csrf_enabled=False)
+    file = request.files[form.zones_import.name]
+    stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+    fieldnames = ("name","area")
+    csv_input = csv.reader(stream,fieldnames)
     
-
-    #import pdb; pdb.set_trace()
-
-    #form = NewFloodZoneForm(request.form, csrf_enabled=False)
-
-    #file=request.file['zones_import']
+    jsonFAKE = {}
+    for row in csv_input:       
+        key = row[0]
+        jsonFAKE[key] = row[1].split('],[')
+    for key in jsonFAKE:
+        if len(jsonFAKE[key]) > 2:
+            zone=FloodZone()
+            form.populate_obj(zone)
+            zone.color=zone.color.replace("#","").upper()  #revisar, el caracter # debe ser eliminado antes
+            zone.code=key
+            zone.name=key
+            for pair in jsonFAKE[key]:
+                coord=pair.replace("[","").replace("]","").split(',')
+                point=FloodPoint(coord[0],coord[1],zone.id)
+                zone.flood_points.append(point)
+            
+            if _verificar(zone):
+                try:
+                    zone.save()
+                except ValueError as e:
+                    flash(e, 'error')   
 
     return redirect(url_for('flood_zone_index')) 
-    #getZones(request.form)
+
+
+
+def _verificar(zone):
+        #Verificar 
+    if (FloodZone.with_code(zone.code) != None):
+        flash("Código de zona "+zone.code+" ya existente", "error")
+        return False
+    
+    if (FloodZone.with_name(zone.name) != None):
+        flash("Nombre de zona "+zone.name+" ya existente", "error")
+        return False
+    return True
