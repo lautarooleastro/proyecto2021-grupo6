@@ -23,8 +23,14 @@ def index(page):
 @login_required
 @permission_required('zona_inundable_show')
 def show(id):
+    zona= FloodZone.with_id(id)
+    puntos = []
+    for point in zona.flood_points:
+        puntos.append('{"lat":'+point.latitude+',"lng":'+point.longitude+'}')        
+    points = ",".join(puntos)
+    points = "["+points+"]"
     return render_template("flood_zone/show.html",
-                           zone=FloodZone.with_id(id))
+                           zone=zona, points=points)
 
 @login_required
 @permission_required('zona_inundable_destroy')
@@ -40,7 +46,7 @@ def destroy():
     else:
         flash("Se elimino la zona "+zone.code+"-"+zone.name, "success")
 
-    return redirect(url_for("flood_zone_index"))
+    return redirect(url_for("flood_zone_index", page=1))
 
 
 @login_required
@@ -58,7 +64,7 @@ def create():
         flood_zone.save()
     if FloodZone.with_id(flood_zone.id)!= None:
         flash("Se creó la zona "+flood_zone.code+" correctamente", "success")
-        return redirect(url_for("flood_zone_index"))
+        return redirect(url_for("flood_zone_index", page=1))
     else:
         flash("No fue posible crear la zona", "error")
         return redirect(url_for("flood_zone_new"))
@@ -83,7 +89,7 @@ def _newZone(form):
     else:
         for error in form.errors:
             flash(form.errors[error], "error")
-        redirect(url_for("flood_zone_index"))
+        redirect(url_for("flood_zone_index", page =1))
 
 
 
@@ -118,7 +124,7 @@ def modify():
     else:
         flash("No fue posible modificar la zona", "error") 
     
-    return redirect(url_for('flood_zone_index')) 
+    return redirect(url_for('flood_zone_index', page=1)) 
 
 
 
@@ -161,7 +167,7 @@ def importedZones():
                 except ValueError as e:
                     flash(e, 'error')   
 
-    return redirect(url_for('flood_zone_index')) 
+    return redirect(url_for('flood_zone_index', page=1)) 
 
 
 def _verificar(zone):
