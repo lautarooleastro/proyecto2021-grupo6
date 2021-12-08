@@ -5,22 +5,20 @@ from wtforms.validators import ValidationError
 from app.helpers.permission import permission_required
 from app.models.flood_zone import FloodZone
 from app.models.flood_point import FloodPoint
+from app.models.configuration import Configuration
 from wtforms import form
 from app.helpers.forms.flood_zone import NewFloodZoneForm
 from app.helpers.forms.flood_zone_import import FloodZoneFile
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import  FileStorage
+from app.helpers.forms.flood_zone_filter import NewFilter
 import csv
 import io
-import ast
-import json
-import os
+
 
 @login_required
 @permission_required('zona_inundable_index')
-def index():
+def index(page):
     flood_zones = FloodZone.get_all()
-    return render_template("flood_zone/index.html", flood_zones=flood_zones)
+    return render_template("flood_zone/index.html", flood_zones=flood_zones, pos=page, cant=Configuration.per_page())
 
 @login_required
 @permission_required('zona_inundable_show')
@@ -166,7 +164,6 @@ def importedZones():
     return redirect(url_for('flood_zone_index')) 
 
 
-
 def _verificar(zone):
         #Verificar 
     if (FloodZone.with_code(zone.code) != None):
@@ -177,3 +174,15 @@ def _verificar(zone):
         flash("Nombre de zona "+zone.name+" ya existente", "error")
         return False
     return True
+
+@login_required
+@permission_required('zona_inundable_index')
+def filtrar():
+    form = NewFilter(request.form, csrf_enabled=False)
+    flood_zones = FloodZone.get_filter(form.status.data, form.code.data)
+    return render_template("flood_zone/index.html", flood_zones=flood_zones, pos=1, cant=Configuration.per_page())
+
+@login_required
+@permission_required('zona_inundable_index')
+def re_index(page,zones):
+    return render_template("flood_zone/index.html", flood_zones=zones, pos=page, cant=Configuration.per_page())

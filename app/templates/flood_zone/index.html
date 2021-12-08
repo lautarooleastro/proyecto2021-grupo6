@@ -4,49 +4,131 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <h1 class="col-9">Zonas inundables</h1>
-    {% if check_permission(current_user, "zona_inundable_new") %}
-    <div class="col" ><a class="btn btn-success" href="{{ url_for('flood_zone_new') }}">Nueva zona</a></div>
-    {% endif %}
-    {% if check_permission(current_user, "zona_inundable_import") %}
-    <div class="col"><a class="btn btn-success" href="{{ url_for('flood_zone_import') }}">Importar zonas</a></div>
-    {% endif %}
+    <div class="row">
+        <h1 class="col-9"> Zonas inundables</h1>
+        {% if check_permission(current_user, "zona_inundable_new") %}
+        <div class="col" ><a class="btn btn-success" href="{{ url_for('flood_zone_new') }}">Nueva zona</a></div>
+        {% endif %}
+        {% if check_permission(current_user, "zona_inundable_import") %}
+        <div class="col"><a class="btn btn-success" href="{{ url_for('flood_zone_import') }}">Importar zonas</a></div>
+        {% endif %}
+    </div>
+    <div class="" style="display: block;">
+        <div class=""></div>
+        <div class="" style="align-self: center; background-color: white; padding: 30px; border-radius: 10px;">
+            <form action="{{ url_for('flood_zone_filtrar') }}" method="POST">
+                <h5 style="text-align: left;">Filtro:</h5>
+                <div class="container" style="display: inline-block;"> 
+                    <div class="col-md-9" style="display: inline-block;">
+                        <input name="code" class="form-control" maxlength="10" placeholder="Código">
+                    </div>
+                    <div class="col-md-1" style="display: inline-block;">
+                        <div class="form-check" style="text-align: left;">
+                            <input class="form-check-input" type="checkbox" value="True" name="status" id="flexCheckChecked" checked>
+                            <label class="form-check-label" for="flexCheckChecked" >
+                                Publicada
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-1" style="display: inline-block;">             
+                        <div class=" ">
+                                <button type="submit" class="btn btn-danger">Filtrar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- <div class="container-md col-md-12" style="background-color: black; padding: 1px; border-radius: 10px;">
+    -->
+    <div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="table-dark">Código</th>
+                <th class="table-dark">Nombre</th>
+                <th class="table-dark">Puntos</th>
+                <th class="table-dark">Estado</th>
+                <th class="table-dark">Acciones</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% set fin=cant*pos %}
+            {% set inicio=fin-cant %}
+            {% for x in range(inicio,fin) %}
+            <tr>
+                {% if x<(flood_zones|length) %}
+                    {% set flood_zone=flood_zones[x] %}
+                    <td class="table-light">{{flood_zone.code}}</td>
+                    <td class="table-light">{{flood_zone.name}}</td>
+                    <td class="table-light">{{flood_zone.flood_points|length}}</td>
+                    {% if flood_zone.status %}
+                    <td class="table-light">Publicado</td>
+                    {% else %}
+                    <td class="table-light">Despublicado</td>
+                    {% endif %}
+                    
+                    <td class="table-light">
+                    {% if check_permission(current_user, "zona_inundable_show") %}
+                        <form action="" method="POST">
+                            <button name="edit_id" value="{{flood_zone.id}}" formaction="{{ url_for('flood_zone_show', id=flood_zone.id) }}" type="submit"
+                            class="btn btn-secondary">Ver</a>
+                        </form>
+                    {% endif %}
+                    </td>     
+                {% endif %}       
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th class="table-dark">Código</th>
-            <th class="table-dark">Nombre</th>
-            <th class="table-dark">Puntos</th>
-            <th class="table-dark">Estado</th>
-            <th class="table-dark">Acciones</th>
-            
-        </tr>
-    </thead>
-    <tbody>
-        {% for flood_zone in flood_zones %}
-        <tr>
-            <td class="table-light">{{flood_zone.code}}</td>
-            <td class="table-light">{{flood_zone.name}}</td>
-            <td class="table-light">{{flood_zone.flood_points|length}}</td>
-            {% if flood_zone.status %}
-            <td class="table-light">Publicado</td>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">        
+            {% if pos==1 %}
+                <li class="page-item disabled">
+                <a class="page-link" href="{{ url_for('flood_zone_index', page=1) }}" tabindex="-1" aria-disabled="true">Previous</a>
+                <li class="page-item active"><a class="page-link" href="{{ url_for('flood_zone_index', page=1) }}">1</a></li>
+                {% set sig=pos+1 %}
+                {% set sig2=pos+2 %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('flood_zone_index', page=sig) }}">{{sig}}</a></li>      
+                {% if ((sig*cant)>(flood_zones|length)) %}
+                    <li class="page-item disabled"><a class="page-link" href="{{ url_for('flood_zone_index', page=sig2) }}">-</a></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('flood_zone_index', page=sig2) }}">{{sig2}}</a></li>
+                {% endif %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('flood_zone_index', page=sig) }}">Next</a>
+                </li>
             {% else %}
-            <td class="table-light">Despublicado</td>
+                {% if (fin<(flood_zones|length)) %}
+                    {% set prev=pos-1 %}
+                    <li class="page-item "></li>
+                    <a class="page-link" href="{{ url_for('flood_zone_index', page=prev) }}" tabindex="-1">Previous</a>
+                    <li class="page-item "><a class="page-link" href="{{ url_for('flood_zone_index', page=prev) }}">{{prev}}</a></li>
+                    {% set sig=pos+1 %} 
+                    <li class="page-item active"><a class="page-link" href="{{ url_for('flood_zone_index', page=pos) }}">{{pos}}</a></li>      
+                    <li class="page-item"><a class="page-link" href="{{ url_for('flood_zone_index', page=sig) }}">{{sig}}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('flood_zone_index', page=sig) }}">Next</a>
+                    </li>
+                {% else %}
+                    {% set prev=pos-1 %}
+                    {% set prev2=pos-2 %}
+                    <li class="page-item "></li>
+                    <a class="page-link" href="{{ url_for('flood_zone_index', page=prev) }}" tabindex="-1">Previous</a>
+                    {% if prev2>0 %}
+                        <li class="page-item "><a class="page-link" href="{{ url_for('flood_zone_index', page=prev2) }}">{{prev2}}</a></li>
+                    {% endif %}
+                    <li class="page-item "><a class="page-link" href="{{ url_for('flood_zone_index', page=prev) }}">{{prev}}</a></li>      
+                    <li class="page-item active"><a class="page-link" href="{{ url_for('flood_zone_index', page=pos) }}">{{pos}}</a></li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="{{ url_for('flood_zone_index', page=pos) }}">Next</a>
+                    </li>
+                {% endif %}
             {% endif %}
-            
-            <td class="table-light">
-            {% if check_permission(current_user, "zona_inundable_show") %}
-                <form action="" method="POST">
-                    <button name="edit_id" value="{{flood_zone.id}}" formaction="{{ url_for('flood_zone_show', id=flood_zone.id) }}" type="submit"
-                    class="btn btn-secondary">Ver</a>
-                </form>
-            {% endif %}
-            </td>            
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </ul>
+    </nav>
+
+    </div>
 {% endblock %}

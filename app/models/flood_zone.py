@@ -23,6 +23,7 @@ class FloodZone(db.Model):
     @staticmethod
     def get_all():
         return FloodZone.query.all()
+        
 
     @staticmethod
     def with_name(name):
@@ -58,4 +59,11 @@ class FloodZone(db.Model):
     @staticmethod
     def n_with_code(code):
         return FloodZone.query.filter(FloodZone.code == code).count()
+    
+    @staticmethod
+    def get_filter(status=False, code=''):
+        consulta= FloodZone.query.filter(FloodZone.status == bool(status))
+        if code!='':
+            return consulta.filter(FloodZone.code == code).all()
+        return consulta.all()
     
