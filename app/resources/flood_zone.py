@@ -12,7 +12,7 @@ from app.helpers.forms.flood_zone_import import FloodZoneFile
 from app.helpers.forms.flood_zone_filter import NewFilter
 import csv
 import io
-
+import json
 
 @login_required
 @permission_required('zona_inundable_index')
@@ -60,6 +60,15 @@ def new():
 def create():
     form = NewFloodZoneForm(request.form, csrf_enabled=False)    
     flood_zone=_newZone(form)
+    """
+    pair_list = json.loads(request.form.to_dict()['puntos'])
+    if (len(pair_list) >= 3):
+        flood_points = []
+        for pair in pair_list:
+            flood_points.append(FloodPoint(pair['latitude'], 
+                pair['longitude'],flood_zone.id))
+        flood_zone.flood_points = flood_points"""
+
     if _verificar(flood_zone):
         flood_zone.save()
     if FloodZone.with_id(flood_zone.id)!= None:
@@ -67,7 +76,7 @@ def create():
         return redirect(url_for("flood_zone_index", page=1))
     else:
         flash("No fue posible crear la zona", "error")
-        return redirect(url_for("flood_zone_new"))
+        return redirect(url_for('flood_zone_new'))
 
 
 @login_required
@@ -172,6 +181,10 @@ def importedZones():
 
 def _verificar(zone):
         #Verificar 
+    """if len(zone.flood_points)<3:
+        flash("Se requieren al menos tres puntos en el mapa", "error")
+        return False"""
+
     if (FloodZone.with_code(zone.code) != None):
         flash("Código de zona "+zone.code+" ya existente", "error")
         return False

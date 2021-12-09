@@ -3,10 +3,9 @@ const mapLayerUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 export class MapZone {
     #drawnItems;
 
-    constructor({ selector, lat, lng, initialLatLngs = null, enableEdit = false, colores = '#FF0000'}) {
+    constructor({ selector, lat, lng, initialLatLngs = null, enableEdit = true, colores = '#FF0000'}) {
         this.#drawnItems = new L.FeatureGroup();
-        
-        
+                
         this.#initializeMap(selector, lat, lng, initialLatLngs, enableEdit, colores);
 
         this.map.on(L.Draw.Event.CREATED, (e) => {
@@ -19,17 +18,20 @@ export class MapZone {
     }
 
     #initializeMap(selector, lat, lng, initialLatLngs, enableEdit, colores) {
-        this.map = L.map(selector).setView([lat, lng], 12);
+        this.map = L.map(selector).setView([lat, lng], 13);
         L.tileLayer(mapLayerUrl).addTo(this.map);
         this.map.addLayer(this.#drawnItems);
         if (enableEdit) {
             this.map.addControl(this.createControls);
         }
+        
         if (initialLatLngs) {
+            console.log("exist ")
             var polygon = L.polygon(initialLatLngs, { color: colores });
             if (enableEdit) {
                 polygon.editing.enable();
                 this.#drawnItems.addLayer(polygon);
+                //this.editControls.addTo(map);
                 this.createControls.remove();
             }
             else {
@@ -78,6 +80,7 @@ export class MapZone {
     get createControls() {
         return this.createControlsToolbar ||= new L.Control.Draw({
             draw: {
+                polyline:false,
                 circle: false,
                 rectangle: false,
                 marker: false,

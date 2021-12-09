@@ -1,8 +1,5 @@
 import { MapZone } from "../MapZone.js";
 
-const initialLat = -34.92053918330889;
-const initialLng = -57.9541949099075;
-
 window.onload = () => {
 
     const points_data = JSON.parse(document.querySelector('#points').value);
