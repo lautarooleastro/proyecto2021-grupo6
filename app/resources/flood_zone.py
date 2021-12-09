@@ -4,23 +4,33 @@ from flask.helpers import flash, url_for
 from wtforms.validators import ValidationError
 from app.helpers.permission import permission_required
 from app.models.flood_zone import FloodZone
+from app.models.flood_point import FloodPoint
+from app.models.configuration import Configuration
 from wtforms import form
 from app.helpers.forms.flood_zone import NewFloodZoneForm
-from app.helpers.flood_zone_csv import getZones
-import os
-from werkzeug.utils import secure_filename
+from app.helpers.forms.flood_zone_import import FloodZoneFile
+from app.helpers.forms.flood_zone_filter import NewFilter
+import csv
+import io
+import json
 
 @login_required
 @permission_required('zona_inundable_index')
-def index():
+def index(page):
     flood_zones = FloodZone.get_all()
-    return render_template("flood_zone/index.html", flood_zones=flood_zones)
+    return render_template("flood_zone/index.html", flood_zones=flood_zones, pos=page, cant=Configuration.per_page())
 
 @login_required
 @permission_required('zona_inundable_show')
 def show(id):
+    zona= FloodZone.with_id(id)
+    puntos = []
+    for point in zona.flood_points:
+        puntos.append('{"lat":'+point.latitude+',"lng":'+point.longitude+'}')        
+    points = ",".join(puntos)
+    points = "["+points+"]"
     return render_template("flood_zone/show.html",
-                           zone=FloodZone.with_id(id))
+                           zone=zona, points=points)
 
 @login_required
 @permission_required('zona_inundable_destroy')
@@ -36,7 +46,7 @@ def destroy():
     else:
         flash("Se elimino la zona "+zone.code+"-"+zone.name, "success")
 
-    return redirect(url_for("flood_zone_index"))
+    return redirect(url_for("flood_zone_index", page=1))
 
 
 @login_required
@@ -48,109 +58,150 @@ def new():
 @login_required
 @permission_required('zona_inundable_new')
 def create():
+    form = NewFloodZoneForm(request.form, csrf_enabled=False)    
+    flood_zone=_newZone(form)
+    """
+    pair_list = json.loads(request.form.to_dict()['puntos'])
+    if (len(pair_list) >= 3):
+        flood_points = []
+        for pair in pair_list:
+            flood_points.append(FloodPoint(pair['latitude'], 
+                pair['longitude'],flood_zone.id))
+        flood_zone.flood_points = flood_points"""
 
-    form = NewFloodZoneForm(request.form, csrf_enabled=False)
-    
-    #Verificar 
-    if (FloodZone.with_code(form.data.get('code')) != None):
-            flash("Código de zona ya existente", "error")
-            return redirect(url_for("flood_zone_new"))
-    
-    if (FloodZone.with_name(form.data.get('name')) != None):
-            flash("Nombre de zona ya existente", "error")
-            return redirect(url_for("flood_zone_new"))
-
-    data = request.form
-    if (form.validate()):
-        data.to_dict(flat=False)
-        flood_zone= FloodZone()
-        form.populate_obj(flood_zone)
-        flood_zone.color=flood_zone.color.replace("#","").upper()  #revisar, el caracter # debe ser eliminado antes
+    if _verificar(flood_zone):
         flood_zone.save()
-        if FloodZone.with_id(flood_zone.id)!= None:
-            flash("Se creó la zona "+flood_zone.code+" correctamente", "success")
-            return redirect(url_for("flood_zone_index"))
-        else:
-            flash("No fue posible crear la zona", "error")
-            return redirect(url_for("flood_zone_new"))
-        
+    if FloodZone.with_id(flood_zone.id)!= None:
+        flash("Se creó la zona "+flood_zone.code+" correctamente", "success")
+        return redirect(url_for("flood_zone_index", page=1))
     else:
-        for error in form.errors:
-            flash(form.errors[error], "error")
-    return redirect(url_for("flood_zone_new"))
+        flash("No fue posible crear la zona", "error")
+        return redirect(url_for('flood_zone_new'))
 
 
 @login_required
-@permission_required('zona_inundable_edit')
+@permission_required('zona_inundable_update')
 def edit(id):
     return render_template("flood_zone/edit.html",
                            zone=FloodZone.with_id(id))
 
+
 @login_required
-@permission_required('zona_inundable_edit')
-def modify():    
-    form = NewFloodZoneForm(request.form, csrf_enabled=False)
-
-    #Verificar 
-    if (FloodZone.n_with_code(form.data.get('code')) > 0 ):
-            flash("Código de zona ya existente", "error")
-            return redirect(url_for('flood_zone_index')) 
-    
-    if (FloodZone.n_with_name(form.data.get('name')) > 0):
-            flash("Nombre de zona ya existente", "error")
-            return redirect(url_for('flood_zone_index')) 
-    id = request.form['modify_id']
-
+def _newZone(form):
     data = request.form
     if (form.validate()):
         data.to_dict(flat=False)
-        flood_zone= FloodZone()
-        form.populate_obj(flood_zone)
-        flood_zone.color=flood_zone.color.replace("#","").upper()  #revisar, el caracter # debe ser eliminado antes
-
-        try:
-            FloodZone.destroy(FloodZone.with_id(id))
-        except ValueError as e:
-            flash(e, 'error')
-        if FloodZone.with_id(id)!= None:         
-            flash("No fue posible modificar la zona", "error")
-            return redirect(url_for("flood_zone_index"))
-        else:
-            flood_zone.save()
-            if FloodZone.with_id(flood_zone.id)!= None:
-                flash("Se modificó la zona "+flood_zone.code+" correctamente", "success")
-                return redirect(url_for("flood_zone_index"))
-            else:
-                flash("No fue posible modificar la zona", "error")
-                return redirect(url_for("flood_zone_index"))
-        
+        zone= FloodZone()
+        form.populate_obj(zone)
+        zone.color=zone.color.replace("#","").upper()  #revisar, el caracter # debe ser eliminado antes
+        return zone
     else:
         for error in form.errors:
             flash(form.errors[error], "error")
+        redirect(url_for("flood_zone_index", page =1))
 
-    return render_template("flood_zone/show.html",
-                           zone=FloodZone.with_id(id))
+
+
+@login_required
+@permission_required('zona_inundable_update')
+def modify():    
+    form = NewFloodZoneForm(request.form, csrf_enabled=False)
+    oldZone=FloodZone.with_id(request.form['modify_id']);
+    
+    if FloodZone.n_with_code(form.data.get('code')):
+        if (FloodZone.with_code(form.data.get('code')).id != oldZone.id):
+            flash("Código de zona ya existente", "error")
+            return redirect(url_for('flood_zone_show', id=oldZone.id)) 
+    
+    if FloodZone.n_with_name(form.data.get('name')):
+        if (FloodZone.with_name(form.data.get('name')).id != oldZone.id):
+            flash("Nombre de zona ya existente", "error")
+            return redirect(url_for('flood_zone_show', id=oldZone.id))    
+
+    flood_zone=_newZone(form)
+    setattr (oldZone,"name",flood_zone.name)
+    setattr (oldZone,"code",flood_zone.code)
+    setattr (oldZone,"color",flood_zone.color)
+    setattr (oldZone,"status",flood_zone.status)
+
+    try:
+        oldZone.modify()
+    except ValueError as e:
+        flash(e, 'error')   
+    if FloodZone.with_id(oldZone.id)!= None:
+        flash("Se modificó la zona "+oldZone.code+" correctamente", "success")
+    else:
+        flash("No fue posible modificar la zona", "error") 
+    
+    return redirect(url_for('flood_zone_index', page=1)) 
+
+
+
 
 @login_required
 @permission_required('zona_inundable_import')
 def importZones():
-    zones=FloodZone.get_all()
-    num=len(zones)-1;
-    return render_template("flood_zone/import.html",
-                           zone=zones[num])
+    return render_template("flood_zone/import.html")
+
+
 
 @login_required
 @permission_required('zona_inundable_import')
-def importedZones():
-    #flash("Llegamos", "success")
-    #flash(request.form, "success")
+def importedZones():    
+    form = FloodZoneFile(request.form, csrf_enabled=False)
+    file = request.files[form.zones_import.name]
+    stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+    fieldnames = ("name","area")
+    csv_input = csv.reader(stream,fieldnames)
     
+    jsonFAKE = {}
+    for row in csv_input:       
+        key = row[0]
+        jsonFAKE[key] = row[1].split('],[')
+    for key in jsonFAKE:
+        if len(jsonFAKE[key]) > 2:
+            zone=FloodZone()
+            form.populate_obj(zone)
+            zone.color=zone.color.replace("#","").upper()  #revisar, el caracter # debe ser eliminado antes
+            zone.code=key
+            zone.name=key
+            for pair in jsonFAKE[key]:
+                coord=pair.replace("[","").replace("]","").split(',')
+                point=FloodPoint(coord[0],coord[1],zone.id)
+                zone.flood_points.append(point)
+            
+            if _verificar(zone):
+                try:
+                    zone.save()
+                except ValueError as e:
+                    flash(e, 'error')   
 
-    #import pdb; pdb.set_trace()
+    return redirect(url_for('flood_zone_index', page=1)) 
 
-    #form = NewFloodZoneForm(request.form, csrf_enabled=False)
 
-    #file=request.file['zones_import']
+def _verificar(zone):
+        #Verificar 
+    """if len(zone.flood_points)<3:
+        flash("Se requieren al menos tres puntos en el mapa", "error")
+        return False"""
 
-    return redirect(url_for('flood_zone_index')) 
-    #getZones(request.form)
+    if (FloodZone.with_code(zone.code) != None):
+        flash("Código de zona "+zone.code+" ya existente", "error")
+        return False
+    
+    if (FloodZone.with_name(zone.name) != None):
+        flash("Nombre de zona "+zone.name+" ya existente", "error")
+        return False
+    return True
+
+@login_required
+@permission_required('zona_inundable_index')
+def filtrar():
+    form = NewFilter(request.form, csrf_enabled=False)
+    flood_zones = FloodZone.get_filter(form.status.data, form.code.data)
+    return render_template("flood_zone/index.html", flood_zones=flood_zones, pos=1, cant=Configuration.per_page())
+
+@login_required
+@permission_required('zona_inundable_index')
+def re_index(page,zones):
+    return render_template("flood_zone/index.html", flood_zones=zones, pos=page, cant=Configuration.per_page())

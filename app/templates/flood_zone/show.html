@@ -2,6 +2,24 @@
 {% block title %}Detalle zona inundable{% endblock %}
 {% block head %}
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="{{ url_for('static', filename='js/flood_zones/show.js') }}"></script>
+<!-- END Render mapa -->
+
+
 {% endblock %}
 {% block content %}
 <div class="row">
@@ -66,7 +84,7 @@
             <div class="container mt-4">
                 <div class="row">
                     <div class="col text-center">
-                        <a class="btn btn-primary" href="{{ url_for('flood_zone_index') }}">Volver</a>
+                        <a class="btn btn-primary" href="{{ url_for('flood_zone_index', page=1) }}">Volver</a>
                     </div>
                     {% if check_permission(current_user, "zona_inundable_destroy") %}
                     <div class="col text-center">
@@ -76,7 +94,7 @@
                         </button>
                     </div>
                     {% endif %}
-                    {% if check_permission(current_user, "zona_inundable_edit") %}
+                    {% if check_permission(current_user, "zona_inundable_update") %}
                     <div class="col text-center">
                         <form action="{{ url_for('flood_zone_edit', id=zone.id) }}" method="POST">
                             <button class="btn btn-warning" type="submit">
@@ -89,8 +107,10 @@
             </div>
         </div>
         <div class="col-5">
-            MAPA
-
+            <input id="points" class="d-none" type="text" value="{{ points }}">
+            <input id="color" class="d-none" type="text" value="#{{ zone.color }}">
+            <div id="map" class="col-md-6" style="height: 100%; min-height: 500px; width: 100%; min-width: 600px"></div>
+            
         </div>
     </div>
 </div>
