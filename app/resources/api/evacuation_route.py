@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint, request
-
+from flask_cors import cross_origin
 from app.models.evacuation_route import EvacuationRoute
 from app.schemas.evacuation_route import EvacuationRouteSchema
 
@@ -8,6 +8,7 @@ evacuation_route_api = Blueprint(
 
 
 @evacuation_route_api.get('/')
+@cross_origin()
 def index():
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 3))
@@ -15,4 +16,6 @@ def index():
 
     routes = EvacuationRouteSchema.dump(routes_page, many=True)
 
-    return jsonify(routes)
+    response = jsonify(routes)
+
+    return response
