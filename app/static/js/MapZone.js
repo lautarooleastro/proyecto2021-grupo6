@@ -26,7 +26,6 @@ export class MapZone {
         }
         
         if (initialLatLngs) {
-            console.log("exist ")
             var polygon = L.polygon(initialLatLngs, { color: colores });
             if (enableEdit) {
                 polygon.editing.enable();
@@ -41,9 +40,9 @@ export class MapZone {
     }
 
     #createHandler(e, map, drawnItems, editControls, createControls) {
-        const existingPaths = Object.values(drawnItems._layers);
+        const existingZone = Object.values(drawnItems._layers);
 
-        if (existingPaths.length == 0) {
+        if (existingZone.length == 0) {
             const type = e.layerType;
             const layer = e.layer;
 
@@ -80,10 +79,10 @@ export class MapZone {
     get createControls() {
         return this.createControlsToolbar ||= new L.Control.Draw({
             draw: {
-                polyline:false,
                 circle: false,
                 rectangle: false,
                 marker: false,
+                polyline: false,
                 circlemarker: false
             }
         });

@@ -60,14 +60,14 @@ def new():
 def create():
     form = NewFloodZoneForm(request.form, csrf_enabled=False)    
     flood_zone=_newZone(form)
-    """
+    
     pair_list = json.loads(request.form.to_dict()['puntos'])
     if (len(pair_list) >= 3):
         flood_points = []
         for pair in pair_list:
             flood_points.append(FloodPoint(pair['latitude'], 
                 pair['longitude'],flood_zone.id))
-        flood_zone.flood_points = flood_points"""
+        flood_zone.flood_points = flood_points
 
     if _verificar(flood_zone):
         flood_zone.save()
