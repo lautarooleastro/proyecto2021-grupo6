@@ -8,7 +8,7 @@ window.onload = () => {
     points_data.forEach(point => {
         latlngs.push([point['lat'], point['lng']]);
     });
-    points_data.length
+    
     if (points_data.length>2){
         var initialLat = points_data[0]['lat'];
         var initialLng = points_data[0]['lng'];

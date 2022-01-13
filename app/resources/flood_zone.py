@@ -24,13 +24,9 @@ def index(page):
 @permission_required('zona_inundable_show')
 def show(id):
     zona= FloodZone.with_id(id)
-    puntos = []
-    for point in zona.flood_points:
-        puntos.append('{"lat":'+point.latitude+',"lng":'+point.longitude+'}')        
-    points = ",".join(puntos)
-    points = "["+points+"]"
+    puntos = __points(zona)
     return render_template("flood_zone/show.html",
-                           zone=zona, points=points)
+                           zone=zona, points=puntos)
 
 @login_required
 @permission_required('zona_inundable_destroy')
@@ -59,17 +55,10 @@ def new():
 @permission_required('zona_inundable_new')
 def create():
     form = NewFloodZoneForm(request.form, csrf_enabled=False)    
-    flood_zone=_newZone(form)
-    
+    flood_zone=__newZone(form)
     pair_list = json.loads(request.form.to_dict()['puntos'])
-    if (len(pair_list) >= 3):
-        flood_points = []
-        for pair in pair_list:
-            flood_points.append(FloodPoint(pair['latitude'], 
-                pair['longitude'],flood_zone.id))
-        flood_zone.flood_points = flood_points
-
-    if _verificar(flood_zone):
+    flood_zone.flood_points = __pointsLoad(pair_list, flood_zone.id)
+    if __verificar(flood_zone):
         flood_zone.save()
     if FloodZone.with_id(flood_zone.id)!= None:
         flash("Se creó la zona "+flood_zone.code+" correctamente", "success")
@@ -78,16 +67,33 @@ def create():
         flash("No fue posible crear la zona", "error")
         return redirect(url_for('flood_zone_new'))
 
+def __pointsLoad(pair_list,floodZone_id):
+    flood_points = []
+    if (len(pair_list) >= 3):
+        for pair in pair_list:
+            flood_points.append(FloodPoint(pair['latitude'], 
+                pair['longitude'],floodZone_id))
+    return flood_points
 
 @login_required
 @permission_required('zona_inundable_update')
 def edit(id):
+    zona= FloodZone.with_id(id)
+    puntos = __points(zona)
     return render_template("flood_zone/edit.html",
-                           zone=FloodZone.with_id(id))
+                           zone=zona, points=puntos)
+
+def __points(zona):
+    puntos = []
+    for point in zona.flood_points:
+        puntos.append('{"lat":'+point.latitude+',"lng":'+point.longitude+'}')        
+    points = ",".join(puntos)
+    points = "["+points+"]"
+    return points
 
 
 @login_required
-def _newZone(form):
+def __newZone(form):
     data = request.form
     if (form.validate()):
         data.to_dict(flat=False)
@@ -117,12 +123,14 @@ def modify():
         if (FloodZone.with_name(form.data.get('name')).id != oldZone.id):
             flash("Nombre de zona ya existente", "error")
             return redirect(url_for('flood_zone_show', id=oldZone.id))    
-
-    flood_zone=_newZone(form)
+    
+    flood_zone=__newZone(form)
     setattr (oldZone,"name",flood_zone.name)
     setattr (oldZone,"code",flood_zone.code)
     setattr (oldZone,"color",flood_zone.color)
     setattr (oldZone,"status",flood_zone.status)
+    pair_list = json.loads(request.form.to_dict()['puntos'])
+    oldZone.flood_points = __pointsLoad(pair_list, oldZone.id)
 
     try:
         oldZone.modify()
@@ -170,7 +178,7 @@ def importedZones():
                 point=FloodPoint(coord[0],coord[1],zone.id)
                 zone.flood_points.append(point)
             
-            if _verificar(zone):
+            if __verificar(zone):
                 try:
                     zone.save()
                 except ValueError as e:
@@ -179,7 +187,7 @@ def importedZones():
     return redirect(url_for('flood_zone_index', page=1)) 
 
 
-def _verificar(zone):
+def __verificar(zone):
         #Verificar 
     """if len(zone.flood_points)<3:
         flash("Se requieren al menos tres puntos en el mapa", "error")

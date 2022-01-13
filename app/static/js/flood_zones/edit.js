@@ -1,17 +1,15 @@
 import { MapZone } from "../MapZone.js";
 
-const initialLat = -34.92053918330889;
-const initialLng = -57.9541949099075;
-
 const submitHandler = (event, map) => {
     event.preventDefault();
-    if (!map.hasValidZone()) {
+    if (!map.hasValidZone()) {    
         alert('Debes dibujar una zona en el mapa con al menos 3 puntos');
     } else {
         const code = document.querySelector('#code').value;
         const name = document.querySelector('#name').value;
         const color = document.querySelector('#color').value;
-        const status = document.querySelector('#status').value;
+        const status = document.querySelector('#flexCheckChecked');
+        const id = document.querySelector('#modify_id').value;
         const puntos = map.drawnLayers[0].getLatLngs().map(coordinate => {
             return { latitude: coordinate.lat, longitude: coordinate.lng }
         });
@@ -22,10 +20,11 @@ const submitHandler = (event, map) => {
         formData.append('name', name);
         formData.append('color', color);
         formData.append('status', status);
+        formData.append('modify_id', id);
         formData.append('puntos', JSON.stringify(puntos));
         console.log(JSON.stringify(formData))
         
-        fetch('/zonas_inundables/add', {
+        fetch('/zonas_inundables/mod', {
             method: 'POST',
             body: formData
         }).then((response) => {
@@ -46,7 +45,7 @@ window.onload = () => {
     points_data.forEach(point => {
         latlngs.push([point['lat'], point['lng']]);
     });
-    points_data.length
+    
     if (points_data.length>2){
         var initialLat = points_data[0]['lat'];
         var initialLng = points_data[0]['lng'];
@@ -59,7 +58,7 @@ window.onload = () => {
     lat: initialLat,
     lng: initialLng,
     initialLatLngs: latlngs,
-    enableEdit: false,
+    enableEdit: true,
     colores: color
     });
     
