@@ -120,15 +120,20 @@ def destroy():
 
 
 @login_required
+@permission_required('usuario_update')
 def toggle(user_email):
-    try:
-        activado = User.toggle(User.with_email(user_email))
-        if activado:
-            flash("Usuario activado: "+user_email, 'success')
-        else:
-            flash("Usuario desactivado: "+user_email, 'success')
-    except:
-        flash("No se pudo activar/desctivar al usuario: "+user_email, 'error')
+    user = User.with_email(user_email)
+    if user.hasRole('Administrador'):
+        flash("Usted no puede cambiar el estado de un Administrador", 'error')
+    else:
+        try:
+            activado = User.toggle(User.with_email(user_email))
+            if activado:
+                flash("Usuario activado: "+user_email, 'success')
+            else:
+                flash("Usuario desactivado: "+user_email, 'success')
+        except:
+            flash("No se pudo activar/desctivar al usuario: "+user_email, 'error')
     return redirect(url_for("user_index"))
 
 

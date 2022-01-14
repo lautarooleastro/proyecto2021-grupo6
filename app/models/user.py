@@ -129,3 +129,7 @@ class User(db.Model):
 
     def get_id(self):
         return self.id
+
+    def hasRole(self, role_name):
+        role = Role.with_name(role_name)
+        return (role in self.roles)
