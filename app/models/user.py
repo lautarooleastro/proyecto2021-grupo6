@@ -42,7 +42,7 @@ class User(db.Model):
             query = User.query.filter(User.email != current_user.email, User.first_name.like('%'+name_query+'%')).paginate(
                 page=page, per_page=config.elements_per_page)
         else:
-            query = User.query.filter(User.email != current_user.email).order_by(desc(User.id)).paginate(
+            query = User.query.filter(User.email != current_user.email, User.first_name.like('%'+name_query+'%')).order_by(desc(User.id)).paginate(
                 page=page, per_page=config.elements_per_page)
         return query
 
