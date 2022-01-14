@@ -64,26 +64,15 @@
         {% else %}
         Inactivo
         {% endif %}
-        <a href="{{url_for('user_toggle',user_email=user.email)}}">
-          (cambiar)
-        </a>
       </td>
 
       <td class="table-light">
-        {% if check_permission(current_user, "usuario_destroy") %}
-        <form action="" method="POST">
-          <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}" type="submit"
-            class="btn btn-danger">Eliminar</a>
-        </form>
-        {% endif %}
+        <a href="{{ url_for('user_detail', id=user.id) }}" class="btn btn-secondary">
+          Detalle
+        </a>
       </td>
       <td class="table-light">
-        {% if check_permission(current_user, "usuario_update") %}
-        <form action="" method="POST">
-          <button name="edit_id" value="{{ user.id }}" formaction="{{ url_for('user_edit',id=user.id) }}" type="submit"
-            class="btn btn-secondary">Editar</a>
-        </form>
-        {% endif %}
+
       </td>
     </tr>
     {% endfor %}

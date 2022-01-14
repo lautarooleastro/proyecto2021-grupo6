@@ -1,0 +1,78 @@
+{% extends "layout/layout.html" %}
+{% block title %}Detalle de usuario{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<h1>Detalle de usuario</h1>
+<div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form id="applyChanges" action="{{ url_for('user_update', id=user.id) }}" method="POST">
+        <div class="col">
+            <h5 class="form-label">Email</h5>
+            <p>{{user.email}}</p>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <h5 class="form-label">Nombre</h5>
+                <p>{{user.first_name}}</p>
+            </div>
+            <div class="col">
+                <h5 class="form-label">Apellido</h5>
+                <p>{{user.last_name}}</p>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Roles del usuario</h5>
+                <div class="row">
+                    {% for role in user.roles %}
+                    <div class="row">
+                        <p class="card-text"> - {{role.name}}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <h5 class="form-label">Estado</h5>
+                <p>
+                    {% if user.active %}
+                    Activo
+                    {% else %}
+                    Inactivo
+                    {% endif %}
+                    <a href="{{url_for('user_toggle',user_email=user.email)}}">
+                        (cambiar)
+                    </a>
+                </p>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col"><a href="{{ url_for('user_index') }}">
+                    <button type="button" class="btn btn-light">Volver</button>
+                </a></div>
+            <div class="col">
+                {% if check_permission(current_user, "usuario_destroy") %}
+                <form action="" method="POST">
+                    <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}"
+                        type="submit" class="btn btn-danger">Eliminar</a>
+                </form>
+                {% endif %}
+            </div>
+            <div class="col">
+                {% if check_permission(current_user, "usuario_update") %}
+                <form action="" method="POST">
+                    <button name="edit_id" value="{{ user.id }}" formaction="{{ url_for('user_edit',id=user.id) }}"
+                        type="submit" class="btn btn-warning">Editar</a>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

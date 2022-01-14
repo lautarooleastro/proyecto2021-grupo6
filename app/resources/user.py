@@ -67,7 +67,7 @@ def update(id):
                 flash(error, "error")
         return redirect(url_for("user_edit", id=id))
 
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user_detail", id=user.id))
 
 
 @login_required
@@ -134,7 +134,7 @@ def toggle(user_email):
                 flash("Usuario desactivado: "+user_email, 'success')
         except:
             flash("No se pudo activar/desctivar al usuario: "+user_email, 'error')
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user_detail", id=user.id))
 
 
 @login_required
@@ -172,3 +172,12 @@ def profile_update():
         return redirect(url_for("user_profile_edit"))
 
     return redirect(url_for("user_profile"))
+
+
+@login_required
+def detail(id):
+    user = User.with_id(id)
+    if not user:
+        flash("No existe el usuario con id: "+str(id), 'error')
+        return redirect(url_for('user_index'))
+    return render_template("user/detail.html", user=user)
