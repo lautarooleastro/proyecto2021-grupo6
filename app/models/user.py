@@ -35,9 +35,11 @@ class User(db.Model):
         self.active = active
 
     @staticmethod
-    def all_paginated(page, config):
+    def all_paginated(page, name_query, config):
+        if not name_query:
+            name_query = ''
         if config.order == 'ASC':
-            query = User.query.filter(User.email != current_user.email).paginate(
+            query = User.query.filter(User.email != current_user.email, User.first_name.like('%'+name_query+'%')).paginate(
                 page=page, per_page=config.elements_per_page)
         else:
             query = User.query.filter(User.email != current_user.email).order_by(desc(User.id)).paginate(

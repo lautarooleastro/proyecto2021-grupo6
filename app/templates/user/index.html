@@ -8,6 +8,30 @@
   <h1 class="col-10">Usuarios</h1>
   <a class="col" href="{{ url_for('user_new') }}"><button class="btn btn-success">Nuevo usuario</button></a>
 </div>
+
+<div class="row p-2">
+  <div class="col-md-6">
+    <form action="{{ url_for('user_index') }}">
+      <div class="input-group mb-3">
+        <input id="search-name-input" name="name_query" type="text" class="form-control"
+          placeholder="Buscar por nombre..." aria-describedby="search-button">
+        <button class="btn btn-light" type="submit" id="search-button">Buscar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if name_query %}
+<div class="row-auto p-2">Mostrando resultados con:
+  <div type="button" class="btn btn-light">
+    "{{ name_query }}"
+    <a href="{{ url_for('user_index') }}">
+      <span class="badge bg-danger">x</span>
+    </a>
+  </div>
+</div>
+{% endif %}
+
 <table class="table">
   <thead>
     <tr>

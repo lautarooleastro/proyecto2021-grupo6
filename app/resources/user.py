@@ -16,8 +16,10 @@ from app.models.user import User
 @permission_required('usuario_index')
 def index():
     page = request.args.get('page', 1, type=int)
-    users = User.all_paginated(page, Configuration.get())
-    return render_template("user/index.html", users=users)
+    name_query = request.args.get('name_query', type=str)
+    users = User.all_paginated(
+        page=page, name_query=name_query, config=Configuration.get())
+    return render_template("user/index.html", users=users, name_query=name_query)
 
 
 @login_required
