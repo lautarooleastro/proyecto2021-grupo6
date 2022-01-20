@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean, null
 from app.db import db
 from sqlalchemy.orm import query, relationship, session
-from app.models.flood_point import FloodPoint 
+from app.models.flood_point import FloodPoint
+from app.resources import flood_zone 
 
 
 class FloodZone(db.Model):
@@ -22,8 +23,7 @@ class FloodZone(db.Model):
 
     @staticmethod
     def get_all():
-        return FloodZone.query.all()
-        
+        return FloodZone.query.all()        
 
     @staticmethod
     def with_name(name):
@@ -61,9 +61,9 @@ class FloodZone(db.Model):
         return FloodZone.query.filter(FloodZone.code == code).count()
     
     @staticmethod
-    def get_filter(status=False, code=''):
-        consulta= FloodZone.query.filter(FloodZone.status == bool(status))
-        if code!='':
-            return consulta.filter(FloodZone.code == code).all()
-        return consulta.all()
+    def get_filter(pos=1, cant=10, code='', status=None):
+        consulta = FloodZone.query.filter(FloodZone.code.like('%'+code+'%'))
+        if (status!=None):
+            return consulta.filter(FloodZone.status == bool(status)).paginate(page=int(pos), per_page=cant)
+        return consulta.paginate(page=int(pos), per_page=cant)
     

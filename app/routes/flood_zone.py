@@ -1,9 +1,12 @@
+from importlib.resources import path
 from app.resources import flood_zone
 
 
 def set_routes(app):
-    app.add_url_rule("/zonas_inundables/<int:page>",
-                     "flood_zone_index", flood_zone.index)
+    app.add_url_rule("/zonas_inundables",
+                     "flood_zone_index", flood_zone.index, methods=['POST', 'GET'])
+    app.add_url_rule("/zonas_inundables/<page>/<code>/<status>",
+                     "flood_zone_index", flood_zone.index, methods=['POST', 'GET'])
     app.add_url_rule("/zonas_inundables/ver/<int:id>",
                      "flood_zone_show", flood_zone.show, methods=['POST', 'GET'])
     app.add_url_rule("/zonas_inundables/eliminar", "flood_zone_destroy",
@@ -20,5 +23,5 @@ def set_routes(app):
                      flood_zone.importZones)    
     app.add_url_rule("/zonas_inundables/importar", "flood_zone_imported_zones",
                      flood_zone.importedZones, methods=['POST'])   
-    app.add_url_rule("/zonas_inundables/shearch", "flood_zone_filtrar",
-                     flood_zone.filtrar, methods=['POST', 'GET'])
+    """app.add_url_rule("/zonas_inundables/shearch", "flood_zone_filtrar",
+                     flood_zone.filtrar, methods=['POST', 'GET'])"""

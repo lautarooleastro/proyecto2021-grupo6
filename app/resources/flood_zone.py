@@ -1,6 +1,7 @@
 from flask import render_template, redirect, request, Flask, flash, url_for 
 from flask_login.utils import login_required
 from flask.helpers import flash, url_for
+from sqlalchemy import false, null, true
 from wtforms.validators import ValidationError
 from app.helpers.permission import permission_required
 from app.models.flood_zone import FloodZone
@@ -16,9 +17,38 @@ import json
 
 @login_required
 @permission_required('zona_inundable_index')
-def index(page):
-    flood_zones = FloodZone.get_all()
-    return render_template("flood_zone/index.html", flood_zones=flood_zones, pos=page, cant=Configuration.per_page())
+def index(page='1', code='_all', status="None"):
+    shearch=request.form.get('shearch', False, type=bool)
+    if (shearch):
+        try:
+            form = NewFilter(request.form, csrf_enabled=False)
+        except:
+            flash("Error en la búsqueda", "Error")
+            return redirect(url_for("flood_zone_index"))
+        flood_zones = FloodZone.get_filter(page, Configuration.per_page(), form.code.data, form.status.data)
+        public=form.status.data 
+        code=form.code.data
+        status=form.status.data
+    
+    if (status!="None"):
+        if (code=='_all'):
+            code=''
+        if status=="False":
+            status=False
+        flood_zones = FloodZone.get_filter(page, Configuration.per_page(), code, status)
+        public=status
+    else:
+        flood_zones = FloodZone.get_filter(page, Configuration.per_page()) 
+        public=True      
+    if (code==''):
+        code='_all'
+    return render_template("flood_zone/index.html", flood_zones=flood_zones, public=public, code=code, status=status)
+
+@login_required
+@permission_required('zona_inundable_index')
+def re_index(zones, public=true):
+    return render_template("flood_zone/index.html", flood_zones=zones, public=public)
+
 
 @login_required
 @permission_required('zona_inundable_show')
@@ -32,7 +62,6 @@ def show(id):
 @permission_required('zona_inundable_destroy')
 def destroy():
     zone = FloodZone.with_id(request.form['destroy_id'])
-    #if  confirm("¿Confirma la eliminación de la zona "+zone.code+"-"+zone.name+"?")
     try:
         FloodZone.destroy(zone)
     except ValueError as e:
@@ -202,14 +231,3 @@ def __verificar(zone):
         return False
     return True
 
-@login_required
-@permission_required('zona_inundable_index')
-def filtrar():
-    form = NewFilter(request.form, csrf_enabled=False)
-    flood_zones = FloodZone.get_filter(form.status.data, form.code.data)
-    return render_template("flood_zone/index.html", flood_zones=flood_zones, pos=1, cant=Configuration.per_page())
-
-@login_required
-@permission_required('zona_inundable_index')
-def re_index(page,zones):
-    return render_template("flood_zone/index.html", flood_zones=zones, pos=page, cant=Configuration.per_page())
