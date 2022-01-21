@@ -84,7 +84,7 @@
             <div class="container mt-4">
                 <div class="row">
                     <div class="col text-center">
-                        <a class="btn btn-primary" href="{{ url_for('flood_zone_index', page=1) }}">Volver</a>
+                        <a class="btn btn-primary" href="javascript:history.back()">Volver</a>
                     </div>
                     {% if check_permission(current_user, "zona_inundable_destroy") %}
                     <div class="col text-center">
