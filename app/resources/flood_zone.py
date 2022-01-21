@@ -45,12 +45,6 @@ def index(page='1', code='_all', status="None"):
     return render_template("flood_zone/index.html", flood_zones=flood_zones, public=public, code=code, status=status)
 
 @login_required
-@permission_required('zona_inundable_index')
-def re_index(zones, public=true):
-    return render_template("flood_zone/index.html", flood_zones=zones, public=public)
-
-
-@login_required
 @permission_required('zona_inundable_show')
 def show(id):
     zona= FloodZone.with_id(id)
