@@ -8,22 +8,20 @@ const submitHandler = (event, map) => {
         const code = document.querySelector('#code').value;
         const name = document.querySelector('#name').value;
         const color = document.querySelector('#color').value;
-        const status = document.querySelector('#flexCheckChecked');
+        const status = document.getElementById('public').checked;
         const id = document.querySelector('#modify_id').value;
-        const puntos = map.drawnLayers[0].getLatLngs().map(coordinate => {
+        const coordinates = map.drawnLayers[0].getLatLngs()[0].map(coordinate => {
             return { latitude: coordinate.lat, longitude: coordinate.lng }
         });
         
-
         var formData = new FormData();
         formData.append('code', code);
         formData.append('name', name);
         formData.append('color', color);
         formData.append('status', status);
         formData.append('modify_id', id);
-        formData.append('puntos', JSON.stringify(puntos));
-        console.log(JSON.stringify(formData))
-        
+        formData.append('puntos', JSON.stringify(coordinates));
+
         fetch('/zonas_inundables/mod', {
             method: 'POST',
             body: formData
@@ -54,14 +52,15 @@ window.onload = () => {
         var initialLng = -57.9541949099075;
     }
     const map = new MapZone({
-    selector: 'map',
-    lat: initialLat,
-    lng: initialLng,
-    initialLatLngs: latlngs,
-    enableEdit: true,
-    colores: color
+        selector: 'map',
+        lat: initialLat,
+        lng: initialLng,
+        initialLatLngs: latlngs,
+        enableEdit: true,
+        colores: color
     });
-    
+
     const form = document.querySelector('#edit');
     form.addEventListener('submit', (event) => submitHandler(event, map));
+    
 }

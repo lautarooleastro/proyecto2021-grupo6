@@ -133,7 +133,7 @@ def __newZone(form):
 
 @login_required
 @permission_required('zona_inundable_update')
-def modify():    
+def modify(): 
     form = NewFloodZoneForm(request.form, csrf_enabled=False)
     oldZone=FloodZone.with_id(request.form['modify_id']);
     
@@ -164,7 +164,7 @@ def modify():
     else:
         flash("No fue posible modificar la zona", "error") 
     
-    return redirect(url_for('flood_zone_index', page=1)) 
+    return redirect(url_for('flood_zone_index', page=1))
 
 
 
