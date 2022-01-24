@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, desc
 from app.db import db
+from app.models.evacuation_route import EvacuationRoute
 
 
 class MeetingPoint(db.Model):
@@ -21,8 +22,18 @@ class MeetingPoint(db.Model):
         self.phone = phone
         self.email = email
 
-    def get_all():
-        return MeetingPoint.query.all()
+    @staticmethod
+    def all_paginated(page, name_query, config):
+        if not name_query:
+            name_query = ''
+
+        if config.order == 'ASC':
+            query = MeetingPoint.query.filter(MeetingPoint.name.like(
+                '%'+name_query+'%')).paginate(page=page,  per_page=config.elements_per_page)
+        else:
+            query = MeetingPoint.query.filter(MeetingPoint.name.like(
+                '%'+name_query+'%')).order_by(desc(EvacuationRoute.id)).paginate(page=page,  per_page=config.elements_per_page)
+        return query
 
     def with_id(id):
         return MeetingPoint.query.filter(MeetingPoint.id == id).first()

@@ -26,47 +26,45 @@
         Crear Punto de Encuentro
     </h1>
 </div>
-<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+<div class="container" style="background-color: white; padding: 30px; border-radius: 10px;">
     <form action="{{ url_for('meeting_point_create') }}" method="POST" id="create-meeting-point-form">
-        <div class="col">
-            <label class="form-label">Nombre</label>
-            <input required name="name" class="form-control">
-        </div>
-        <br>
-        <div class="col">
-            <label class="form-label">Direccion</label>
-            <input required name="adress" class="form-control">
-        </div>
-        <br>
         <div class="row">
-            <div class="col">
-                <label class="form-label">Telefono</label>
-                <input required name="phone" class="form-control" type="number">
-            </div>
-            <div class="col">
-                <label class="form-label">E-Mail</label>
-                <input required name="email" class="form-control" type="email">
-            </div>
-        </div>
-        <br>
-        <label class="form-label">Seleccionar en el mapa</label>
-        <div id="map" style="height: 380px; width: 100%;">
-        </div>
-        <input class=" d-none" id="lat" type="text" name="lat">
-        <input class="d-none" id="lng" type="text" name="lng">
-        <br>
-        <div class="row">
-            <div class="col">
-                <div class="form-check">
-                    <input name="status" class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">
-                        Iniciar como punto Activo
-                    </label>
+            <div class="col-md d-grid gap-3 mb-3">
+                <div>
+                    <label class="form-label fw-bold">Nombre</label>
+                    <input required name="name" class="form-control">
+                </div>
+                <div>
+                    <label class="form-label fw-bold">Direccion</label>
+                    <input required name="adress" class="form-control">
+                </div>
+                <div>
+                    <label class="form-label fw-bold">Telefono</label>
+                    <input required name="phone" class="form-control" type="number">
+                </div>
+                <div>
+                    <label class="form-label fw-bold">E-Mail</label>
+                    <input required name="email" class="form-control" type="email">
+                </div>
+                <div>
+                    <div class="form-check">
+                        <input name="status" class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">
+                            Iniciar como punto Activo
+                        </label>
+                    </div>
                 </div>
             </div>
+            <div class="col-md">
+                <label class="form-label fw-bold">Seleccionar en el mapa</label>
+                <div id="map" style="height: 380px; width: 100%;">
+                </div>
+                <input class=" d-none" id="lat" type="text" name="lat">
+                <input class="d-none" id="lng" type="text" name="lng">
+            </div>
         </div>
-        <br>
-        <div class="row">
+
+        <div class="row pt-4">
             <div class="col"><a href="{{ url_for('meeting_point_index') }}">
                     <button type="button" class="btn btn-light">Cancelar y volver</button>
                 </a></div>
