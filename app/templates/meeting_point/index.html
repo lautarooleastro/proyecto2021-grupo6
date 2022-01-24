@@ -17,27 +17,55 @@
     </div>
 </div>
 <div class="row px-4">
-    <div class="col-md-6">
+    <div class="col">
         <form action="{{ url_for('meeting_point_index') }}">
-            <div class="input-group mb-3">
-                <input id="search-name-input" name="name_query" type="text" class="form-control"
-                    placeholder="Buscar por nombre..." aria-describedby="search-button">
-                <button class="btn btn-light" type="submit" id="search-button">Buscar</button>
+            <div class="row mb-3">
+                <div class="col-sm col-12 pb-2">
+                    <input id="search-name-input" name="name_query" type="text" class="form-control"
+                        placeholder="Buscar por nombre..." aria-describedby="search-button">
+                </div>
+                <div class="col-sm-auto col-12 pb-2">
+                    <select name="status_query" id="status_query" class="form-select">
+                        <option value="all" selected>
+                            Todos
+                        </option>
+                        <option value="active">
+                            Activos
+                        </option>
+                        <option value="inactive">
+                            Inactivos
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-auto col-12 pb-2">
+                    <button class="btn btn-light col-sm-auto col-12" type="submit" id="search-button">Buscar</button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-{% if name_query %}
+{% if name_query or status_query %}
 <div class="row-auto px-4 pb-4">Mostrando resultados con:
+
     <div type="button" class="btn btn-light">
+        {% if name_query %}
         "{{ name_query }}"
+        {% endif %}
+        {% if status_query == 'all' %}
+        (Todos)
+        {% elif status_query == 'active' %}
+        (Activos)
+        {% elif status_query == 'inactive' %}
+        (Inactivos)
+        {% endif %}
         <a href="{{ url_for('meeting_point_index') }}">
             <span class="badge bg-danger">x</span>
         </a>
     </div>
 </div>
 {% endif %}
+
 
 <table class="table">
     <div class="container">
@@ -84,7 +112,8 @@
 <div class="row justify-content-center">
     <div class="col-auto">
         <div class="text-right">
-            <a href="{{ url_for('meeting_point_index', page=meeting_points.prev_num, name_query=name_query) }}" class="btn btn-outline-dark 
+            <a href="{{ url_for('meeting_point_index', page=meeting_points.prev_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-outline-dark 
      {% if meeting_points.page == 1 %}disabled{% endif %}">
                 &laquo;
             </a>
@@ -93,11 +122,12 @@
             {% if page_num %}
             <!-- Tildar la pagina actual como "activa" -->
             {% if meeting_points.page == page_num %}
-            <a href="{{ url_for('meeting_point_index', page=page_num, name_query=name_query) }}" class="btn btn-dark">
+            <a href="{{ url_for('meeting_point_index', page=page_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-dark">
                 {{ page_num }}
             </a>
             {% else %}
-            <a href="{{ url_for('meeting_point_index', page=page_num, name_query=name_query) }}"
+            <a href="{{ url_for('meeting_point_index', page=page_num, name_query=name_query, status_query=status_query) }}"
                 class="btn btn-outline-dark">
                 {{ page_num }}
             </a>
@@ -106,7 +136,8 @@
             ...
             {% endif %}
             {% endfor %}
-            <a href="{{ url_for('meeting_point_index', page=meeting_points.next_num, name_query=name_query) }}" class="btn btn-outline-dark 
+            <a href="{{ url_for('meeting_point_index', page=meeting_points.next_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-outline-dark 
      {% if meeting_points.page == meeting_points.pages %}disabled{% endif %}">
                 &raquo;
             </a>

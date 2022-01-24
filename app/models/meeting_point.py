@@ -23,16 +23,22 @@ class MeetingPoint(db.Model):
         self.email = email
 
     @staticmethod
-    def all_paginated(page, name_query, config):
+    def all_paginated(page, name_query, status_query, config):
         if not name_query:
             name_query = ''
 
-        if config.order == 'ASC':
-            query = MeetingPoint.query.filter(MeetingPoint.name.like(
-                '%'+name_query+'%')).paginate(page=page,  per_page=config.elements_per_page)
-        else:
-            query = MeetingPoint.query.filter(MeetingPoint.name.like(
-                '%'+name_query+'%')).order_by(desc(EvacuationRoute.id)).paginate(page=page,  per_page=config.elements_per_page)
+        query = MeetingPoint.query.filter(MeetingPoint.name.like(
+            '%'+name_query+'%'))
+
+        if status_query == 'active':
+            query = query.filter(MeetingPoint.status == True)
+        elif status_query == 'inactive':
+            query = query.filter(MeetingPoint.status == False)
+
+        if config.order == 'DESC':
+            query = query.order_by(desc(MeetingPoint.id))
+
+        query = query.paginate(page=page,  per_page=config.elements_per_page)
         return query
 
     def with_id(id):

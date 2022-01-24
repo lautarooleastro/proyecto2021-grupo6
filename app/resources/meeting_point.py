@@ -14,9 +14,10 @@ from app.models.configuration import Configuration
 def index():
     page = request.args.get('page', 1, type=int)
     name_query = request.args.get('name_query', type=str)
+    status_query = request.args.get('status_query', type=str)
     meeting_points = MeetingPoint.all_paginated(
-        page=page, name_query=name_query, config=Configuration.get())
-    return render_template("meeting_point/index.html", name_query=name_query, meeting_points=meeting_points)
+        page=page, name_query=name_query, status_query=status_query, config=Configuration.get())
+    return render_template("meeting_point/index.html", name_query=name_query, status_query=status_query, meeting_points=meeting_points)
 
 
 @login_required
