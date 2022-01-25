@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean, null
 from app.db import db
 from sqlalchemy.orm import query, relationship, session
 from app.models.flood_point import FloodPoint
-from app.resources import flood_zone 
 
 
 class FloodZone(db.Model):
