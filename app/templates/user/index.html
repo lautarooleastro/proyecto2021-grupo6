@@ -68,6 +68,7 @@
 </div>
 {% endif %}
 
+{% if users.items|length > 0 %}
 <table class="table">
   <thead>
     <tr>
@@ -75,8 +76,8 @@
       <th class="table-dark d-none d-sm-table-cell">Nombre</th>
       <th class="table-dark d-none d-sm-table-cell">Apellido</th>
       <th class="table-dark d-none d-md-table-cell">Roles</th>
-      <th class="table-dark d-none d-md-table-cell">Activo/Inactivo</th>
-      <th class="table-dark">Acciones</th>
+      <th class="table-dark d-none d-md-table-cell">Estado</th>
+      <th class="table-dark"></th>
     </tr>
   </thead>
   <tbody>
@@ -100,7 +101,7 @@
       </td>
 
       <td class="table-light">
-        <a href="{{ url_for('user_detail', id=user.id) }}" class="btn btn-light">
+        <a class="btn btn-light" href="{{url_for('user_detail', id=user.id) }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots"
             viewBox="0 0 16 16">
             <path
@@ -148,4 +149,16 @@
     </div>
   </div>
 </div>
+
+{% else %}
+<div class="container pt-5">
+  <div class="row align-items-center">
+    <div class="col text-center">
+      Sin resultados que coincidan con la búsqueda.
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
 {% endblock %}

@@ -4,7 +4,12 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>Detalle de usuario</h1>
+
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Detalle de Usuario
+    </h1>
+</div>
 <div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px;">
     <form id="applyChanges" action="{{ url_for('user_update', id=user.id) }}" method="POST">
         <div class="col">
@@ -54,9 +59,7 @@
         </div>
         <div class="row">
             <div class="col-sm col-12 text-center mt-3">
-                <button type="button" onclick="go_back()" class="btn btn-light col-sm-auto col-12">
-                    Volver
-                </button>
+                <button type="button" onclick="go_back()" class="btn btn-secondary col-sm-auto col-12">Volver</button>
             </div>
             {% if check_permission(current_user, "usuario_update") %}
             <div class="col-sm col-12 text-center mt-3">
