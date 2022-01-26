@@ -26,9 +26,9 @@
     <h1 class="col-10">Zonas inundables</h1>
 </div>
 
-<div class="container-md col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
+<div class="container" style="background-color: white; padding: 30px; border-radius: 10px;">
     <div class="row">
-        <div class="col-5">
+        <div class="col-sm">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="row">
@@ -70,7 +70,7 @@
                         <div class="card card-body">
                             {% set count = namespace(value=1) %}
                             {% for point in zone.flood_points %}
-                                <div>
+                                <div style="font-size: smaller;">
                                     nº{{ count.value }}: [{{ point.latitude }},{{ point.longitude }}]
                                 </div>
                                 <br>
@@ -80,38 +80,36 @@
                     </div>
                 </li>
             </ul>
-
-            <div class="container mt-4">
-                <div class="row">
-                    <div class="col text-center">
-                        <a class="btn btn-primary" href="{{ url_for('flood_zone_index', page=1) }}">Volver</a>
-                    </div>
-                    {% if check_permission(current_user, "zona_inundable_destroy") %}
-                    <div class="col text-center">
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                            data-bs-target="#confirmDeleteModal">
-                            Eliminar
-                        </button>
-                    </div>
-                    {% endif %}
-                    {% if check_permission(current_user, "zona_inundable_update") %}
-                    <div class="col text-center">
-                        <form action="{{ url_for('flood_zone_edit', id=zone.id) }}" method="POST">
-                            <button class="btn btn-warning" type="submit">
-                                Editar
-                            </button>
-                        </form>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
         </div>
-        <div class="col-5">
+        <div class="col-sm">
             <input id="points" class="d-none" type="text" value="{{ points }}">
             <input id="color" class="d-none" type="text" value="#{{ zone.color }}">
-            <div id="map" class="col-md-6" style="height: 100%; min-height: 500px; width: 100%; min-width: 600px"></div>
+            <div id="map" style="height: 90%; min-height: 280px"></div>
             
         </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col text-center">
+            <a class="btn btn-primary" href="javascript:history.back()">Volver</a>
+        </div>
+        {% if check_permission(current_user, "zona_inundable_destroy") %}
+        <div class="col text-center">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#confirmDeleteModal">
+                Eliminar
+            </button>
+        </div>
+        {% endif %}
+        {% if check_permission(current_user, "zona_inundable_update") %}
+        <div class="col text-center">
+            <form action="{{ url_for('flood_zone_edit', id=zone.id) }}" method="POST">
+                <button class="btn btn-warning" type="submit">
+                    Editar
+                </button>
+            </form>
+        </div>
+        {% endif %}
     </div>
 </div>
 

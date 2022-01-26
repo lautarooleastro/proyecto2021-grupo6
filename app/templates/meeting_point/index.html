@@ -4,46 +4,154 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <h1 class="col-10">Puntos de encuentro</h1>
-    <a class="col" href="{{ url_for('meeting_point_new') }}"><button class="btn btn-success">Nuevo punto</button></a>
+<div class="pt-2">
+    <div class="row px-4">
+        <div class="col-12 col-sm">
+            <h1>Puntos de encuentro</h1>
+        </div>
+        <div class="col-12 col-sm-auto p-2">
+            <a class="btn btn-success" href="{{ url_for('meeting_point_new') }}" style="width: 100%;">
+                Nuevo punto
+            </a>
+        </div>
+    </div>
 </div>
+<div class="row px-4">
+    <div class="col">
+        <form action="{{ url_for('meeting_point_index') }}">
+            <div class="row mb-3">
+                <div class="col-sm col-12 pb-2">
+                    <input id="search-name-input" name="name_query" type="text" class="form-control"
+                        placeholder="Buscar por nombre..." aria-describedby="search-button">
+                </div>
+                <div class="col-sm-auto col-12 pb-2">
+                    <select name="status_query" id="status_query" class="form-select">
+                        <option value="all" selected>
+                            Todos
+                        </option>
+                        <option value="active">
+                            Activos
+                        </option>
+                        <option value="inactive">
+                            Inactivos
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-auto col-12 pb-2">
+                    <button class="btn btn-light col-sm-auto col-12" type="submit" id="search-button">Buscar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if name_query or status_query %}
+<div class="row-auto px-4 pb-4">Mostrando resultados con:
+
+    <div type="button" class="btn btn-light">
+        {% if name_query %}
+        "{{ name_query }}"
+        {% endif %}
+        {% if status_query == 'all' %}
+        (Todos)
+        {% elif status_query == 'active' %}
+        (Activos)
+        {% elif status_query == 'inactive' %}
+        (Inactivos)
+        {% endif %}
+        <a href="{{ url_for('meeting_point_index') }}">
+            <span class="badge bg-danger">x</span>
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% if meeting_points.items|length > 0 %}
 <table class="table">
-    <thead>
-        <tr>
-            <th class="table-dark">Nombre</th>
-            <th class="table-dark">Direccion</th>
-            <th class="table-dark">Estado</th>
-            <th class="table-dark">Telefono</th>
-            <th class="table-dark">Email</th>
-            <th class="table-dark"></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for meeting_point in meeting_points %}
-        <tr>
-            <td class="table-light">{{meeting_point.name}}</td>
-            <td class="table-light">{{meeting_point.adress}}</td>
-            <td class="table-light">
-                {% if meeting_point.status %}
-                Activo
-                {% else %}
-                Inactivo
-                {% endif %}
-            </td>
-            <td class="table-light">{{meeting_point.phone}}</td>
-            <td class="table-light">{{meeting_point.email}}</td>
-            <td class="table-light">
-                <a class="btn btn-light" href="/puntos_de_encuentro/detalle/{{meeting_point.id}}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-pen-fill" viewBox="0 0 16 16">
-                        <path
-                            d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
-                    </svg>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+    <div class="container">
+        <thead>
+            <tr>
+                <th class="table-dark">Nombre</th>
+                <th class="table-dark">Direccion</th>
+                <th class="table-dark d-none d-md-table-cell">Estado</th>
+                <th class="table-dark d-none d-md-table-cell">Telefono</th>
+                <th class="table-dark d-none d-md-table-cell">Email</th>
+                <th class="table-dark"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meeting_point in meeting_points.items %}
+            <tr>
+                <td class="table-light">{{meeting_point.name}}</td>
+                <td class="table-light">{{meeting_point.adress}}</td>
+                <td class="table-light d-none d-md-table-cell">
+                    {% if meeting_point.status %}
+                    Activo
+                    {% else %}
+                    Inactivo
+                    {% endif %}
+                </td>
+                <td class="table-light d-none d-md-table-cell">{{meeting_point.phone}}</td>
+                <td class="table-light d-none d-md-table-cell">{{meeting_point.email}}</td>
+                <td class="table-light">
+                    <a class="btn btn-light" href="/puntos_de_encuentro/detalle/{{meeting_point.id}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-three-dots" viewBox="0 0 16 16">
+                            <path
+                                d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </div>
 </table>
+
+
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <div class="text-right">
+            <a href="{{ url_for('meeting_point_index', page=meeting_points.prev_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-outline-dark 
+     {% if meeting_points.page == 1 %}disabled{% endif %}">
+                &laquo;
+            </a>
+            <!-- Iterar sobre el numero de paginas para mostrar un link por cada pagina -->
+            {% for page_num in meeting_points.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+            <!-- Tildar la pagina actual como "activa" -->
+            {% if meeting_points.page == page_num %}
+            <a href="{{ url_for('meeting_point_index', page=page_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-dark">
+                {{ page_num }}
+            </a>
+            {% else %}
+            <a href="{{ url_for('meeting_point_index', page=page_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-outline-dark">
+                {{ page_num }}
+            </a>
+            {% endif %}
+            {% else %}
+            ...
+            {% endif %}
+            {% endfor %}
+            <a href="{{ url_for('meeting_point_index', page=meeting_points.next_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-outline-dark 
+     {% if meeting_points.page == meeting_points.pages %}disabled{% endif %}">
+                &raquo;
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="container pt-5">
+    <div class="row align-items-center">
+        <div class="col text-center">
+            Sin resultados que coincidan con la búsqueda.
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

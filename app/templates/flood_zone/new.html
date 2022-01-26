@@ -25,54 +25,50 @@
     <h1 class="col-10">Zonas inundables</h1>
 </div>
 
-<div class="container-md col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
-    <div class="row">
-        <div class="col-5">
+<div class="container col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
             <form action="{{ url_for('flood_zone_add') }}" method="POST" id="nueva-zona">
-                <div class="col">
-                    <label class="form-label">Código</label>
-                    <input required name="code" id="code" class="form-control" minlength="6" maxlength="10" placeholder="6 a 10 caracteres, no puede coincidir con uno existente">
-                </div>
-                <br>
-                <div class="col">
-                    <label class="form-label">Nombre</label>
-                    <input required name="name" id="name" class="form-control" maxlength="40" placeholder="No puede coincidir con uno existente">
-                </div>
-                <br>
-                <div class="col">
-                    <label for="exampleColorInput" class="form-label">Color </label>
-                    <input name="color" id="color" type="color" required class="form-control form-control-color" id="exampleColorInput" value="#FF00FF" title="Seleccione un color">
-                </div>
-                <br>
-                <div class="col">
-                    <div class="form-check">
-                        <input class="form-check-input" id="status" type="checkbox" value="True" name="status" id="flexCheckChecked" checked>
-                        <label class="form-check-label" for="flexCheckChecked" >
-                            Publicar
-                        </label>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="col">
+                            <label class="form-label">Código</label>
+                            <input required name="code" id="code" class="form-control" minlength="6" maxlength="10" placeholder="6 a 10 caracteres, unívoco">
+                        </div>
+                        <br>
+                        <div class="col">
+                            <label class="form-label">Nombre</label>
+                            <input required name="name" id="name" class="form-control" maxlength="40" placeholder="1 a 40 caracteres, unívoco">
+                        </div>
+                        <br>
+                        <div class="col">
+                            <label for="exampleColorInput" class="form-label">Color </label>
+                            <input name="color" id="color" type="color" required class="form-control form-control-color" id="exampleColorInput" value="#FF00FF" title="Seleccione un color">
+                        </div>
+                        <br>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" id="status" type="checkbox" value="True" name="status" id="flexCheckChecked" checked>
+                                <label class="form-check-label" for="flexCheckChecked" >
+                                    Publicar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div id="map" style="height: 90%; min-height: 280px"></div>
+                
                     </div>
                 </div>
-                
-                
                 <br>
                 <div class="row">
-                    <div class="col"><a href="{{ url_for('flood_zone_index', page=1) }}">
-                            <button type="button" class="btn btn-primary">Cancelar y volver</button>
+                    <div class="col"><a href="javascript:history.back()" >
+                            <button type="button" class="btn btn-primary" >Cancelar y volver</button>
                         </a>
                     </div>                    
                     <div class="col text-center">
                             <button type="submit" class="btn btn-danger">Crear zona</button>
-                    </div>
-                    
+                    </div>                    
                 </div>
             </form>
-        </div>
-        <div class="col-5">
-            <div id="map" class="col-md-6" style="height: 100%; min-height: 500px; width: 100%; min-width: 600px"></div>
-    
-        </div>
-    </div>
-    
 </div>
 
 {% endblock %}
