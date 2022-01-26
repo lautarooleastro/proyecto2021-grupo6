@@ -35,15 +35,23 @@ class User(db.Model):
         self.active = active
 
     @staticmethod
-    def all_paginated(page, name_query, config):
+    def all_paginated(page, name_query, status_query, config):
         if not name_query:
             name_query = ''
-        if config.order == 'ASC':
-            query = User.query.filter(User.email != current_user.email, User.first_name.like('%'+name_query+'%')).paginate(
-                page=page, per_page=config.elements_per_page)
-        else:
-            query = User.query.filter(User.email != current_user.email, User.first_name.like('%'+name_query+'%')).order_by(desc(User.id)).paginate(
-                page=page, per_page=config.elements_per_page)
+
+        query = User.query.filter(
+            User.email != current_user.email, User.first_name.like('%'+name_query+'%'))
+
+        if status_query == 'active':
+            query = query.filter(User.active == True)
+        elif status_query == 'inactive':
+            query = query.filter(User.active == False)
+
+        if config.order == 'DESC':
+            query = query.order_by(desc(User.id))
+
+        query = query.paginate(
+            page=page, per_page=config.elements_per_page)
         return query
 
     def save(self):

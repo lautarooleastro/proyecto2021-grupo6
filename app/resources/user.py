@@ -17,9 +17,10 @@ from app.models.user import User
 def index():
     page = request.args.get('page', 1, type=int)
     name_query = request.args.get('name_query', type=str)
+    status_query = request.args.get('status_query', type=str)
     users = User.all_paginated(
-        page=page, name_query=name_query, config=Configuration.get())
-    return render_template("user/index.html", users=users, name_query=name_query)
+        page=page, name_query=name_query, status_query=status_query, config=Configuration.get())
+    return render_template("user/index.html", users=users, name_query=name_query, status_query=status_query)
 
 
 @login_required

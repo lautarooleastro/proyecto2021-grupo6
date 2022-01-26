@@ -57,12 +57,15 @@
         </div>
         <br>
         <div class="row">
-            <div class="col"><a href="{{ url_for('user_detail', id=user.id) }}">
-                    <button type="button" class="btn btn-light">Cancelar y volver</button>
-                </a></div>
-            <div class="col">
-                <button form="applyChanges" type="submit" class="btn btn-primary">Aplicar
-                    cambios</button>
+            <div class="col-sm col-12 text-center mt-3">
+                <button type="button" onclick="go_back()" class="btn btn-light col-sm-auto col-12">
+                    Cancelar y volver
+                </button>
+            </div>
+            <div class="col-sm col-12 text-center mt-3">
+                <button form="applyChanges" type="submit" class="btn btn-warning col-sm-auto col-12">
+                    Aplicar cambios
+                </button>
             </div>
         </div>
     </form>

@@ -4,27 +4,63 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<div class="row">
-  <h1 class="col-10">Usuarios</h1>
-  <a class="col" href="{{ url_for('user_new') }}"><button class="btn btn-success">Nuevo usuario</button></a>
+
+<div class="pt-2">
+  <div class="row px-4">
+    <div class="col-12 col-sm">
+      <h1>Usuarios</h1>
+    </div>
+    <div class="col-12 col-sm-auto p-2">
+      <a class="btn btn-success" href="{{ url_for('user_new') }}" style="width: 100%;">
+        Nuevo usuario
+      </a>
+    </div>
+  </div>
 </div>
 
-<div class="row p-2">
-  <div class="col-md-6">
+<div class="row px-4">
+  <div class="col">
     <form action="{{ url_for('user_index') }}">
-      <div class="input-group mb-3">
-        <input id="search-name-input" name="name_query" type="text" class="form-control"
-          placeholder="Buscar por nombre..." aria-describedby="search-button">
-        <button class="btn btn-light" type="submit" id="search-button">Buscar</button>
+      <div class="row mb-3">
+        <div class="col-sm col-12 pb-2">
+          <input id="search-name-input" name="name_query" type="text" class="form-control"
+            placeholder="Buscar por nombre..." aria-describedby="search-button">
+        </div>
+        <div class="col-sm-auto col-12 pb-2">
+          <select name="status_query" id="status_query" class="form-select">
+            <option value="all" selected>
+              Todos
+            </option>
+            <option value="active">
+              Activos
+            </option>
+            <option value="inactive">
+              Inactivos
+            </option>
+          </select>
+        </div>
+        <div class="col-sm-auto col-12 pb-2">
+          <button class="btn btn-light col-sm-auto col-12" type="submit" id="search-button">Buscar</button>
+        </div>
       </div>
     </form>
   </div>
 </div>
 
-{% if name_query %}
-<div class="row-auto p-2">Mostrando resultados con:
+{% if name_query or status_query %}
+<div class="row-auto px-4 pb-4">Mostrando resultados con:
+
   <div type="button" class="btn btn-light">
+    {% if name_query %}
     "{{ name_query }}"
+    {% endif %}
+    {% if status_query == 'all' %}
+    (Todos)
+    {% elif status_query == 'active' %}
+    (Activos)
+    {% elif status_query == 'inactive' %}
+    (Inactivos)
+    {% endif %}
     <a href="{{ url_for('user_index') }}">
       <span class="badge bg-danger">x</span>
     </a>
@@ -36,29 +72,26 @@
   <thead>
     <tr>
       <th class="table-dark">Email</th>
-      <th class="table-dark">Nombre</th>
-      <th class="table-dark">Apellido</th>
-      <th class="table-dark">Contraseña</th>
-      <th class="table-dark">Roles</th>
-      <th class="table-dark">Activo/Inactivo</th>
+      <th class="table-dark d-none d-sm-table-cell">Nombre</th>
+      <th class="table-dark d-none d-sm-table-cell">Apellido</th>
+      <th class="table-dark d-none d-md-table-cell">Roles</th>
+      <th class="table-dark d-none d-md-table-cell">Activo/Inactivo</th>
       <th class="table-dark">Acciones</th>
-      <th class="table-dark"></th>
     </tr>
   </thead>
   <tbody>
     {% for user in users.items %}
     <tr>
       <td class="table-light">{{user.email}}</td>
-      <td class="table-light">{{user.first_name}}</td>
-      <td class="table-light">{{user.last_name}}</td>
-      <td class="table-light">{{user.password}}</td>
-      <td class="table-light">
+      <td class="table-light d-none d-sm-table-cell">{{user.first_name}}</td>
+      <td class="table-light d-none d-sm-table-cell">{{user.last_name}}</td>
+      <td class="table-light d-none d-md-table-cell">
         {% for rol in user.roles %}
         {{ rol.name }}
         {% endfor %}
       </td>
 
-      <td class="table-light">
+      <td class="table-light d-none d-md-table-cell">
         {% if user.active %}
         Activo
         {% else %}
@@ -67,12 +100,13 @@
       </td>
 
       <td class="table-light">
-        <a href="{{ url_for('user_detail', id=user.id) }}" class="btn btn-secondary">
-          Detalle
+        <a href="{{ url_for('user_detail', id=user.id) }}" class="btn btn-light">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots"
+            viewBox="0 0 16 16">
+            <path
+              d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+          </svg>
         </a>
-      </td>
-      <td class="table-light">
-
       </td>
     </tr>
     {% endfor %}
@@ -82,7 +116,8 @@
 <div class="row justify-content-center">
   <div class="col-auto">
     <div class="text-right">
-      <a href="{{ url_for('user_index', page=users.prev_num) }}" class="btn btn-outline-dark 
+      <a href="{{ url_for('user_index', page=users.prev_num, name_query=name_query, status_query=status_query) }}"
+        class="btn btn-outline-dark 
      {% if users.page == 1 %}disabled{% endif %}">
         &laquo;
       </a>
@@ -91,11 +126,13 @@
       {% if page_num %}
       <!-- Tildar la pagina actual como "activa" -->
       {% if users.page == page_num %}
-      <a href="{{ url_for('user_index', page=page_num) }}" class="btn btn-dark">
+      <a href="{{ url_for('user_index', page=page_num, name_query=name_query, status_query=status_query) }}"
+        class="btn btn-dark">
         {{ page_num }}
       </a>
       {% else %}
-      <a href="{{ url_for('user_index', page=page_num) }}" class="btn btn-outline-dark">
+      <a href="{{ url_for('user_index', page=page_num, name_query=name_query, status_query=status_query) }}"
+        class="btn btn-outline-dark">
         {{ page_num }}
       </a>
       {% endif %}
@@ -103,7 +140,8 @@
       ...
       {% endif %}
       {% endfor %}
-      <a href="{{ url_for('user_index', page=users.next_num) }}" class="btn btn-outline-dark 
+      <a href="{{ url_for('user_index', page=users.next_num, name_query=name_query, status_query=status_query) }}"
+        class="btn btn-outline-dark 
      {% if users.page == users.pages %}disabled{% endif %}">
         &raquo;
       </a>
