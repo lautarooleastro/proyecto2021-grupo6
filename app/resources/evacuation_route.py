@@ -27,12 +27,16 @@ def index():
 def detail(id):
     evacuation_route = EvacuationRoute.with_id(id)
     points_list = []
-    for point in evacuation_route.points:
-        points_list.append(point.toJSONstringify())
-    points = ",".join(points_list)
-    points = "["+points+"]"
-    return render_template("evacuation_route/detail.html",
-                           route=evacuation_route, points=points)
+    if not evacuation_route:
+        flash("Ruta de evacuación inexistente", "error")
+        return redirect(url_for("evacuation_route_index"))
+    else:
+        for point in evacuation_route.points:
+            points_list.append(point.toJSONstringify())
+        points = ",".join(points_list)
+        points = "["+points+"]"
+        return render_template("evacuation_route/detail.html",
+                               route=evacuation_route, points=points)
 
 
 @ login_required

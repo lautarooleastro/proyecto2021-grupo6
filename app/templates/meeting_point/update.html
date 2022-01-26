@@ -54,7 +54,7 @@
                             <input name="status" class="form-check-input" type="checkbox" {% if meeting_point.status %}
                                 checked {% endif %}>
                             <label class="form-check-label">
-                                Activo
+                                Publicado
                             </label>
                         </div>
                     </div>
@@ -69,11 +69,12 @@
         </div>
     </form>
     <div class="row mt-4">
-        <div class="col"><a href="{{ url_for('meeting_point_detail', id=meeting_point.id) }}">
+        <div class="col-sm col-12 text-center mt-3"><a
+                href="{{ url_for('meeting_point_detail', id=meeting_point.id) }}">
                 <button type="button" class="btn btn-light">Cancelar y volver</button>
             </a></div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary" form="edit-meeting-point-form">Editar</button>
+        <div class="col-sm col-12 text-center mt-3">
+            <button type="submit" class="btn btn-warning" form="edit-meeting-point-form">Editar</button>
         </div>
     </div>
 </div>
