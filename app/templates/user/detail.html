@@ -12,22 +12,26 @@
 </div>
 <div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px;">
     <form id="applyChanges" action="{{ url_for('user_update', id=user.id) }}" method="POST">
-        <div class="col">
-            <h5 class="form-label">Email</h5>
-            <p>{{user.email}}</p>
-        </div>
-        <br>
         <div class="row">
-            <div class="col">
+            <div class="col-12 col-sm mb-2">
+                <h5 class="form-label">Usuario</h5>
+                <p>{{user.username}}</p>
+            </div>
+            <div class="col-12 col-sm mb-2">
+                <h5 class="form-label">Email</h5>
+                <p>{{user.email}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm mb-2">
                 <h5 class="form-label">Nombre</h5>
                 <p>{{user.first_name}}</p>
             </div>
-            <div class="col">
+            <div class="col-12 col-sm mb-2">
                 <h5 class="form-label">Apellido</h5>
                 <p>{{user.last_name}}</p>
             </div>
         </div>
-        <br>
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Roles del usuario</h5>
@@ -59,7 +63,7 @@
         </div>
         <div class="row">
             <div class="col-sm col-12 text-center mt-3">
-                <button type="button" onclick="go_back()" class="btn btn-secondary col-sm-auto col-12">Volver</button>
+                <a href="{{ url_for('user_index') }}" class="btn btn-secondary col-sm-auto col-12">Volver</a>
             </div>
             {% if check_permission(current_user, "usuario_update") %}
             <div class="col-sm col-12 text-center mt-3">

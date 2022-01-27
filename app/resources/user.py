@@ -46,8 +46,13 @@ def update(id):
     user = User.with_id(id)
 
     if form.email.data != user.email:
-        if User.already_exists(form.email.data):
+        if (User.with_email(form.email.data) != None):
             flash("Ya existe el usuario con mail: "+form.email.data, "error")
+            return redirect(url_for("user_edit", id=id))
+    if form.username.data != user.username:
+        if (User.with_username(form.username.data) != None):
+            flash("Ya existe el usuario con nombre de usuario: " +
+                  form.username.data, "error")
             return redirect(url_for("user_edit", id=id))
 
     if (data and form.validate()):
@@ -71,20 +76,32 @@ def update(id):
     return redirect(url_for("user_detail", id=user.id))
 
 
-@login_required
-@permission_required('usuario_new')
+@ login_required
+@ permission_required('usuario_new')
 def create():
     data = request.form
     user = User()
     form = UserForm(data)
 
-    if User.already_exists(form.email.data):
-        flash("Ya existe el usuario con mail: "+form.email.data, "error")
-        return redirect(url_for("user_new"))
-
     if (data and form.validate()):
+        form.populate_obj(user)
+
+        query = User.already_exists(user)
+        if query['exists']:
+            for error in query['errors']:
+                flash(error, "error")
+            return redirect(url_for("user_new"))
+
+        # if User.already_exists(username=form.username.data):
+        #    flash("Ya existe el usuario con nombre de usuario: " +
+        #          form.username.data, "error")
+        #    return redirect(url_for("user_new"))
+#
+        # if User.already_exists(email=form.email.data):
+        #    flash("Ya existe el usuario con mail: "+form.email.data, "error")
+        #    return redirect(url_for("user_new"))
+
         try:
-            form.populate_obj(user)
             roles = []
             for role_name in data.keys():
                 if data[role_name] == 'role':
@@ -103,8 +120,8 @@ def create():
     return redirect(url_for("user_index"))
 
 
-@login_required
-@permission_required('usuario_destroy')
+@ login_required
+@ permission_required('usuario_destroy')
 def destroy():
     try:
         user = User.with_id(request.form['destroy_id'])
@@ -120,8 +137,8 @@ def destroy():
     return redirect(url_for("user_index"))
 
 
-@login_required
-@permission_required('usuario_update')
+@ login_required
+@ permission_required('usuario_update')
 def toggle(user_email):
     user = User.with_email(user_email)
     if user.hasRole('Administrador'):
@@ -138,26 +155,21 @@ def toggle(user_email):
     return redirect(url_for("user_detail", id=user.id))
 
 
-@login_required
+@ login_required
 def profile():
     return render_template("user/profile.html")
 
 
-@login_required
-@permission_required('usuario_update')
+@ login_required
+@ permission_required('usuario_update')
 def profile_edit():
     return render_template("user/profile_edit.html")
 
 
-@login_required
+@ login_required
 def profile_update():
     data = request.form
     form = UserForm(data)
-
-    if form.email.data != current_user.email:
-        if User.already_exists(form.email.data):
-            flash("Ya existe el usuario con mail: "+form.email.data, "error")
-            return redirect(url_for("user_profile_edit"))
 
     if form.validate():
         try:
@@ -175,7 +187,7 @@ def profile_update():
     return redirect(url_for("user_profile"))
 
 
-@login_required
+@ login_required
 def detail(id):
     user = User.with_id(id)
     if not user:
