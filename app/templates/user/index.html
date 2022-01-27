@@ -72,27 +72,33 @@
 <table class="table">
   <thead>
     <tr>
-      <th class="table-dark">Email</th>
-      <th class="table-dark d-none d-sm-table-cell">Nombre</th>
-      <th class="table-dark d-none d-sm-table-cell">Apellido</th>
+      <th class="table-dark">Usuario</th>
+      <th class="table-dark d-none d-sm-table-cell">Email</th>
+      <th class="table-dark d-none d-md-table-cell">Nombre</th>
+      <th class="table-dark d-none d-md-table-cell">Apellido</th>
       <th class="table-dark d-none d-md-table-cell">Roles</th>
-      <th class="table-dark d-none d-md-table-cell">Estado</th>
+      <th class="table-dark">Estado</th>
       <th class="table-dark"></th>
     </tr>
   </thead>
   <tbody>
     {% for user in users.items %}
     <tr>
-      <td class="table-light">{{user.email}}</td>
-      <td class="table-light d-none d-sm-table-cell">{{user.first_name}}</td>
-      <td class="table-light d-none d-sm-table-cell">{{user.last_name}}</td>
+      <td class="table-light">{{user.username}}</td>
+      <td class="table-light d-none d-sm-table-cell">{{user.email}}</td>
+      <td class="table-light d-none d-md-table-cell">{{user.first_name}}</td>
+      <td class="table-light d-none d-md-table-cell">{{user.last_name}}</td>
       <td class="table-light d-none d-md-table-cell">
-        {% for rol in user.roles %}
-        {{ rol.name }}
+        {% if user.roles|length > 0 %}
+        {% for role in user.roles %}
+        {{ role.name }}
         {% endfor %}
+        {% else %}
+        Sin asignar
+        {% endif %}
       </td>
 
-      <td class="table-light d-none d-md-table-cell">
+      <td class="table-light">
         {% if user.active %}
         Activo
         {% else %}
