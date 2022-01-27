@@ -7,13 +7,7 @@ from app.db import db
 
 
 def index():
-
-    # Antes de usar el ORM, se conectaba asi:
-    # conn = connection()
-    # issues = Issue.all(conn)
-
     issues = Issue.query.all()
-
     return render_template("issue/index.html", issues=issues)
 
 
