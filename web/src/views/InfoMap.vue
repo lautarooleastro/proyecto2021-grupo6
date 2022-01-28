@@ -7,10 +7,20 @@
         <l-polyline :lat-lngs="route.coordinates"></l-polyline>
       </div>
     </l-map>
-    <div>
-      <h3>Recorridos de evacuación</h3>
-      <div v-for="route in routes" :key="route">
-        <p>{{ route.name }}</p>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col text-start">
+          <h3>Recorridos de evacuación</h3>
+          <div v-for="route in routes" :key="route">
+            <p>{{ route.name }}</p>
+          </div>
+        </div>
+        <div class="col text-start">
+          <h3>Puntos de encuentro</h3>
+          <div v-for="route in routes" :key="route">
+            <p>{{ route.name }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
