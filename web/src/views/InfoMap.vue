@@ -10,13 +10,44 @@
     <div class="container mt-4">
       <div class="row">
         <div class="col text-start">
-          <h3>Recorridos de evacuación</h3>
-          <div v-for="route in routes" :key="route">
-            <p>{{ route.name }}</p>
+          <h3>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-arrow-right-square-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z"
+              />
+            </svg>
+            Recorridos de evacuación
+          </h3>
+          <div v-for="route in routes" :key="route" class="container">
+            <div class="row mt-4">
+              <div class="fw-bold">{{ route.name }}</div>
+              <div>{{ route.description }}</div>
+            </div>
           </div>
         </div>
         <div class="col text-start">
-          <h3>Puntos de encuentro</h3>
+          <h3>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-geo-alt-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
+              />
+            </svg>
+            Puntos de encuentro
+          </h3>
           <div v-for="route in routes" :key="route">
             <p>{{ route.name }}</p>
           </div>
