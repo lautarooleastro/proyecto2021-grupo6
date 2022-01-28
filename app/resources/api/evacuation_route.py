@@ -11,7 +11,8 @@ evacuation_route_api = Blueprint(
 def index():
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 3))
-    routes_page = EvacuationRoute.query.paginate(page=page, per_page=per_page)
+    routes_page = EvacuationRoute.query.filter(
+        EvacuationRoute.status == True).paginate(page=page, per_page=per_page)
 
     routes = EvacuationRouteSchema.dump(routes_page, many=True)
 
