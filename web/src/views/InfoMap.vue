@@ -6,6 +6,9 @@
       <div v-for="route in routes" :key="route">
         <l-polyline :lat-lngs="route.coordinates"></l-polyline>
       </div>
+      <div v-for="point in points" :key="point">
+        <l-marker :lat-lng="point"></l-marker>
+      </div>
     </l-map>
     <div class="container mt-4">
       <div class="row">
@@ -48,8 +51,13 @@
             </svg>
             Puntos de encuentro
           </h3>
-          <div v-for="route in routes" :key="route">
-            <p>{{ route.name }}</p>
+          <div v-for="point in points" :key="point" class="container">
+            <div class="row mt-4">
+              <div class="fw-bold">{{ point.name }}</div>
+              <div>
+                {{ point.adress }} - {{ point.phone }} - {{ point.email }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -58,13 +66,14 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LPolyline } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LPolyline, LMarker } from "@vue-leaflet/vue-leaflet";
 
 export default {
   components: {
     LMap,
     LTileLayer,
     LPolyline,
+    LMarker,
   },
   data() {
     return {
@@ -74,6 +83,7 @@ export default {
       zoom: 13,
       center: [-34.92053918330889, -57.9541949099075],
       routes: [],
+      points: [],
     };
   },
   created() {
@@ -85,6 +95,17 @@ export default {
       .then((json) => {
         //console.log(json.recorridos);
         this.routes = json.recorridos;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    fetch("http://127.0.0.1:5000/api/puntos-encuentro/")
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        this.points = json.puntos_encuentro;
+        console.log(this.points);
       })
       .catch((e) => {
         console.log(e);
