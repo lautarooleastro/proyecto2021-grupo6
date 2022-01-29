@@ -1,0 +1,114 @@
+{% extends "layout/layout.html" %}
+{% block title %}Detalle de usuario{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Detalle de Usuario
+    </h1>
+</div>
+<div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form id="applyChanges" action="{{ url_for('user_update', id=user.id) }}" method="POST">
+        <div class="row">
+            <div class="col-12 col-sm mb-2">
+                <h5 class="form-label">Usuario</h5>
+                <p>{{user.username}}</p>
+            </div>
+            <div class="col-12 col-sm mb-2">
+                <h5 class="form-label">Email</h5>
+                <p>{{user.email}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm mb-2">
+                <h5 class="form-label">Nombre</h5>
+                <p>{{user.first_name}}</p>
+            </div>
+            <div class="col-12 col-sm mb-2">
+                <h5 class="form-label">Apellido</h5>
+                <p>{{user.last_name}}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Roles del usuario</h5>
+                <div class="row">
+                    {% for role in user.roles %}
+                    <div class="row">
+                        <p class="card-text"> - {{role.name}}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <h5 class="form-label">Estado</h5>
+                <p>
+                    {% if user.active %}
+                    Activo
+                    {% else %}
+                    Inactivo
+                    {% endif %}
+                    <a href="{{url_for('user_toggle',user_email=user.email)}}">
+                        (cambiar)
+                    </a>
+                </p>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm col-12 text-center mt-3">
+                <a href="{{ url_for('user_index') }}" class="btn btn-secondary col-sm-auto col-12">Volver</a>
+            </div>
+            {% if check_permission(current_user, "usuario_update") %}
+            <div class="col-sm col-12 text-center mt-3">
+                <form action="" method="POST">
+                    <button name="edit_id" value="{{ user.id }}" formaction="{{ url_for('user_edit',id=user.id) }}"
+                        type="submit" class="btn btn-warning col-sm-auto col-12">
+                        Editar
+                        </a>
+                </form>
+            </div>
+            {% endif %}
+            {% if check_permission(current_user, "usuario_destroy") %}
+            <div class="col-sm col-12 text-center mt-3">
+                <button type="button" class="btn btn-danger col-sm-auto col-12" data-bs-toggle="modal"
+                    data-bs-target="#confirmDeleteModal">
+                    Eliminar
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Modal confirmar eliminacion -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Eliminar usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Usted quiere eliminar al usuario: "{{ user.email }}".</p>
+                <p>Esta accion no se puede deshacer.</p>
+                <p>¿Esta seguro/a que desea eliminarlo?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar y volver</button>
+                <form action="" method="POST">
+                    <button name="destroy_id" value="{{ user.id }}" formaction="{{ url_for('user_destroy') }}"
+                        type="submit" class="btn btn-danger">Eliminar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

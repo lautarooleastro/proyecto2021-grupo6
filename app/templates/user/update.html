@@ -4,37 +4,45 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>Editar usuario</h1>
-<div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px; width: fit-content;">
+<div class="d-block">
+    <h1 class="text-center text-white" style="padding: 15px;">
+        Editar Usuario
+    </h1>
+</div>
+<div class="container-md" style="background-color: white; padding: 30px; border-radius: 10px;">
     <form id="applyChanges" action="{{ url_for('user_update', id=user.id) }}" method="POST">
-        <div class="col">
-            <label class="form-label">Email</label>
-            <input required value="{{user.email}}" name="email" type="email" class="form-control">
-        </div>
-        <br>
-        <div class="col">
-            <label class="form-label">Contraseña</label>
-            <input required value="{{user.password}}" name="password" class="form-control" type="password" minlength="6"
-                maxlength="32">
-        </div>
-        <br>
-        <div class="col">
-            <label class="form-label">Repetir contraseña</label>
-            <input required value="{{user.password}}" name="confirm_password" class="form-control" type="password"
-                minlength="6" maxlength="32">
-        </div>
-        <br>
         <div class="row">
-            <div class="col">
+            <div class="col-12 col-md mb-4">
+                <label class="form-label">Nombre de usuario</label>
+                <input required value="{{user.username}}" name="username" type="text" class="form-control">
+            </div>
+            <div class="col-12 col-md mb-4">
+                <label class="form-label">Email</label>
+                <input required value="{{user.email}}" name="email" type="email" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md mb-4">
                 <label class="form-label">Nombre</label>
                 <input required value="{{user.first_name}}" name="first_name" class="form-control">
             </div>
-            <div class="col">
+            <div class="col-12 col-md mb-4">
                 <label class="form-label">Apellido</label>
                 <input required value="{{user.last_name}}" name="last_name" class="form-control">
             </div>
         </div>
-        <br>
+        <div class="row">
+            <div class="col-12 col-md mb-4">
+                <label class="form-label">Contraseña</label>
+                <input required value="{{user.password}}" name="password" class="form-control" type="password"
+                    minlength="6" maxlength="32">
+            </div>
+            <div class="col-12 col-md mb-4">
+                <label class="form-label">Repetir contraseña</label>
+                <input required value="{{user.password}}" name="confirm_password" class="form-control" type="password"
+                    minlength="6" maxlength="32">
+            </div>
+        </div>
         <div class="card">
             <div class="card-body">
                 <h6 class="card-title">Roles del usuario</h6>
@@ -54,14 +62,16 @@
 
             </div>
         </div>
-        <br>
         <div class="row">
-            <div class="col"><a href="{{ url_for('user_index') }}">
-                    <button type="button" class="btn btn-light">Cancelar y volver</button>
-                </a></div>
-            <div class="col">
-                <button form="applyChanges" type="submit" class="btn btn-primary">Aplicar
-                    cambios</button>
+            <div class="col-sm col-12 text-center mt-3">
+                <a href="{{ url_for('user_detail', id=user.id) }}" class="btn btn-light col-sm-auto col-12">
+                    Cancelar y volver
+                </a>
+            </div>
+            <div class="col-sm col-12 text-center mt-3">
+                <button form="applyChanges" type="submit" class="btn btn-warning col-sm-auto col-12">
+                    Aplicar cambios
+                </button>
             </div>
         </div>
     </form>

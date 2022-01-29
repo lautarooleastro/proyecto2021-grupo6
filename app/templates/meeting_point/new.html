@@ -50,7 +50,7 @@
                     <div class="form-check">
                         <input name="status" class="form-check-input" type="checkbox" checked>
                         <label class="form-check-label">
-                            Iniciar como punto Activo
+                            Iniciar punto como "Publicado"
                         </label>
                     </div>
                 </div>
@@ -59,17 +59,18 @@
                 <label class="form-label fw-bold">Seleccionar en el mapa</label>
                 <div id="map" style="height: 380px; width: 100%;">
                 </div>
-                <input class=" d-none" id="lat" type="text" name="lat">
+                <input class="d-none" id="lat" type="text" name="lat">
                 <input class="d-none" id="lng" type="text" name="lng">
             </div>
         </div>
 
         <div class="row pt-4">
-            <div class="col"><a href="{{ url_for('meeting_point_index') }}">
-                    <button type="button" class="btn btn-light">Cancelar y volver</button>
-                </a></div>
-            <div class="col">
-                <button type="submit" class="btn btn-primary">Crear Punto de Encuentro</button>
+            <div class="col-sm col-12 text-center mt-3">
+                <button type="button" onclick="go_back()" class="btn btn-light col-sm-auto col-12">Cancelar y
+                    volver</button>
+            </div>
+            <div class="col-sm col-12 text-center mt-3">
+                <button type="submit" class="btn btn-success col-sm-auto col-12">Crear Punto de Encuentro</button>
             </div>
         </div>
     </form>

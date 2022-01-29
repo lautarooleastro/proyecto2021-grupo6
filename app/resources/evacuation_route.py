@@ -16,9 +16,10 @@ import json
 def index():
     page = request.args.get('page', 1, type=int)
     name_query = request.args.get('name_query', type=str)
+    status_query = request.args.get('status_query', type=str)
     routes = EvacuationRoute.all_paginated(
-        page=page, name_query=name_query, config=Configuration.get())
-    return render_template("evacuation_route/index.html", name_query=name_query, routes=routes)
+        page=page, name_query=name_query, status_query=status_query, config=Configuration.get())
+    return render_template("evacuation_route/index.html", name_query=name_query, status_query=status_query, routes=routes)
 
 
 @ login_required
@@ -26,12 +27,16 @@ def index():
 def detail(id):
     evacuation_route = EvacuationRoute.with_id(id)
     points_list = []
-    for point in evacuation_route.points:
-        points_list.append(point.toJSONstringify())
-    points = ",".join(points_list)
-    points = "["+points+"]"
-    return render_template("evacuation_route/detail.html",
-                           route=evacuation_route, points=points)
+    if not evacuation_route:
+        flash("Ruta de evacuación inexistente", "error")
+        return redirect(url_for("evacuation_route_index"))
+    else:
+        for point in evacuation_route.points:
+            points_list.append(point.toJSONstringify())
+        points = ",".join(points_list)
+        points = "["+points+"]"
+        return render_template("evacuation_route/detail.html",
+                               route=evacuation_route, points=points)
 
 
 @ login_required

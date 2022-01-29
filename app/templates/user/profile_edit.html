@@ -13,13 +13,23 @@
 <div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
     <form action="{{ url_for('user_profile_update') }}" method="POST">
         <ul class="list-group list-group-flush">
+
+            <input name="username" type="text" class="d-none" id="username" value="{{ current_user.username }}">
+            <input name="email" type="email" class="d-none" id="email" value="{{ current_user.email }}">
+
+
             <li class="list-group-item">
-                <div class="row">
-                    <div class="mb-3">
-                        <label for="email" class="form-label" style="font-weight: bold;">Email</label>
-                        <input name="email" type="email" class="form-control" id="email"
-                            value="{{ current_user.email }}">
-                    </div>
+                <div class="mb-3">
+                    <label for="first_name" class="form-label" style="font-weight: bold;">Nombre</label>
+                    <input name="first_name" type="text" class="form-control" id="first_name"
+                        value="{{ current_user.first_name }}">
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="mb-3">
+                    <label for="last_name" class="form-label" style="font-weight: bold;">Apellido</label>
+                    <input name="last_name" type="text" class="form-control" id="last_name"
+                        value="{{ current_user.last_name }}">
                 </div>
             </li>
             <li class="list-group-item">
@@ -37,28 +47,14 @@
                         value="{{ current_user.password }}">
                 </div>
             </li>
-            <li class="list-group-item">
-                <div class="mb-3">
-                    <label for="first_name" class="form-label" style="font-weight: bold;">Nombre</label>
-                    <input name="first_name" type="text" class="form-control" id="first_name"
-                        value="{{ current_user.first_name }}">
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div class="mb-3">
-                    <label for="last_name" class="form-label" style="font-weight: bold;">Apellido</label>
-                    <input name="last_name" type="text" class="form-control" id="last_name"
-                        value="{{ current_user.last_name }}">
-                </div>
-            </li>
         </ul>
         <div class="container mt-4">
             <div class="row">
-                <div class="col-6">
-                    <a type="button" class="btn btn-danger" href="{{ url_for('user_profile') }}">Cancelar</a>
+                <div class="col text-center">
+                    <a type="button" class="btn btn-secondary" href="{{ url_for('user_profile') }}">Cancelar</a>
                 </div>
-                <div class="col-6">
-                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-warning">Confirmar</button>
                 </div>
             </div>
         </div>

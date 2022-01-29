@@ -29,11 +29,10 @@ def new():
 @login_required
 @permission_required('punto_encuentro_new')
 def create():
-
-    meeting_point = MeetingPoint()
     form = PointForm(request.form)
 
     if form.validate():
+        meeting_point = MeetingPoint()
         form.populate_obj(meeting_point)
         meeting_point.save()
         flash("El punto de encuentro fue creado con exito", "success")

@@ -19,8 +19,11 @@
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-6" style="font-weight: bold;">Elementos por pagina</div>
-                    <input class="col-sm-6" type="number" class="form-control" name="elements_per_page"
-                        value="{{ configuration.elements_per_page }}" required>
+
+                    <div class="col-6">
+                        <input type="number" class="form-control" name="elements_per_page"
+                            value="{{ configuration.elements_per_page }}" required>
+                    </div>
                 </div>
             </li>
             <li class="list-group-item">

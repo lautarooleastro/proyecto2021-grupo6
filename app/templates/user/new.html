@@ -9,34 +9,38 @@
     Crear nuevo usuario
   </h1>
 </div>
-<div class="container-md col-md-6" style="background-color: white; padding: 30px; border-radius: 10px;">
+<div class="container-md col-md" style="background-color: white; padding: 30px; border-radius: 10px;">
   <form action="{{ url_for('user_create') }}" method="POST">
-    <div class="col">
-      <label class="form-label">Email</label>
-      <input required name="email" type="email" class="form-control">
-    </div>
-    <br>
-    <div class="col">
-      <label class="form-label">Contraseña</label>
-      <input required name="password" class="form-control" type="password" minlength="6" maxlength="32">
-    </div>
-    <br>
-    <div class="col">
-      <label class="form-label">Repetir contraseña</label>
-      <input required name="confirm_password" class="form-control" type="password" minlength="6" maxlength="32">
-    </div>
-    <br>
     <div class="row">
-      <div class="col">
+      <div class="col-12 col-sm mb-4">
         <label class="form-label">Nombre</label>
         <input required name="first_name" class="form-control">
       </div>
-      <div class="col">
+      <div class="col-12 col-sm mb-4">
         <label class="form-label">Apellido</label>
         <input required name="last_name" class="form-control">
       </div>
     </div>
-    <br>
+    <div class="row">
+      <div class="col-12 col-md mb-4">
+        <label class="form-label">Nombre de usuario</label>
+        <input required name="username" type="text" class="form-control">
+      </div>
+      <div class="col-12 col-md mb-4">
+        <label class="form-label">Email</label>
+        <input required name="email" type="email" class="form-control">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-sm mb-4">
+        <label class="form-label">Contraseña</label>
+        <input required name="password" class="form-control" type="password" minlength="6" maxlength="32">
+      </div>
+      <div class="col-12 col-sm mb-4">
+        <label class="form-label">Repetir contraseña</label>
+        <input required name="confirm_password" class="form-control" type="password" minlength="6" maxlength="32">
+      </div>
+    </div>
     <div class="card">
       <div class="card-body">
         <h6 class="card-title">Roles del usuario</h6>
@@ -50,13 +54,16 @@
         </div>
       </div>
     </div>
-    <br>
     <div class="row">
-      <div class="col"><a href="{{ url_for('user_index') }}">
-          <button type="button" class="btn btn-light">Cancelar y volver</button>
-        </a></div>
-      <div class="col">
-        <button type="submit" class="btn btn-primary">Crear usuario</button>
+      <div class="col text-center mt-4">
+        <a href="{{ url_for('user_index') }}" class="btn btn-light  col-md-auto col-12">
+          Cancelar y volver
+        </a>
+      </div>
+      <div class="col text-center mt-4">
+        <button type="submit" class="btn btn-success  col-md-auto col-12">
+          Crear usuario
+        </button>
       </div>
     </div>
   </form>
