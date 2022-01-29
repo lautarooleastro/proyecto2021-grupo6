@@ -10,11 +10,15 @@ from app.helpers.login import set_login
 
 from app.routes import set_routes
 
+from flask_cors import CORS, cross_origin
+
 
 def create_app(environment="production"):
 
     # Configuración inicial de la app
     app = Flask(__name__)
+    CORS(app)
+    # app.config['CORS_ORIGINS'] = ['url de sitio permitido']
     app.secret_key = b'a7114859260f52e390e77ac5e319d15acacf527cc7c63b60c72d7e2c966ede14'
 
     # Carga de la configuración

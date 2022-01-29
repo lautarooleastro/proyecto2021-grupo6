@@ -13,6 +13,8 @@ def set_routes(app):
                      user.destroy, methods=["POST"])
     app.add_url_rule("/usuarios/cambiar_estado_<string:user_email>", "user_toggle",
                      user.toggle, methods=["GET"])
+    app.add_url_rule("/usuarios/detalle/<int:id>", "user_detail",
+                     user.detail, methods=["GET"])
     app.add_url_rule("/usuarios/mi-perfil", "user_profile", user.profile)
     app.add_url_rule("/usuarios/mi-perfil/editar",
                      "user_profile_edit", user.profile_edit)

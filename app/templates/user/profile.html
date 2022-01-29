@@ -15,32 +15,38 @@
     <ul class="list-group list-group-flush">
         <li class="list-group-item">
             <div class="row">
-                <div class="col-3" style="font-weight: bold;">Email</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ current_user.email }}</div>
+                <div class="col-auto fw-bold">Nombre de usuario</div>
+                <div class="col-sm text-sm-end text-start">{{ current_user.username }}</div>
             </div>
         </li>
         <li class="list-group-item">
             <div class="row">
-                <div class="col-3" style="font-weight: bold;">Contraseña</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ current_user.password }}</div>
+                <div class="col-auto fw-bold">Email</div>
+                <div class="col-sm text-sm-end text-start">{{ current_user.email }}</div>
             </div>
         </li>
         <li class="list-group-item">
             <div class="row">
-                <div class="col-3" style="font-weight: bold;">Nombre</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ current_user.first_name }}</div>
+                <div class="col-auto fw-bold">Contraseña</div>
+                <div class="col-sm text-sm-end text-start">{{ current_user.password }}</div>
             </div>
         </li>
         <li class="list-group-item">
             <div class="row">
-                <div class="col-3" style="font-weight: bold;">Apellido</div>
-                <div class="col-sm-9 text-sm-end text-start">{{ current_user.last_name }}</div>
+                <div class="col-auto fw-bold">Nombre</div>
+                <div class="col-sm text-sm-end text-start">{{ current_user.first_name }}</div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-auto fw-bold">Apellido</div>
+                <div class="col-sm text-sm-end text-start">{{ current_user.last_name }}</div>
             </div>
         </li>
     </ul>
     <div class="card">
         <div class="card-body">
-            <h6 class="card-title" style="font-weight: bold;">Mis roles</h6>
+            <h6 class="card-title fw-bold">Mis roles</h6>
             <div class="row">
                 {% for role in current_user.roles %}
                 <div class="ms-2">
@@ -50,14 +56,13 @@
             </div>
         </div>
     </div>
+    {% if check_permission(current_user, "usuario_destroy") %}
     <div class="container mt-4">
         <div class="row">
             <a class="btn btn-primary" href="{{ url_for('user_profile_edit') }}">Editar</a>
         </div>
     </div>
-    <br>
-
-
+    {% endif %}
 </div>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 const mapLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-export function MapSingleMarker({ selector, addSearch, lat, lng }) {
+export function MapSingleMarker({ selector, lat, lng, addSearch, enableEdit }) {
     let marker;
     let map;
 
@@ -10,7 +10,9 @@ export function MapSingleMarker({ selector, addSearch, lat, lng }) {
         // addSearchControl();
     };
 
-    map.addEventListener('click', (e) => { addMarker(e.latlng) });
+    if (enableEdit) {
+        map.addEventListener('click', (e) => { addMarker(e.latlng) });
+    }
 
     function initializeMap(selector, lat, lng) {
         map = L.map(selector).setView([lat, lng], 12);

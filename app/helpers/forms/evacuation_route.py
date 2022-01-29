@@ -8,3 +8,4 @@ class EvacuationRouteForm(Form):
         message="El nombre no puede estar vacio"), validators.data_required(message="El nombre no puede estar vacio")])
     description = StringField(u'Descripcion', validators=[
                               validators.input_required(message="La descripcion no puede estar vacia"), validators.data_required(message="La descripcion no puede estar vacia")])
+    status = BooleanField(u'Estado')

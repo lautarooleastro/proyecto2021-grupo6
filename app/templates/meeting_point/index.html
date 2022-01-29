@@ -66,7 +66,7 @@
 </div>
 {% endif %}
 
-
+{% if meeting_points.items|length > 0 %}
 <table class="table">
     <div class="container">
         <thead>
@@ -86,9 +86,9 @@
                 <td class="table-light">{{meeting_point.adress}}</td>
                 <td class="table-light d-none d-md-table-cell">
                     {% if meeting_point.status %}
-                    Activo
+                    Publicado
                     {% else %}
-                    Inactivo
+                    Despublicado
                     {% endif %}
                 </td>
                 <td class="table-light d-none d-md-table-cell">{{meeting_point.phone}}</td>
@@ -144,4 +144,14 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="container pt-5">
+    <div class="row align-items-center">
+        <div class="col text-center">
+            Sin resultados que coincidan con la búsqueda.
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}
