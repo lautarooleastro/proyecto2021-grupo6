@@ -1,17 +1,14 @@
 from datetime import datetime
-from sqlalchemy.sql.annotation import EMPTY_ANNOTATIONS
 from sqlalchemy.sql.schema import ForeignKey
 from app.db import db
 from sqlalchemy import Column, Integer, String, Date, Text, true, ForeignKey
 from app.models.category import Category
 from app.models.status import Status
 from app.models.issue_comment import IssueComment
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 
 class Issue(db.Model):
-    """ Define una entidad Issue que se corresponde con la tabla issues de la BD. """
-
     __tablename__ = "issues"
     id = Column(Integer, primary_key=True)
     tittle = Column(String(50))
@@ -26,9 +23,9 @@ class Issue(db.Model):
     email = Column(String(40))
     phone = Column(String(25))
     category_id = Column(Integer, ForeignKey("categories.id"))
-    """category = relationship(Category)"""
+    category = relationship(Category, backref=backref('issues', uselist=True))
     status_id = Column(Integer, ForeignKey("statuses.id"))
-    """status = relationship(Status)"""
+    status = relationship(Status, backref=backref('issues', uselist=True))
     issue_comment = relationship("IssueComment", cascade="all, delete") 
 
 
@@ -101,5 +98,3 @@ class Issue(db.Model):
                 top=datetime.date()
             return Issue.query.filter(Issue.date_open.between(origin,top))
         return None
-
-   

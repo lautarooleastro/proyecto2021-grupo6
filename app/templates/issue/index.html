@@ -1,13 +1,105 @@
 {% extends "layout/layout.html" %}
-{% block title %}Consultas{% endblock %}
+{% block title %}Denuncias{% endblock %}
 {% block head %}
 {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>Consultas</h1>
-{% for issue in issues %}
-<li>{{ issue.email }} - {{ issue.description }} - {{ issue.category.name }} - {{ issue.status.name }}</li>
-{% endfor %}
-<a href="{{ url_for('home') }}" class="link">Volver</a>
-<a href="{{ url_for('issue_new') }}" class="link">Nuevo</a>
+    <div class="row">
+        <h1 class="col-9"> Denuncias</h1>
+        {% if check_permission(current_user, "denuncia_create") %}
+        <div class="col" ><a class="btn btn-success" href="{{ url_for('issue_new') }}">Nueva</a></div>
+        {% endif %}
+    </div>
+    <div class="" style="display: block;">
+        <div class=""></div>
+        <div class="" style="align-self: center; background-color: white; padding: 10px; border-radius: 10px;">
+            <form action="{{ url_for('issue_index') }}" method="POST" id="uno">                
+                <div class="container" style="display: inline-block;"> 
+                    <div class="col-md-8" style="display: inline-block;">
+                        <input name="code" class="form-control" maxlength="10" {% if code == '_all' %} placeholder="Código" {% else %} placeholder={{code}} {% endif %}>
+                    </div>
+                    <div class="col-md-2" style="display: inline-block;">
+                        <div class="form-check" style="text-align: left;">
+                            <input class="form-check-input" type="checkbox" value="True" name="status" id="flexCheckChecked" {% if public %} checked {% endif %}>
+                            <label class="form-check-label" for="flexCheckChecked" >
+                                Publicada
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-1" style="display: inline-block;">             
+                        <div class=" ">
+                                <button type="submit" name="shearch" id="shearch" value="True" class="btn btn-danger" >Filtrar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="table-dark">Título</th>
+                <th class="table-dark">Fecha emisión</th>
+                <th class="table-dark">Estado</th>
+                <th class="table-dark">Categoría</th>
+                <th class="table-dark">Comentarios</th>
+                <th class="table-dark">Acciones</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issues.items %}
+                <tr>
+                    <td class="table-light">{{issue.tittle}}</td>
+                    <td class="table-light">{{issue.date_open}}</td>
+                    <td class="table-light">{{issue.status.name}}</td>
+                    <td class="table-light">{{issue.category.name}}</td>
+                    {% if issue.status %}
+                    <td class="table-light">Publicado</td>
+                    {% else %}
+                    <td class="table-light">Despublicado</td>
+                    {% endif %}
+                    <td class="table-light">{{issue.issue_comment|length}}</td>
+                    {% if check_permission(current_user, "denuncia_show") %}
+                        <form action="" method="POST">
+                            <button name="edit_id" value="{{issue.id}}" formaction="{{ url_for('issue_show', id=issue.id) }}" type="submit"
+                            class="btn btn-secondary">Ver</a>
+                        </form>
+                    {% endif %}
+                    </td>     
+                </tr>
+            {% endfor %}       
+        </tbody>
+    </table>
+    
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="text-right">
+                <a href="{{ url_for('issue_index', page=issues.prev_num, code=code, status=status) }}" class="btn btn-outline-dark 
+            {% if issues.page == 1 %}disabled{% endif %}">
+                &laquo;
+                </a>
+                <!-- Iterar sobre el numero de paginas para mostrar un link por cada pagina -->
+                {% for page_num in issues.iter_pages(left_edge=0, right_edge=0, left_current=3, right_current=3) %}
+                    {% if page_num %}
+                    <!-- Tildar la pagina actual como "activa" -->
+                        {% if issues.page == page_num %}
+                            <a href="{{ url_for('issue_index', page=page_num, code=code, status=status) }}" class="btn btn-dark" >
+                            {{ page_num }}
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('issue_index', page=page_num, code=code, status=status) }}" class="btn btn-outline-dark" >
+                            {{ page_num }}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <a href="{{ url_for('issue_index', page=issues.next_num, code=code, status=status) }}" class="btn btn-outline-dark 
+            {% if issues.page == issues.pages %}disabled{% endif %}">
+                &raquo;
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

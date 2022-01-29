@@ -11,3 +11,7 @@ class Category(db.Model):
 
     def __init__(self, name=None):
         self.name = name
+
+    @staticmethod
+    def get_all():
+        return Category.query.all()    

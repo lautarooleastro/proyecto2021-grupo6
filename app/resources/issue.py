@@ -1,13 +1,17 @@
-from flask import redirect, render_template, request, url_for, flash
+from flask import render_template, redirect, request, Flask, flash, url_for 
+from flask_login.utils import login_required
+from flask.helpers import flash, url_for
+from app.helpers.permission import permission_required
 from app.models.issue import Issue
-
-from app.db import db
+from app.models.configuration import Configuration
+from app.helpers.forms.issues_filter import IssuesFilter
 
 # Public resources
 
-
+@login_required
+@permission_required('denuncia_index')
 def index():
-    issues = Issue.query.all()
+    issues=Issue.get_all()
     return render_template("issue/index.html", issues=issues)
 
 
@@ -25,7 +29,7 @@ def hasAllParams(params):
 
 def create():
     """ Crea el issue y lo agrega a la BD si es valido. """
-    if (hasAllParams(request.form)):
+    """if (hasAllParams(request.form)):
         # los dos asteriscos son para descomponer el diccionario en los diferentes parametros (es una alternativa a usar params[])
         # request.form es un diccionario, pero anteponiendo ** lo separmos en los diferentes parametros
         # **diccionario -> parametros simples
@@ -41,4 +45,4 @@ def create():
         flash("Datos incompletos. Por favor, ingrese todos los datos.")
         return redirect(url_for("issue_new"))
 
-    return redirect(url_for("issue_index"))
+    return redirect(url_for("issue_index"))"""
