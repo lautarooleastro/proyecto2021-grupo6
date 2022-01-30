@@ -2,37 +2,111 @@
 {% block title %}Consultas{% endblock %}
 {% block head %}
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="../../static/js/issues/new.js"></script>
+<!-- END Render mapa -->
+
+
 {% endblock %}
 {% block content %}
-<h1>Crear una consulta</h1>
-<form action="{{ url_for('issue_create') }}" method="POST">
-  <p>
-    <label>Email<label></br>
-        <input required name="email" placeholder="Correo" />
-  </p>
-  <p>
-    <label>Description<label></br>
-        <textarea required name="description" placeholder="Descripción"></textarea>
-  </p>
-  <p>
-    <label>Categiría<label></br>
-        <select required name='category_id'>
-          <option value='1'>Bug</option>
-          <option value='2'>Question</option>
-        </select>
-  </p>
-  <p>
-    <label>Estado<label></br>
-        <select name='status_id'>
-          <option value='1'>New</option>
-          <option value='2'>Todo</option>
-          <option value='3'>In Progress</option>
-        </select>
-  </p>
-  <p>
-    <input type="submit" value="Crear">
-    <button type="reset">Limpiar</button>
-  </p>
-</form>
-<a href="{{ url_for('issue_index') }}" class="link">Volver</a>
+<div class="row">
+  <h1 class="col-10">Nueva Denuncia</h1>
+</div>
+
+<div class="container col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
+  <form action="{{ url_for('issue_create') }}" method="post"  id="nueva-denuncia">
+    <div class="row">
+      <div class="col-sm">
+        <h5>Detalle:</h5>
+        <br>
+        <div class="col">
+          {{ form.tittle.label }}
+          {{ form.tittle(size=40, class="form-control") }}<br>
+          {% for error in form.tittle.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+        </div>
+        <div class="col">
+          {{ form.category.label }}
+          {{ form.category(class="form-control")}}<br>
+          {% for error in form.category.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+        </div>
+        <div class="col">
+          {{ form.description.label }}
+          {{ form.description(size=40, class="form-control")}}<br>
+          {% for error in form.description.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+        </div>
+        <div class="col">
+          {{ form.first_name.label }}
+          {{ form.first_name(class="form-control")}} <br>
+          {% for error in form.first_name.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+        </div>
+        <div class="col">
+          {{ form.last_name.label }}
+          {{ form.last_name(class="form-control")}}<br>
+          {% for error in form.last_name.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+        </div>
+        <div class="col">
+          {{ form.email.label }}
+          {{ form.email(class="form-control") }}<br>
+          {% for error in form.email.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+        </div>
+        <div class="col">
+          {{ form.phone.label }}
+          {{ form.phone(class="form-control", type="number") }}<br>
+          {% for error in form.email.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-sm">
+        <h5>Ubicación:</h4>
+          <br>
+        <div class="col" >
+          <label for="">Default:  </label>
+          {{ form.latitude(class="") }};
+          {{ form.longitude(class="") }}
+        </div>
+        <div class="col" id="map" style="height: 90%; min-height: 280px"></div>
+        
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col"><a href="javascript:history.back()">
+          <button type="button" class="btn btn-primary">Cancelar y volver</button>
+        </a>
+      </div>
+      <div class="col text-center">
+        {{ form.submit(class="btn btn-danger") }}
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
 {% endblock %}

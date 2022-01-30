@@ -1,10 +1,10 @@
 from datetime import datetime
-from sqlalchemy.sql.schema import ForeignKey
 from app.db import db
-from sqlalchemy import Column, Integer, String, Date, Text, true, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Text, true, ForeignKey, desc
 from app.models.category import Category
 from app.models.status import Status
 from app.models.issue_comment import IssueComment
+from app.models.configuration import Configuration
 from sqlalchemy.orm import relationship, backref
 
 
@@ -12,7 +12,7 @@ class Issue(db.Model):
     __tablename__ = "issues"
     id = Column(Integer, primary_key=True)
     tittle = Column(String(50))
-    date_open=Column(Date, index=True)
+    date_open=Column(Date)
     date_closed=Column(Date)
     description = Column(Text)
     latitude = Column(String(25))
@@ -29,17 +29,18 @@ class Issue(db.Model):
     issue_comment = relationship("IssueComment", cascade="all, delete") 
 
 
-    def __init__(self, email=None, tittle=None, description=None, status_id=None, category_id=None, first_name=None, last_name=None, latitude=None, longitude=None, operator_id=None):
+    def __init__(self, email=None, tittle=None, description=None, status_id=None, category_id=None, first_name=None, last_name=None, latitude=None, longitude=None, phone=None):
         self.tittle = tittle
         self.email = email
         self.description = description
         self.status_id = status_id
         self.category_id = category_id
-        self.date_open = datetime.date()
+        self.date_open = datetime.now().date()
         self.latitude = latitude
         self.longitude = longitude
         self.last_name = last_name
         self.first_name = first_name
+        self.phone = phone
 
     @staticmethod
     def get_all():
@@ -91,10 +92,16 @@ class Issue(db.Model):
         return Issue.query.filter(Issue.email == email).count()
     
     @staticmethod
-    def filter_date(origin=None, top=None):
+    def all_paginate(pos=1):
+        return Issue.query.paginate(page=int(pos), per_page=Configuration.per_page())
+
+    @staticmethod
+    def filter_date(pos=1, origin=None, top=None):
         if (origin!=None):
             origin=Date(origin)
             if not top != None:
                 top=datetime.date()
-            return Issue.query.filter(Issue.date_open.between(origin,top))
-        return None
+            consulta= Issue.query.filter(Issue.date_open.between(origin,top))
+        else:
+            consulta= Issue.query.order_by(desc(Issue.date_open))
+        return consulta.paginate(page=int(pos), per_page=Configuration.per_page())

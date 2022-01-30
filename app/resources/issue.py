@@ -5,30 +5,85 @@ from app.helpers.permission import permission_required
 from app.models.issue import Issue
 from app.models.configuration import Configuration
 from app.helpers.forms.issues_filter import IssuesFilter
+from app.helpers.forms.issue_new import IssueNew
 
 # Public resources
 
 @login_required
 @permission_required('denuncia_index')
-def index():
-    issues=Issue.get_all()
+def index(page='1', code='_all', status="None"):
+    """shearch=request.form.get('shearch', False, type=bool)
+    if (shearch):
+        try:
+            form = IssuesFilter(request.form, csrf_enabled=False)
+        except:
+            flash("Error en la búsqueda", "Error")
+            return redirect(url_for("flood_zone_index"))
+        issues = Issue.get_filter(page, Configuration.per_page(), form.code.data, form.status.data)
+        public=form.status.data 
+        code=form.code.data
+        status=form.status.data
+    
+    if (status!="None"):
+        if (code=='_all'):
+            code=''
+        if status=="False":
+            status=False
+        issues = Issue.get_filter(page, Configuration.per_page(), code, status)
+        public=status
+    else:
+        issues = Issue.get_filter(page, Configuration.per_page()) 
+        public=True      
+    if (code==''):
+        code='_all'"""
+    issues=Issue.all_paginate();
     return render_template("issue/index.html", issues=issues)
 
 
 def new():
-    return render_template("issue/new.html")
+    form=IssueNew()
+    return render_template("issue/new.html", form=form)
 
+def __newIssue(form):
+    if (form.validate()):
+        """phone = str(form.phone.data['area_code'])+str(form.phone.data['number'])"""
+        phone=str(form.phone.data)
+        issue= Issue(email=form.email.data, tittle=form.tittle.data, description=form.description.data, status_id=1, category_id=int(form.category.data), first_name=form.first_name.data, last_name=form.last_name.data, latitude=form.latitude.data, longitude=form.longitude.data, phone=phone)        
+        return issue
+    else:
+        for error in form.errors:
+            flash(form.errors[error], "error")
+        redirect(url_for("issue_index", page =1))
 
-def hasAllParams(params):
-    """ Metodo para chequear que el issue tiene todos los params que necesita para ser creado. """
-    lista = []
-    for param in params.keys():
-        lista.append(params.get(param) != '')
-    return all(lista)
+def __verificar(issue=None):
+    """Verifica la existencia previa de otra denuncia con los mismos identificadores"""
+    if issue==None:
+        flash("Data input inválido", "error")
+        return False
+    if (Issue.with_id(issue.id) != None):
+        flash("Ya existe una denuncia con este id", "error")
+        return False
+    return True
 
-
+@login_required
 def create():
     """ Crea el issue y lo agrega a la BD si es valido. """
+    import pdb; pdb.set_trace()
+    form = IssueNew(request.form, csrf_enabled=False)
+    issue=__newIssue(form)
+    if __verificar(issue):
+        issue.save()
+    if Issue.with_id(issue.id)!= None:
+        flash("Se registró la denuncia correctamente", "success")
+        return redirect(url_for("issue_index", page=1))
+    else:
+        flash("No fue posible registrar la denuncia", "error")
+        return redirect(url_for('issue_new'))
+
+@login_required
+def show(arg):
+    pass
+
     """if (hasAllParams(request.form)):
         # los dos asteriscos son para descomponer el diccionario en los diferentes parametros (es una alternativa a usar params[])
         # request.form es un diccionario, pero anteponiendo ** lo separmos en los diferentes parametros

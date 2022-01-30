@@ -55,12 +55,8 @@
                     <td class="table-light">{{issue.date_open}}</td>
                     <td class="table-light">{{issue.status.name}}</td>
                     <td class="table-light">{{issue.category.name}}</td>
-                    {% if issue.status %}
-                    <td class="table-light">Publicado</td>
-                    {% else %}
-                    <td class="table-light">Despublicado</td>
-                    {% endif %}
                     <td class="table-light">{{issue.issue_comment|length}}</td>
+                    <td class="table-light">
                     {% if check_permission(current_user, "denuncia_show") %}
                         <form action="" method="POST">
                             <button name="edit_id" value="{{issue.id}}" formaction="{{ url_for('issue_show', id=issue.id) }}" type="submit"
