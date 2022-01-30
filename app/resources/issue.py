@@ -45,6 +45,7 @@ def new():
     return render_template("issue/new.html", form=form)
 
 def __newIssue(form):
+    """Valida los datos ingresados y crea un nuevo issue"""
     if (form.validate()):
         """phone = str(form.phone.data['area_code'])+str(form.phone.data['number'])"""
         phone=str(form.phone.data)
@@ -53,32 +54,28 @@ def __newIssue(form):
     else:
         for error in form.errors:
             flash(form.errors[error], "error")
-        redirect(url_for("issue_index", page =1))
 
 def __verificar(issue=None):
-    """Verifica la existencia previa de otra denuncia con los mismos identificadores"""
+    """Verifica la consistencia de la denuncia"""
     if issue==None:
-        flash("Data input inválido", "error")
         return False
     if (Issue.with_id(issue.id) != None):
-        flash("Ya existe una denuncia con este id", "error")
         return False
     return True
 
 @login_required
 def create():
     """ Crea el issue y lo agrega a la BD si es valido. """
-    import pdb; pdb.set_trace()
-    form = IssueNew(request.form, csrf_enabled=False)
-    issue=__newIssue(form)
-    if __verificar(issue):
-        issue.save()
-    if Issue.with_id(issue.id)!= None:
-        flash("Se registró la denuncia correctamente", "success")
-        return redirect(url_for("issue_index", page=1))
-    else:
-        flash("No fue posible registrar la denuncia", "error")
-        return redirect(url_for('issue_new'))
+    if request.method == 'POST':
+        form = IssueNew(request.form, csrf_enabled=False)
+        issue=__newIssue(form)
+        if __verificar(issue):
+            issue.save()
+            if Issue.with_id(issue.id)!= None:
+                flash("Se registró la denuncia correctamente", "success")
+                return redirect(url_for("issue_index", page=1))
+    flash("No fue posible registrar la denuncia", "error")
+    return redirect(url_for('issue_new'))
 
 @login_required
 def show(arg):
