@@ -11,49 +11,33 @@ from app.helpers.forms.issue_new import IssueNew
 
 @login_required
 @permission_required('denuncia_index')
-def index(page='1', code='_all', status="None"):
-    """shearch=request.form.get('shearch', False, type=bool)
-    if (shearch):
-        try:
-            form = IssuesFilter(request.form, csrf_enabled=False)
-        except:
-            flash("Error en la búsqueda", "Error")
-            return redirect(url_for("flood_zone_index"))
-        issues = Issue.get_filter(page, Configuration.per_page(), form.code.data, form.status.data)
-        public=form.status.data 
-        code=form.code.data
-        status=form.status.data
-    
-    if (status!="None"):
-        if (code=='_all'):
-            code=''
-        if status=="False":
-            status=False
-        issues = Issue.get_filter(page, Configuration.per_page(), code, status)
-        public=status
-    else:
-        issues = Issue.get_filter(page, Configuration.per_page()) 
-        public=True      
-    if (code==''):
-        code='_all'"""
-    issues=Issue.all_paginate();
-    return render_template("issue/index.html", issues=issues)
+def index():    
+    page= request.args.get('page', 1, type=int)
+    issues=Issue.all_paginate(page);
+    filter=IssuesFilter()
+    return render_template("issue/index.html", issues=issues, filter=filter)
 
 
+@login_required
+@permission_required('denuncia_create')
 def new():
     form=IssueNew()
     return render_template("issue/new.html", form=form)
 
+
+@login_required
 def __newIssue(form):
     """Valida los datos ingresados y crea un nuevo issue"""
     if (form.validate()):
-        """phone = str(form.phone.data['area_code'])+str(form.phone.data['number'])"""
+        """phone = str(form.phone.data['area_tittle'])+str(form.phone.data['number'])"""
         phone=str(form.phone.data)
         issue= Issue(email=form.email.data, tittle=form.tittle.data, description=form.description.data, status_id=1, category_id=int(form.category.data), first_name=form.first_name.data, last_name=form.last_name.data, latitude=form.latitude.data, longitude=form.longitude.data, phone=phone)        
         return issue
     else:
+        """return render_template("issue/new.html", form=form)"""
         for error in form.errors:
             flash(form.errors[error], "error")
+
 
 def __verificar(issue=None):
     """Verifica la consistencia de la denuncia"""
@@ -63,7 +47,9 @@ def __verificar(issue=None):
         return False
     return True
 
+
 @login_required
+@permission_required('denuncia_create')
 def create():
     """ Crea el issue y lo agrega a la BD si es valido. """
     if request.method == 'POST':

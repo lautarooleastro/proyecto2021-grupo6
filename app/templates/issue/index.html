@@ -7,29 +7,50 @@
     <div class="row">
         <h1 class="col-9"> Denuncias</h1>
         {% if check_permission(current_user, "denuncia_create") %}
-        <div class="col" ><a class="btn btn-success" href="{{ url_for('issue_new') }}">Nueva</a></div>
+        <div class="col" style="display: flex; align-items: center;" ><a class="btn btn-success" href="{{ url_for('issue_new') }}">Nueva</a></div>
         {% endif %}
     </div>
     <div class="" style="display: block;">
-        <div class=""></div>
         <div class="" style="align-self: center; background-color: white; padding: 10px; border-radius: 10px;">
-            <form action="{{ url_for('issue_index') }}" method="POST" id="uno">                
-                <div class="container" style="display: inline-block;"> 
-                    <div class="col-md-8" style="display: inline-block;">
-                        <input name="code" class="form-control" maxlength="10" {% if code == '_all' %} placeholder="Código" {% else %} placeholder={{code}} {% endif %}>
+            <form action="{{ url_for('issue_index') }}" method="POST" id="uno" class="container" style="display: inline-block;">                
+                <div class="row"> 
+                    <div class="col">
+                        {{ filter.tittle.label }}
+                        {{ filter.tittle(class="form-control", style="display: inline-block;") }}<br>
+                        {% for error in filter.tittle.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
                     </div>
-                    <div class="col-md-2" style="display: inline-block;">
-                        <div class="form-check" style="text-align: left;">
-                            <input class="form-check-input" type="checkbox" value="True" name="status" id="flexCheckChecked" {% if public %} checked {% endif %}>
-                            <label class="form-check-label" for="flexCheckChecked" >
-                                Publicada
-                            </label>
-                        </div>
+                    <div class="col">
+                        {{ filter.status.label }}
+                        {{ filter.status(class="form-control", style="display: inline-block;") }}<br>
+                        {% for error in filter.status.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
                     </div>
-                    <div class="col-md-1" style="display: inline-block;">             
-                        <div class=" ">
-                                <button type="submit" name="shearch" id="shearch" value="True" class="btn btn-danger" >Filtrar</button>
-                        </div>
+                    <div class="col">
+                        {{ filter.category.label }}
+                        {{ filter.category(class="form-control", style="display: inline-block;") }}<br>
+                        {% for error in filter.category.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="col">
+                        {{ filter.date_1.label }}
+                        {{ filter.date_1(class="form-control", style="display: inline-block;", type="Date") }}<br>
+                        {% for error in filter.date_1.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="col">
+                        {{ filter.date_1.label }}
+                        {{ filter.date_1(class="form-control", style="display: inline-block;", type="Date") }}<br>
+                        {% for error in filter.date_1.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="col" style="display: flex; align-items: center;">
+                        <!-- {{ filter.submit(class="btn btn-danger") }} -->
                     </div>
                 </div>
             </form>
@@ -72,7 +93,7 @@
     <div class="row justify-content-center">
         <div class="col-auto">
             <div class="text-right">
-                <a href="{{ url_for('issue_index', page=issues.prev_num, code=code, status=status) }}" class="btn btn-outline-dark 
+                <a href="{{ url_for('issue_index', page=issues.prev_num) }}" class="btn btn-outline-dark 
             {% if issues.page == 1 %}disabled{% endif %}">
                 &laquo;
                 </a>
@@ -81,17 +102,17 @@
                     {% if page_num %}
                     <!-- Tildar la pagina actual como "activa" -->
                         {% if issues.page == page_num %}
-                            <a href="{{ url_for('issue_index', page=page_num, code=code, status=status) }}" class="btn btn-dark" >
+                            <a href="{{ url_for('issue_index', page=page_num) }}" class="btn btn-dark" >
                             {{ page_num }}
                             </a>
                         {% else %}
-                            <a href="{{ url_for('issue_index', page=page_num, code=code, status=status) }}" class="btn btn-outline-dark" >
+                            <a href="{{ url_for('issue_index', page=page_num) }}" class="btn btn-outline-dark" >
                             {{ page_num }}
                             </a>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
-                <a href="{{ url_for('issue_index', page=issues.next_num, code=code, status=status) }}" class="btn btn-outline-dark 
+                <a href="{{ url_for('issue_index', page=issues.next_num) }}" class="btn btn-outline-dark 
             {% if issues.page == issues.pages %}disabled{% endif %}">
                 &raquo;
                 </a>
