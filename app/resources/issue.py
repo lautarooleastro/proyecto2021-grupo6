@@ -75,3 +75,26 @@ def show(id):
     status = Status.with_id(issue.status_id)
     category= Category.with_id(issue.category_id)
     return render_template("issue/show.html", issue=issue, operator=operator, status=status, category=category)
+
+
+@login_required
+@permission_required('denuncia_update')
+def edit():
+    pass
+
+
+@login_required
+@permission_required('denuncia_destroy')
+def destroy():
+    pass
+    issue = Issue.with_id(request.form['destroy_id'])
+    try:
+        Issue.destroy(issue)
+    except ValueError as e:
+        flash(e, 'error')
+    if Issue.with_id(issue.id)!= None:
+        flash("No fue posible eliminar la denuncia "+issue.tittle, "error")
+    else:
+        flash("Se elimino la denuncia "+issue.tittle, "success")
+
+    return redirect(url_for("issue_index", page=1))
