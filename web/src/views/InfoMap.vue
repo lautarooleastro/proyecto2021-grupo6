@@ -7,7 +7,16 @@
         <l-polyline :lat-lngs="route.coordinates"></l-polyline>
       </div>
       <div v-for="point in points" :key="point">
-        <l-marker :lat-lng="point"></l-marker>
+        <l-marker :lat-lng="point">
+          <l-popup>
+            <div class="col">
+              <h6>{{ point.name }}</h6>
+              <div>{{ point.adress }}</div>
+              <div>{{ point.phone }}</div>
+              <div>{{ point.email }}</div>
+            </div>
+          </l-popup>
+        </l-marker>
       </div>
     </l-map>
     <div class="container mt-4">
@@ -66,7 +75,13 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LPolyline, LMarker } from "@vue-leaflet/vue-leaflet";
+import {
+  LMap,
+  LTileLayer,
+  LPolyline,
+  LMarker,
+  LPopup,
+} from "@vue-leaflet/vue-leaflet";
 
 export default {
   components: {
@@ -74,6 +89,7 @@ export default {
     LTileLayer,
     LPolyline,
     LMarker,
+    LPopup,
   },
   data() {
     return {
