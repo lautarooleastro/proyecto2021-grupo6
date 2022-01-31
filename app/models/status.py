@@ -16,3 +16,7 @@ class Status(db.Model):
     @staticmethod
     def get_all():
         return Status.query.all()    
+
+    @staticmethod
+    def with_id(id):
+        return Status.query.filter(Status.id == id).first()

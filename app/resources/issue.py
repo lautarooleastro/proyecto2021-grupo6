@@ -6,6 +6,10 @@ from app.models.issue import Issue
 from app.models.configuration import Configuration
 from app.helpers.forms.issues_filter import IssuesFilter
 from app.helpers.forms.issue_new import IssueNew
+from app.helpers.forms.issue_edit import IssueEdit
+from app.models.user import User
+from app.models.status import Status
+from app.models.category import Category
 
 # Public resources
 
@@ -64,23 +68,10 @@ def create():
     return redirect(url_for('issue_new'))
 
 @login_required
-def show(arg):
-    pass
-
-    """if (hasAllParams(request.form)):
-        # los dos asteriscos son para descomponer el diccionario en los diferentes parametros (es una alternativa a usar params[])
-        # request.form es un diccionario, pero anteponiendo ** lo separmos en los diferentes parametros
-        # **diccionario -> parametros simples
-        new_issue = Issue(**request.form)
-
-        # agrego el nuevo issue
-        db.session.add(new_issue)
-
-        # efectuo los cambios (se pueden hacer muchos cambios y efectuarlos todos juntos)
-        db.session.commit()
-        flash("Consulta creada con éxito.")
-    else:
-        flash("Datos incompletos. Por favor, ingrese todos los datos.")
-        return redirect(url_for("issue_new"))
-
-    return redirect(url_for("issue_index"))"""
+@permission_required('denuncia_show')
+def show(id):
+    issue = Issue.with_id(id)
+    operator = User.with_id(issue.operator)
+    status = Status.with_id(issue.status_id)
+    category= Category.with_id(issue.category_id)
+    return render_template("issue/show.html", issue=issue, operator=operator, status=status, category=category)

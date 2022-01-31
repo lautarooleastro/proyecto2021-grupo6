@@ -1,0 +1,157 @@
+{% extends "layout/layout.html" %}
+{% block title %}Detalle zona inundable{% endblock %}
+{% block head %}
+{{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="{{ url_for('static', filename='js/issues/show.js') }}"></script>
+<!-- END Render mapa -->
+
+
+{% endblock %}
+{% block content %}
+<div class="row">
+    <h1 class="col-10">Zonas inundables</h1>
+</div>
+
+<div class="container" style="background-color: white; padding: 30px; border-radius: 10px;">
+    <div class="row">
+        <div class="col-sm">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Título:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ issue.tittle }}</div>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Descripción:</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{ issue.description }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Denunciante:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ issue.first_name }} {{ issue.last_name }}</div>
+                    </div>
+                </li>                
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Fecha de denuncia:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ issue.date_open }}</div>
+                    </div>
+                </li>                                
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Correo de contacto:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ issue.email }}</div>
+                    </div>
+                </li>
+                               
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Teléfono de contacto:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ issue.phone }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Categoría:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ category.name }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Estado:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ status.name }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Comentarios:</div>
+                        <div class="col-sm-9 text-sm-end text-start">{{issue.issue_comment|length}}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5" style="font-weight: bold;">Operador asignado:</div>
+                        <div class="col-sm-7 text-sm-end text-start">{{ operator.username }}</div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-3" style="font-weight: bold;">Coordenadas:</div>
+                        <div class="col-sm-9 text-sm-end text-start">({{ issue.latitude }} ; {{ issue.longitude }})</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm">
+            <input id="latitude" class="d-none" type="text" value="{{ issue.latitude }}">
+            <input id="longitude" class="d-none" type="text" value="{{ issue.longitude }}">
+            <div id="map" style="height: 90%; min-height: 280px"></div>
+            
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col text-center">
+            <a class="btn btn-primary" href="javascript:history.back()">Volver</a>
+        </div>
+        {% if check_permission(current_user, "denuncia_destroy") %}
+        <div class="col text-center">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#confirmDeleteModal">
+                Eliminar
+            </button>
+        </div>
+        {% endif %}
+        {% if check_permission(current_user, "denuncia_update") %}
+        <div class="col text-center">
+            <form action="{{ url_for('issue_edit', id=issue.id) }}" method="POST">
+                <button class="btn btn-warning" type="submit">
+                    Editar
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Eliminar denuncia {{ issue.tittle }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Usted va a <b>eliminar</b> {{ issue.tittle }}.</p>
+                <p class="text-center">¿Confirma la acción?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="" method="POST">
+                    <button name="destroy_id" value="{{issue.id}}" formaction="{{ url_for('issue_destroy') }}" type="submit"
+                                class="btn btn-danger">Confirmar</a>
+                </form> 
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
