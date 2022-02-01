@@ -165,3 +165,7 @@ class User(db.Model):
     def hasRole(self, role_name):
         role = Role.with_name(role_name)
         return (role in self.roles)
+
+    @staticmethod
+    def get_all():
+        return User.query.all() 
