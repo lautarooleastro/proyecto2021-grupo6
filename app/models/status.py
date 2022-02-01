@@ -9,5 +9,14 @@ class Status(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(30), unique=True)
 
+  
     def __init__(self, name=None):
         self.name = name
+
+    @staticmethod
+    def get_all():
+        return Status.query.all()    
+
+    @staticmethod
+    def with_id(id):
+        return Status.query.filter(Status.id == id).first()

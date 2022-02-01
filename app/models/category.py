@@ -11,3 +11,11 @@ class Category(db.Model):
 
     def __init__(self, name=None):
         self.name = name
+
+    @staticmethod
+    def get_all():
+        return Category.query.all()    
+
+    @staticmethod
+    def with_id(id):
+        return Category.query.filter(Category.id == id).first()
