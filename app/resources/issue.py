@@ -31,17 +31,13 @@ def new():
 
 @login_required
 def __newIssue(form):
-    """Valida los datos ingresados y crea un nuevo issue"""
+    """Valida los datos ingresados y crea un issue a partir de un formulario de IssueNew"""
     if (form.validate()):
         """phone = str(form.phone.data['area_tittle'])+str(form.phone.data['number'])"""
         phone=str(form.phone.data)
         issue= Issue(email=form.email.data, tittle=form.tittle.data, description=form.description.data, status_id=1, category_id=int(form.category.data), first_name=form.first_name.data, last_name=form.last_name.data, latitude=form.latitude.data, longitude=form.longitude.data, phone=phone)        
         return issue
-    else:
-        """return render_template("issue/new.html", form=form)"""
-        for error in form.errors:
-            flash(form.errors[error], "error")
-
+    
 
 def __verificar(issue=None):
     """Verifica la consistencia de la denuncia"""
@@ -50,7 +46,6 @@ def __verificar(issue=None):
     if (Issue.with_id(issue.id) != None):
         return False
     return True
-
 
 @login_required
 @permission_required('denuncia_create')
@@ -65,7 +60,7 @@ def create():
                 flash("Se registró la denuncia correctamente", "success")
                 return redirect(url_for("issue_index", page=1))
     flash("No fue posible registrar la denuncia", "error")
-    return redirect(url_for('issue_new'))
+    return render_template("issue/new.html", form=form)
 
 @login_required
 @permission_required('denuncia_show')
@@ -76,12 +71,96 @@ def show(id):
     category= Category.with_id(issue.category_id)
     return render_template("issue/show.html", issue=issue, operator=operator, status=status, category=category)
 
+@login_required
+def __statuses():
+    statuses = Status.get_all()
+    estados=[]
+    for aux in statuses:
+        estados.append((int(aux.id),str(aux.name)))
+    return estados
+
+@login_required
+def __categories():
+    categories = Category.get_all()
+    categorias=[]
+    for aux in categories:
+        categorias.append((int(aux.id),str(aux.name)))
+    return categorias
+
+@login_required
+def __users():
+    users=User.get_all()
+    usuarios=[]
+    for aux in users:
+        usuarios.append((str(aux.id),str(aux.username)))
+    return usuarios
 
 @login_required
 @permission_required('denuncia_update')
-def edit():
-    pass
+def edit(id):
+    issue=Issue.with_id(id)
+    editForm=IssueEdit()
+    """usuarios = __users()"""
+    usuarios = [("1","Administrador"),("2","Operador")]
+    categorias = __categories()
+    estados = __statuses()
+    editForm.date_open.default=issue.date_open
+    editForm.description.default=issue.description
+    editForm.email.default=issue.email
+    editForm.first_name.default=issue.first_name
+    editForm.last_name.default=issue.last_name
+    editForm.latitude.default=issue.latitude
+    editForm.longitude.default=issue.longitude
+    editForm.phone.default=issue.phone
+    editForm.tittle.default=issue.tittle
+    editForm.operator.choices= usuarios
+    editForm.operator.default=issue.operator
+    editForm.category.choices= categorias
+    editForm.category.default=issue.category_id        
+    editForm.status.choices= estados
+    editForm.status.default=issue.status_id    
+    editForm.date_closed.default=issue.date_closed
+    editForm.process()
+    return render_template("issue/edit.html", editForm=editForm, id=issue.id)
 
+@login_required
+@permission_required('denuncia_update')
+def modify(id):
+    """Recibe, valida y aplica los cambios a un issue existente"""
+    issue_old=Issue.with_id(id)
+    if request.method == 'POST':
+        form = IssueEdit(request.form, csrf_enabled=False)
+        form.operator.choices = [("1","Administrador"),("2","Operador")]
+        form.category.choices = __categories()
+        form.status.choices = __statuses()
+        issue=__editIssue(form,issue_old)
+        if issue!=None:
+            issue.id=id
+            issue.issue_comment = issue_old.issue_comment
+            issue.modify()
+            if Issue.with_id(issue.id)!= None:
+                flash("Se modificó la denuncia correctamente", "success")
+                return redirect(url_for("issue_index", page=1))
+    flash("No fue posible modificar la denuncia", "error")
+    return render_template("issue/edit.html", editForm=form, id=id)
+
+@login_required
+def __editIssue(form,issue):
+    """Valida los datos ingresados y crea un issue a partir de un formulario de IssueEdit"""
+    if (form.validate()):
+        issue.phone=str(form.phone.data)
+        issue.email=form.email.data
+        issue.tittle=form.tittle.data
+        issue.description=form.description.data
+        issue.category_id=int(form.category.data)
+        issue.first_name=form.first_name.data
+        issue.last_name=form.last_name.data
+        issue.latitude=form.latitude.data
+        issue.longitude=form.longitude.data        
+        issue.date_closed = form.date_closed.data
+        issue.operator = int(form.operator.data)
+        issue.status_id = int(form.status.data)
+        return issue
 
 @login_required
 @permission_required('denuncia_destroy')

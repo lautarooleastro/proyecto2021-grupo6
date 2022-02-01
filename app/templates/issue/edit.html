@@ -1,0 +1,79 @@
+{% extends "layout/layout.html" %}
+{% block title %}Detalle zona inundable{% endblock %}
+{% block head %}
+{{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="{{ url_for('static', filename='js/issues/edit.js') }}"></script>
+<!-- END Render mapa -->
+
+
+{% endblock %}
+{% block content %}
+<div class="row">
+    <h1 class="col-10">Zonas inundables</h1>
+</div>
+
+<form action="{{ url_for('issue_modify', id=id) }}" method="post" class="container" style="background-color: white; padding: 30px; border-radius: 10px;" id="edit_issue">
+    {{ editForm.csrf_token }}
+    <div class="row">
+        <div class="col-sm">
+            <ul class="list-group list-group-flush">
+                {% for field in editForm %}
+                {% if (field.name != 'submit') and (field.name != 'latitude') and (field.name != 'longitude') %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            {{ field.label(style="font-weight: bold;") }}
+                            {% if (field.name == 'phone') %}
+                                {{ field(class="form-control", type="number") }}<br>
+                            {% else %}
+                                {% if (field.name == 'date_open') or (field.name == 'date_closed') %}
+                                    {{ field(class="form-control", type="date") }}<br>
+                                {% else %}
+                                    {{ field(class="form-control") }}<br>
+                                {% endif %}
+                            {% endif %}
+                            {% for error in field.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm">
+            <br>
+            <div class="col" >
+              <label for="" style="font-weight: bold;">Ubicación:  </label>
+              {{ editForm.latitude(class="") }};{{ editForm.longitude(class="") }}
+            </div>
+            <br>
+            <div id="map" style="height: 90%; min-height: 280px"></div>
+            
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col text-center">
+            <a class="btn btn-primary" href="javascript:history.back()">Volver</a>
+        </div>
+        <div class="col text-center">
+            {{ editForm.submit(class="btn btn-danger") }}
+        </div>
+    </div>
+</form>
+
+{% endblock %}

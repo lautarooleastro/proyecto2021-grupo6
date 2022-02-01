@@ -28,6 +28,7 @@
 
 <div class="container col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
   <form action="{{ url_for('issue_create') }}" method="post"  id="nueva-denuncia">
+    {{ form.csrf_token }}
     <div class="row">
       <div class="col-sm">
         <h5>Detalle:</h5>
