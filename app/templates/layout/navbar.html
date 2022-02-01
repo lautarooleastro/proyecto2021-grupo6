@@ -19,9 +19,6 @@
                 </li>
                 {% if is_authenticated() %}
                 <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link active">Inicio</a>
-                </li>
-                <li class="nav-item">
                     <a href="{{ url_for('user_index') }}" class="nav-link active">Usuarios</a>
                 </li>
                 <li class="nav-item">
