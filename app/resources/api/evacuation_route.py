@@ -2,6 +2,7 @@ from flask import jsonify, Blueprint, request
 
 from app.models.evacuation_route import EvacuationRoute
 from app.schemas.evacuation_route import EvacuationRouteSchema
+from app.models.configuration import Configuration
 
 evacuation_route_api = Blueprint(
     "recorridos-evacuacion", __name__, url_prefix="/recorridos-evacuacion")
@@ -10,7 +11,7 @@ evacuation_route_api = Blueprint(
 @evacuation_route_api.get('/')
 def index():
     page = int(request.args.get("page", 1))
-    per_page = int(request.args.get("per_page", 3))
+    per_page = int(request.args.get("per_page", Configuration.per_page()))
     routes_page = EvacuationRoute.query.filter(
         EvacuationRoute.status == True).paginate(page=page, per_page=per_page)
 
