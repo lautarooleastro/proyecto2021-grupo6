@@ -3,7 +3,6 @@ from flask_login.utils import login_required
 from flask.helpers import flash, url_for
 from app.helpers.permission import permission_required
 from app.models.issue import Issue
-from app.models.configuration import Configuration
 from app.helpers.forms.issues_filter import IssuesFilter
 from app.helpers.forms.issue_new import IssueNew
 from app.helpers.forms.issue_edit import IssueEdit
@@ -15,7 +14,8 @@ from app.models.category import Category
 
 @login_required
 @permission_required('denuncia_index')
-def index():    
+def index():  
+    """Prepara y lanza la vista del listado de denuncias, incluyendo paginación y un formulario de filtro"""  
     page= request.args.get('page', 1, type=int)
     issues=Issue.all_paginate(page);
     filter=IssuesFilter()
@@ -25,15 +25,17 @@ def index():
 @login_required
 @permission_required('denuncia_create')
 def new():
-    form=IssueNew()
+    """Prepara y lanza el formulario de carga de una nueva denuncia (IssueNew)"""
+    form=IssueNew()        
+    form.category.choices= __categories()
     return render_template("issue/new.html", form=form)
 
 
 @login_required
 def __newIssue(form):
-    """Valida los datos ingresados y crea un issue a partir de un formulario de IssueNew"""
+    """Valida los datos del formulario ingresado y crea un issue a partir de un formulario de IssueNew"""        
+    form.category.choices= __categories()
     if (form.validate()):
-        """phone = str(form.phone.data['area_tittle'])+str(form.phone.data['number'])"""
         phone=str(form.phone.data)
         issue= Issue(email=form.email.data, tittle=form.tittle.data, description=form.description.data, status_id=1, category_id=int(form.category.data), first_name=form.first_name.data, last_name=form.last_name.data, latitude=form.latitude.data, longitude=form.longitude.data, phone=phone)        
         return issue
@@ -65,6 +67,7 @@ def create():
 @login_required
 @permission_required('denuncia_show')
 def show(id):
+    """Prepara y lanza la vista de una denuncia pasa por ID"""
     issue = Issue.with_id(id)
     operator = User.with_id(issue.operator)
     status = Status.with_id(issue.status_id)
@@ -98,12 +101,9 @@ def __users():
 @login_required
 @permission_required('denuncia_update')
 def edit(id):
+    """Prepara y lanza el formulario de edición de denuncias (IssueEdit) para la denuncia pasara por ID"""
     issue=Issue.with_id(id)
     editForm=IssueEdit()
-    """usuarios = __users()"""
-    usuarios = [("1","Administrador"),("2","Operador")]
-    categorias = __categories()
-    estados = __statuses()
     editForm.date_open.default=issue.date_open
     editForm.description.default=issue.description
     editForm.email.default=issue.email
@@ -113,11 +113,11 @@ def edit(id):
     editForm.longitude.default=issue.longitude
     editForm.phone.default=issue.phone
     editForm.tittle.default=issue.tittle
-    editForm.operator.choices= usuarios
+    editForm.operator.choices= __users()
     editForm.operator.default=issue.operator
-    editForm.category.choices= categorias
+    editForm.category.choices= __categories()
     editForm.category.default=issue.category_id        
-    editForm.status.choices= estados
+    editForm.status.choices= __statuses()
     editForm.status.default=issue.status_id    
     editForm.date_closed.default=issue.date_closed
     editForm.process()
@@ -126,11 +126,11 @@ def edit(id):
 @login_required
 @permission_required('denuncia_update')
 def modify(id):
-    """Recibe, valida y aplica los cambios a un issue existente"""
+    """Recibe, valida y aplica los cambios a un issue pasaro por ID"""
     issue_old=Issue.with_id(id)
     if request.method == 'POST':
         form = IssueEdit(request.form, csrf_enabled=False)
-        form.operator.choices = [("1","Administrador"),("2","Operador")]
+        form.operator.choices = __users()
         form.category.choices = __categories()
         form.status.choices = __statuses()
         issue=__editIssue(form,issue_old)
@@ -146,7 +146,7 @@ def modify(id):
 
 @login_required
 def __editIssue(form,issue):
-    """Valida los datos ingresados y crea un issue a partir de un formulario de IssueEdit"""
+    """Valida los datos ingresados y modifica un issue a partir de un formulario de IssueEdit"""
     if (form.validate()):
         issue.phone=str(form.phone.data)
         issue.email=form.email.data
@@ -157,6 +157,7 @@ def __editIssue(form,issue):
         issue.last_name=form.last_name.data
         issue.latitude=form.latitude.data
         issue.longitude=form.longitude.data        
+        issue.date_open = form.date_open.data       
         issue.date_closed = form.date_closed.data
         issue.operator = int(form.operator.data)
         issue.status_id = int(form.status.data)
@@ -165,7 +166,7 @@ def __editIssue(form,issue):
 @login_required
 @permission_required('denuncia_destroy')
 def destroy():
-    pass
+    """Elimina un issue de la DB"""
     issue = Issue.with_id(request.form['destroy_id'])
     try:
         Issue.destroy(issue)

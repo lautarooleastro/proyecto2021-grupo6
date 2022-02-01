@@ -1,7 +1,7 @@
 
-from wtforms import Form, validators, SubmitField
-from wtforms.validators import DataRequired, Length, NoneOf, NumberRange, Email, Optional
-from wtforms.fields import FormField, TextAreaField, DateField
+from wtforms import Form, SubmitField
+from wtforms.validators import DataRequired, Length, NumberRange, Email, Optional
+from wtforms.fields import TextAreaField, DateField
 from wtforms.fields.core import StringField, SelectField, IntegerField, FormField
 from wtforms.fields.html5 import EmailField
 
