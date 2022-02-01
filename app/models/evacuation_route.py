@@ -7,7 +7,7 @@ from app.models.route_point import RoutePoint
 class EvacuationRoute(db.Model):
     __tablename__ = "evacuation_routes"
     id = Column(Integer, primary_key=True)
-    name = Column(String(30))
+    name = Column(String(50))
     description = Column(String(255))
     status = Column(Boolean)
     points = relationship("RoutePoint", cascade="all, delete")

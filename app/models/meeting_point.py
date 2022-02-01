@@ -12,7 +12,7 @@ class MeetingPoint(db.Model):
     lng = Column(String(30))
     status = Column(Boolean)
     phone = Column(String(30))
-    email = Column(String(30))
+    email = Column(String(50))
 
     def __init__(self, name=None, adress=None, coordinates=None, status=False, phone=None, email=None):
         self.name = name

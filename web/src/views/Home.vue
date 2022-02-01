@@ -2,7 +2,10 @@
   <div class="home">
     <div class="container">
       <div class="row my-2">
-        <h2>Portal de prevención de inundaciones de la Ciudad de La Plata</h2>
+        <h2>Portal de prevención de inundaciones</h2>
+      </div>
+      <div class="row mb-2">
+        <h2>Ciudad de La Plata</h2>
       </div>
       <div class="row">
         <h5>Desde esta página, usted podrá relizar acciones como...</h5>
@@ -14,8 +17,8 @@
               <div class="card-title">
                 <h4>Puntos de Encuentro</h4>
               </div>
-              Visualizar los más cercanos a su ubicación, estos se mostrarán en
-              el mapa informativo.
+              Podrá visualizarlos desde el mapa informativo, junto con sus datos
+              de contacto.
             </div>
           </div>
         </div>
@@ -26,8 +29,8 @@
               <div class="card-title">
                 <h4>Recorridos de Evacuación</h4>
               </div>
-              Desde el mapa informativo, se pueden visualizar los recorridos a
-              usar en caso de evacuación.
+              En caso de emergencia, puede conocer el recorrido a seguir desde
+              el mapa informativo.
             </div>
           </div>
         </div>

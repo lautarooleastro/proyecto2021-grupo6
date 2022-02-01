@@ -17,7 +17,7 @@ class PointForm(Form):
     phone = StringField(u'Telefono', validators=[validators.input_required(),
                                                  validators.length(max=30, message="El teléfono no puede tener mas de 30 caracteres.")])
     email = StringField(u'E-mail', validators=[validators.input_required(),
-                                               validators.length(max=30, message="El mail no puede tener mas de 30 caracteres.")])
+                                               validators.length(max=50, message="El mail no puede tener mas de 50 caracteres.")])
 
     # def validate_coordinates():
     #    return True
