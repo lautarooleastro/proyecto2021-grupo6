@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        <h1 class="col-9"> Denuncias</h1>
+        <h1 class="col-9">Denuncias</h1>
         {% if check_permission(current_user, "denuncia_create") %}
         <div class="col" style="display: flex; align-items: center;" ><a class="btn btn-success" href="{{ url_for('issue_new') }}">Nueva</a></div>
         {% endif %}

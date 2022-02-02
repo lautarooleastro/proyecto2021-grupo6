@@ -176,5 +176,4 @@ def destroy():
         flash("No fue posible eliminar la denuncia "+issue.tittle, "error")
     else:
         flash("Se elimino la denuncia "+issue.tittle, "success")
-
     return redirect(url_for("issue_index", page=1))
