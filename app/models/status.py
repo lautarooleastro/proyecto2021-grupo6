@@ -20,3 +20,7 @@ class Status(db.Model):
     @staticmethod
     def with_id(id):
         return Status.query.filter(Status.id == id).first()
+    
+    @staticmethod
+    def with_name(name):
+        return Status.query.filter(Status.name == name).first()
