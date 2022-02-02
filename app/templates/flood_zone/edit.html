@@ -2,101 +2,96 @@
 {% block title %}Editar zona inundable{% endblock %}
 {% block head %}
 {{ super() }}
+
+<!--Leaflet files-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+<!--Leafleat Draw-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+<!-- Render mapa -->
+<script type="module" src="{{ url_for('static', filename='js/flood_zones/edit.js') }}"></script>
+<!-- END Render mapa -->
+
+
 {% endblock %}
 {% block content %}
 <div class="row">
     <h1 class="col-10">Zonas inundables</h1>
 </div>
 
-<div class="container-md col-md-10" style="background-color: white; padding: 30px; border-radius: 10px;">
-    <div class="row">
-        <div class="col-5">
-            <form action="{{ url_for('flood_zone_modify') }}" method="POST">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item container">
-                        <div class="row justify-content-center justify-content-md-start">
-                            <label class="form-label col" style="font-weight: bold;">Código</label>
-                            <input required name="code" class="form-control col" minlength="6" maxlength="10" placeholder="6 a 10 caracteres, no puede coincidir con uno existente" value="{{ zone.code }}">
-                        </div>                        
-                    </li>
-                    <li class="list-group-item container">
-                        <div class="row justify-content-center justify-content-md-start">
-                            <label class="form-label col" style="font-weight: bold;">Nombre</label>
-                            <input required name="name" class="form-control col" maxlength="40" placeholder="No puede coincidir con uno existente" value="{{ zone.name }}">
-                        </div>
-                    </li>
-                    
+<div style="background-color: white; padding: 30px; border-radius: 10px;">
+    <form action="{{ url_for('flood_zone_modify') }}" method="POST" id="edit" >
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item container">
+                            <div class="row justify-content-center justify-content-md-start">
+                                <label class="form-label col" style="font-weight: bold;">Código</label>
+                                <input required name="code" id="code" class="form-control col" minlength="6" maxlength="10" placeholder="6 a 10 caracteres, no puede coincidir con uno existente" value="{{ zone.code }}">
+                            </div>                        
+                        </li>
+                        <li class="list-group-item container">
+                            <div class="row justify-content-center justify-content-md-start">
+                                <label class="form-label col" style="font-weight: bold;">Nombre</label>
+                                <input required name="name" id="name" class="form-control col" maxlength="40" placeholder="No puede coincidir con uno existente" value="{{ zone.name }}">
+                            </div>
+                        </li>
+                        
 
-                    <li class="list-group-item container">
-                        <div class="row justify-content-center justify-content-md-start">
-                            <label for="exampleColorInput" class="form-label col" style="font-weight: bold;">Color </label>
-                            <input name="color" type="color" required class="form-control form-control-color" id="exampleColorInput" value="#{{ zone.color }}" title="Seleccione un color">
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="status" id="flexCheckChecked " {% if zone.status %} checked {% endif %}>
-                                <label class="form-check-label" for="flexCheckChecked"  style="font-weight: bold;">
-                                    Publicar
-                                </label>
-                                <br>
-                                <br>
+                        <li class="list-group-item container">
+                            <div class="row justify-content-center justify-content-md-start">
+                                <label for="exampleColorInput" class="form-label col" style="font-weight: bold;">Color </label>
+                                <input name="color" id="color" type="color" required class="form-control form-control-color" id="exampleColorInput" value="#{{ zone.color }}" title="Seleccione un color">
                             </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
+                        </li>
+                        <li class="list-group-item">
                             <div class="row">
-                                <div class="col" style="font-weight: bold;">Puntos: {{zone.flood_points|length}}</div>
-                                <br>
-                                <br>
-                            </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="row">
-                            <p>
-                                <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                    Ver coordenadas
-                                </button>
-                            </p>
-                            <div class="collapse" id="collapseExample">
-                                <div class="card card-body">
-                                    {% set count = namespace(value=1) %}
-                                    {% for point in zone.flood_points %}
-                                        <div>
-                                            nº{{ count.value }}: [{{ point.latitude }},{{ point.longitude }}]
-                                        </div>
-                                        <br>
-                                        {% set count.value = count.value + 1 %}
-                                    {% endfor %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="public" name="status" id="flexCheckChecked " {% if zone.status %} checked {% endif %}>
+                                    <label class="form-check-label" for="flexCheckChecked"  style="font-weight: bold;">
+                                        Publicar
+                                    </label>
+                                    <br>
+                                    <br>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-                </ul>
-
-                <br>
-                <div class="row">
-                    <div class="col"><a href="{{ url_for('flood_zone_show', id=zone.id) }}">
-                            <button type="button" class="btn btn-primary">Cancelar y volver</button>
-                        </a>
-                    </div>                    
-                    <div class="col text-center">
-                            <button type="submit" name="modify_id" value="{{zone.id}}" class="btn btn-danger">Salvar Cambios</button>
-                    </div>
-                    
+                        </li>
+                        <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col" style="font-weight: bold;">Puntos: {{zone.flood_points|length}}</div>
+                                    <br>
+                                    <br>
+                                </div>
+                        </li>
+                    </ul>
                 </div>
-                
-            </form>
+                <div class="col-sm">
+                    <input id="points" class="d-none" type="text" value="{{ points }}">
+                    <input id="color" class="d-none" type="text" value="#{{ zone.color }}">
+                    <div id="map" style="height: 90%; min-height: 280px"></div>    
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <a href="javascript:history.back()">
+                        <button type="button" class="btn btn-primary">Cancelar y volver</button>
+                    </a>
+                </div>                    
+                <div class="col text-center">
+                    <button type="submit" name="modify_id" id="modify_id" value="{{zone.id}}" class="btn btn-danger">Salvar Cambios</button>
+                </div>                
+            </div>
         </div>
-        <div class="col-5">
-                MAPA
-    
-        </div>
-    </div>
+    </form>
     
 </div>
-
-
-
 {% endblock %}

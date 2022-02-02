@@ -4,32 +4,65 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <h1 class="col-md-9 ms-2">Recorridos de evacuacion</h1>
-    {% if check_permission(current_user, "recorrido_evacuacion_new") %}
-    <div class="col m-2">
-        <a class="btn btn-success" href="{{ url_for('evacuation_route_new') }}">
-            Nuevo recorrido
-        </a>
+
+<div class="pt-2">
+    <div class="row px-4">
+        <div class="col-12 col-sm">
+            <h1>Recorridos de evacuación</h1>
+        </div>
+        {% if check_permission(current_user, "recorrido_evacuacion_new") %}
+        <div class="col-12 col-sm-auto p-2">
+            <a class="btn btn-success" href="{{ url_for('evacuation_route_new') }}" style="width: 100%;">
+                Nuevo recorrido
+            </a>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
-<div class="row p-2">
-    <div class="col-md-6">
+
+<div class="row px-4">
+    <div class="col">
         <form action="{{ url_for('evacuation_route_index') }}">
-            <div class="input-group mb-3">
-                <input id="search-name-input" name="name_query" type="text" class="form-control"
-                    placeholder="Buscar por nombre..." aria-describedby="search-button">
-                <button class="btn btn-light" type="submit" id="search-button">Buscar</button>
+            <div class="row mb-3">
+                <div class="col-sm col-12 pb-2">
+                    <input id="search-name-input" name="name_query" type="text" class="form-control"
+                        placeholder="Buscar por nombre..." aria-describedby="search-button">
+                </div>
+                <div class="col-sm-auto col-12 pb-2">
+                    <select name="status_query" id="status_query" class="form-select">
+                        <option value="all" selected>
+                            Todos
+                        </option>
+                        <option value="active">
+                            Publicados
+                        </option>
+                        <option value="inactive">
+                            Despublicados
+                        </option>
+                    </select>
+                </div>
+                <div class="col-sm-auto col-12 pb-2">
+                    <button class="btn btn-light col-sm-auto col-12" type="submit" id="search-button">Buscar</button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-{% if name_query %}
-<div class="row-auto p-2">Mostrando resultados con:
+{% if name_query or status_query %}
+<div class="row-auto px-4 pb-4">Mostrando resultados con:
+
     <div type="button" class="btn btn-light">
+        {% if name_query %}
         "{{ name_query }}"
+        {% endif %}
+        {% if status_query == 'all' %}
+        (Todos)
+        {% elif status_query == 'active' %}
+        (Publicados)
+        {% elif status_query == 'inactive' %}
+        (Despublicados)
+        {% endif %}
         <a href="{{ url_for('evacuation_route_index') }}">
             <span class="badge bg-danger">x</span>
         </a>
@@ -37,10 +70,10 @@
 </div>
 {% endif %}
 
+{% if routes.items|length > 0 %}
 <table class="table">
     <thead>
         <tr>
-            <th class="table-dark">ID</th>
             <th class="table-dark">Nombre</th>
             <th class="table-dark d-none d-md-block">Descripcion</th>
             <th class="table-dark">Estado</th>
@@ -50,7 +83,6 @@
     <tbody>
         {% for route in routes.items %}
         <tr>
-            <td class="table-light">{{route.id}}</td>
             <td class="table-light">{{route.name}}</td>
             <td id="description" class="table-light d-none d-md-table-cell">{{route.description}}</td>
             <td class="table-light">
@@ -64,9 +96,9 @@
                 {% if check_permission(current_user, "recorrido_evacuacion_show") %}
                 <a class="btn btn-light" href="{{ url_for('evacuation_route_detail', id=route.id) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-pen-fill" viewBox="0 0 16 16">
+                        class="bi bi-three-dots" viewBox="0 0 16 16">
                         <path
-                            d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                            d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                     </svg>
                 </a>
                 {% endif %}
@@ -79,7 +111,8 @@
 <div class="row justify-content-center">
     <div class="col-auto">
         <div class="text-right">
-            <a href="{{ url_for('evacuation_route_index', page=routes.prev_num, name_query=name_query) }}" class="btn btn-outline-dark 
+            <a href="{{ url_for('evacuation_route_index', page=routes.prev_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-outline-dark 
      {% if routes.page == 1 %}disabled{% endif %}">
                 &laquo;
             </a>
@@ -88,12 +121,12 @@
             {% if page_num %}
             <!-- Tildar la pagina actual como "activa" -->
             {% if routes.page == page_num %}
-            <a href="{{ url_for('evacuation_route_index', page=page_num, name_query=name_query) }}"
+            <a href="{{ url_for('evacuation_route_index', page=page_num, name_query=name_query, status_query=status_query) }}"
                 class="btn btn-dark">
                 {{ page_num }}
             </a>
             {% else %}
-            <a href="{{ url_for('evacuation_route_index', page=page_num, name_query=name_query) }}"
+            <a href="{{ url_for('evacuation_route_index', page=page_num, name_query=name_query, status_query=status_query) }}"
                 class="btn btn-outline-dark">
                 {{ page_num }}
             </a>
@@ -102,13 +135,26 @@
             ...
             {% endif %}
             {% endfor %}
-            <a href="{{ url_for('evacuation_route_index', page=routes.next_num, name_query=name_query) }}" class="btn btn-outline-dark 
+            <a href="{{ url_for('evacuation_route_index', page=routes.next_num, name_query=name_query, status_query=status_query) }}"
+                class="btn btn-outline-dark 
      {% if routes.page == routes.pages %}disabled{% endif %}">
                 &raquo;
             </a>
         </div>
     </div>
 </div>
+{% else %}
+<div class="container pt-5">
+    <div class="row align-items-center">
+        <div class="col text-center">
+            Sin resultados que coincidan con la búsqueda.
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
 
 <script>
     // Funcion simple para acortar descripciones si son muy largas (mas de 50 caracteres)

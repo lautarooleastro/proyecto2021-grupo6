@@ -23,4 +23,6 @@ class EvacuationRouteSchema(object):
                  for attr in obj.__table__.columns}
         route["coordinates"] = [
             {"lat": point.lat, "lng": point.lng} for point in obj.points]
+        # route["coordinates"] = [
+        #    [point.lat, point.lng] for point in obj.points]
         return route

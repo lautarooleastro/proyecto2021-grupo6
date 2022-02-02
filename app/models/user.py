@@ -1,3 +1,4 @@
+import this
 from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean, desc
 from sqlalchemy.orm import backref, query, relationship, session
 from flask_login import current_user
@@ -22,6 +23,7 @@ class User(db.Model):
     first_name = Column(String(30))
     last_name = Column(String(30))
     email = Column(String(30), unique=True)
+    username = Column(String(30), unique=True)
     password = Column(String(30))
     active = Column(Boolean)
     roles = relationship('Role', secondary=user_has_role_table,
@@ -35,29 +37,61 @@ class User(db.Model):
         self.active = active
 
     @staticmethod
-    def all_paginated(page, config):
-        if config.order == 'ASC':
-            query = User.query.filter(User.email != current_user.email).paginate(
-                page=page, per_page=config.elements_per_page)
-        else:
-            query = User.query.filter(User.email != current_user.email).order_by(desc(User.id)).paginate(
-                page=page, per_page=config.elements_per_page)
+    def all_paginated(page, name_query, status_query, config):
+        if not name_query:
+            name_query = ''
+
+        query = User.query.filter(
+            User.username != current_user.username, User.username.like('%'+name_query+'%'))
+
+        if status_query == 'active':
+            query = query.filter(User.active == True)
+        elif status_query == 'inactive':
+            query = query.filter(User.active == False)
+
+        if config.order == 'DESC':
+            query = query.order_by(desc(User.id))
+
+        query = query.paginate(
+            page=page, per_page=config.elements_per_page)
         return query
 
     def save(self):
         db.session.add(self)
         db.session.commit()
 
+    @staticmethod
     def with_email(email):
         return User.query.filter(User.email == email).first()
 
+    @staticmethod
+    def with_username(username):
+        return User.query.filter(User.username == username).first()
+
+    @staticmethod
     def with_id(user_id):
         return User.query.filter(User.id == user_id).first()
 
-    def already_exists(email):
-        """ Devuelve True si ya existe un usuario con el mail recibido como parametro. False caso contrario. """
-        query = User.with_email(email)
-        return (query != None)
+    @staticmethod
+    def already_exists(user):
+        """ 
+            Devuelve diccionario con:
+            - resultado de encontrar un usuario con ese nombre y mail.
+            - errores en caso de encontrarlos. 
+        """
+        ret = {
+            'exists': False,
+            'errors': []
+        }
+        if (User.with_email(user.email) != None):
+            ret['exists'] = True
+            ret['errors'].append(
+                "Ya existe un usuario con mail: " + user.email)
+        if (User.with_username(user.username) != None):
+            ret['exists'] = True
+            ret['errors'].append(
+                "Ya existe un usuario con nombre de usuario: " + user.username)
+        return ret
 
     def destroy(user):
         """ Elimina un usuario de la BD. """
@@ -127,3 +161,11 @@ class User(db.Model):
 
     def get_id(self):
         return self.id
+
+    def hasRole(self, role_name):
+        role = Role.with_name(role_name)
+        return (role in self.roles)
+
+    @staticmethod
+    def get_all():
+        return User.query.all() 

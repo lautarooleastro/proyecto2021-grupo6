@@ -19,7 +19,8 @@ window.onload = () => {
         selector: 'map',
         lat: initialLat,
         lng: initialLng,
-        addSearch: true
+        addSearch: true,
+        enableEdit: true
     });
 
     const form = document.getElementById('edit-meeting-point-form');

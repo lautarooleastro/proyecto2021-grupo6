@@ -3,6 +3,8 @@ from wtforms.fields.core import StringField
 
 
 class UserForm(Form):
+    username = StringField(u'Nombre de usuario', validators=[
+        validators.input_required()])
     first_name = StringField(u'Nombre', validators=[
                              validators.input_required()])
     last_name = StringField(u'Nombre', validators=[

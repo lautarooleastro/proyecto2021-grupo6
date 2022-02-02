@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Boolean, null
 from app.db import db
-from sqlalchemy.orm import backref, query, relationship, session
-from app.models.flood_point import FloodPoint 
+from sqlalchemy.orm import query, relationship, session
+from app.models.flood_point import FloodPoint
 
 
 class FloodZone(db.Model):
@@ -22,7 +22,7 @@ class FloodZone(db.Model):
 
     @staticmethod
     def get_all():
-        return FloodZone.query.all()
+        return FloodZone.query.all()        
 
     @staticmethod
     def with_name(name):
@@ -47,6 +47,10 @@ class FloodZone(db.Model):
         db.session.commit()
         return self
     
+    def modify(self):
+        db.session.commit()
+        return self
+
     @staticmethod
     def n_with_name(name):
         return FloodZone.query.filter(FloodZone.name == name).count()
@@ -54,3 +58,16 @@ class FloodZone(db.Model):
     @staticmethod
     def n_with_code(code):
         return FloodZone.query.filter(FloodZone.code == code).count()
+    
+    @staticmethod
+    def get_filter(pos=1, cant=10, code='', status=None):
+        """Retorna, paginada, una selección de zonas de la DB (por código y estado)
+        - pos=página actual
+        - cant=líneas por página
+        - code=código buscado (string,optional)
+        - status=estado buscado (boolean,optional)"""
+        consulta = FloodZone.query.filter(FloodZone.code.like('%'+code+'%'))
+        if (status!=None):
+            return consulta.filter(FloodZone.status == bool(status)).paginate(page=int(pos), per_page=cant)
+        return consulta.paginate(page=int(pos), per_page=cant)
+    

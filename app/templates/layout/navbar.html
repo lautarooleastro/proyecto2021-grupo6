@@ -19,10 +19,10 @@
                 </li>
                 {% if is_authenticated() %}
                 <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link active">Inicio</a>
+                    <a href="{{ url_for('user_index') }}" class="nav-link active">Usuarios</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('user_index') }}" class="nav-link active">Usuarios</a>
+                    <a href="{{ url_for('issue_index') }}" class="nav-link active">Denuncias</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('meeting_point_index') }}" class="nav-link active">Puntos de encuentro</a>

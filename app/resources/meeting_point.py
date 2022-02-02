@@ -6,13 +6,18 @@ from flask.helpers import flash, url_for
 from app.helpers.permission import permission_required
 from app.helpers.forms.meeting_point import PointForm
 from app.models.meeting_point import MeetingPoint
+from app.models.configuration import Configuration
 
 
 @login_required
 @permission_required('punto_encuentro_index')
 def index():
-    meeting_points = MeetingPoint.get_all()
-    return render_template("meeting_point/index.html", meeting_points=meeting_points)
+    page = request.args.get('page', 1, type=int)
+    name_query = request.args.get('name_query', type=str)
+    status_query = request.args.get('status_query', type=str)
+    meeting_points = MeetingPoint.all_paginated(
+        page=page, name_query=name_query, status_query=status_query, config=Configuration.get())
+    return render_template("meeting_point/index.html", name_query=name_query, status_query=status_query, meeting_points=meeting_points)
 
 
 @login_required
@@ -24,22 +29,17 @@ def new():
 @login_required
 @permission_required('punto_encuentro_new')
 def create():
-
-    meeting_point = MeetingPoint()
     form = PointForm(request.form)
 
-    print(form.data)
-    try:
-        if form.validate():
-            form.populate_obj(meeting_point)
-            meeting_point.save()
-            flash("El punto de encuentro fue creado con exito", "success")
-        else:
-            raise Exception()
-    except Exception as e:
-        flash("No se pudo crear el punto de encuentro.", "error")
-        if not form.validate():
-            flash(form.errors, "error")
+    if form.validate():
+        meeting_point = MeetingPoint()
+        form.populate_obj(meeting_point)
+        meeting_point.save()
+        flash("El punto de encuentro fue creado con exito", "success")
+    else:
+        for error in form.errors:
+            flash(form.errors[error][0], "error")
+        return redirect(url_for('meeting_point_new'))
 
     return redirect(url_for('meeting_point_index'))
 

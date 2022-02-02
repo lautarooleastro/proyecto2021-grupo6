@@ -4,49 +4,107 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <h1 class="col-9">Zonas inundables</h1>
-    {% if check_permission(current_user, "zona_inundable_new") %}
-    <div class="col" ><a class="btn btn-success" href="{{ url_for('flood_zone_new') }}">Nueva zona</a></div>
-    {% endif %}
-    {% if check_permission(current_user, "zona_inundable_import") %}
-    <div class="col"><a class="btn btn-success" href="{{ url_for('flood_zone_import') }}">Importar zonas</a></div>
-    {% endif %}
-
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th class="table-dark">Código</th>
-            <th class="table-dark">Nombre</th>
-            <th class="table-dark">Puntos</th>
-            <th class="table-dark">Estado</th>
-            <th class="table-dark">Acciones</th>
-            
-        </tr>
-    </thead>
-    <tbody>
-        {% for flood_zone in flood_zones %}
-        <tr>
-            <td class="table-light">{{flood_zone.code}}</td>
-            <td class="table-light">{{flood_zone.name}}</td>
-            <td class="table-light">{{flood_zone.flood_points|length}}</td>
-            {% if flood_zone.status %}
-            <td class="table-light">Publicado</td>
-            {% else %}
-            <td class="table-light">Despublicado</td>
-            {% endif %}
-            
-            <td class="table-light">
-            {% if check_permission(current_user, "zona_inundable_show") %}
-                <form action="" method="POST">
-                    <button name="edit_id" value="{{flood_zone.id}}" formaction="{{ url_for('flood_zone_show', id=flood_zone.id) }}" type="submit"
-                    class="btn btn-secondary">Ver</a>
-                </form>
-            {% endif %}
-            </td>            
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="row">
+        <h1 class="col-9"> Zonas inundables</h1>
+        {% if check_permission(current_user, "zona_inundable_new") %}
+        <div class="col" ><a class="btn btn-success" href="{{ url_for('flood_zone_new') }}">Nueva</a></div>
+        {% endif %}
+        {% if check_permission(current_user, "zona_inundable_import") %}
+        <div class="col"><a class="btn btn-success" href="{{ url_for('flood_zone_import') }}">Importar</a></div>
+        {% endif %}
+    </div>
+    <div class="" style="display: block;">
+        <div class=""></div>
+        <div class="" style="align-self: center; background-color: white; padding: 10px; border-radius: 10px;">
+            <form action="{{ url_for('flood_zone_index') }}" method="POST" id="uno">
+                
+                <div class="container" style="display: inline-block;"> 
+                    <div class="col-md-8" style="display: inline-block;">
+                        <input name="code" class="form-control" maxlength="10" {% if code == '_all' %} placeholder="Código" {% else %} placeholder={{code}} {% endif %}>
+                    </div>
+                    <div class="col-md-2" style="display: inline-block;">
+                        <div class="form-check" style="text-align: left;">
+                            <input class="form-check-input" type="checkbox" value="True" name="status" id="flexCheckChecked" {% if public %} checked {% endif %}>
+                            <label class="form-check-label" for="flexCheckChecked" >
+                                Publicada
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-1" style="display: inline-block;">             
+                        <div class=" ">
+                                <button type="submit" name="shearch" id="shearch" value="True" class="btn btn-danger" >Filtrar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- <div class="container-md col-md-12" style="background-color: black; padding: 1px; border-radius: 10px;">
+    -->
+    <div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="table-dark">Código</th>
+                <th class="table-dark">Nombre</th>
+                <th class="table-dark">Puntos</th>
+                <th class="table-dark">Estado</th>
+                <th class="table-dark">Acciones</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for flood_zone in flood_zones.items %}
+                <tr>
+                    <td class="table-light">{{flood_zone.code}}</td>
+                    <td class="table-light">{{flood_zone.name}}</td>
+                    <td class="table-light">{{flood_zone.flood_points|length}}</td>
+                    {% if flood_zone.status %}
+                    <td class="table-light">Publicado</td>
+                    {% else %}
+                    <td class="table-light">Despublicado</td>
+                    {% endif %}
+                    
+                    <td class="table-light">
+                    {% if check_permission(current_user, "zona_inundable_show") %}
+                        <form action="" method="POST">
+                            <button name="edit_id" value="{{flood_zone.id}}" formaction="{{ url_for('flood_zone_show', id=flood_zone.id) }}" type="submit"
+                            class="btn btn-secondary">Ver</a>
+                        </form>
+                    {% endif %}
+                    </td>     
+                </tr>
+            {% endfor %}       
+        </tbody>
+    </table>
+    
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="text-right">
+                <a href="{{ url_for('flood_zone_index', page=flood_zones.prev_num, code=code, status=status) }}" class="btn btn-outline-dark 
+            {% if flood_zones.page == 1 %}disabled{% endif %}">
+                &laquo;
+                </a>
+                <!-- Iterar sobre el numero de paginas para mostrar un link por cada pagina -->
+                {% for page_num in flood_zones.iter_pages(left_edge=0, right_edge=0, left_current=3, right_current=3) %}
+                    {% if page_num %}
+                    <!-- Tildar la pagina actual como "activa" -->
+                        {% if flood_zones.page == page_num %}
+                            <a href="{{ url_for('flood_zone_index', page=page_num, code=code, status=status) }}" class="btn btn-dark" >
+                            {{ page_num }}
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('flood_zone_index', page=page_num, code=code, status=status) }}" class="btn btn-outline-dark" >
+                            {{ page_num }}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <a href="{{ url_for('flood_zone_index', page=flood_zones.next_num, code=code, status=status) }}" class="btn btn-outline-dark 
+            {% if flood_zones.page == flood_zones.pages %}disabled{% endif %}">
+                &raquo;
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

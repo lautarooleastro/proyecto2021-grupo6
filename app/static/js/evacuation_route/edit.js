@@ -4,23 +4,35 @@ const initialLat = -34.92053918330889;
 const initialLng = -57.9541949099075;
 
 const submitHandler = (event, map) => {
-    event.preventDefault();
+    //event.preventDefault();
 
     if (!map.hasValidZone()) {
+        event.preventDefault();
         alert('Debes dibujar una zona en el mapa con al menos 3 puntos');
     } else {
+
+        const coordinates = JSON.stringify(map.drawnLayers[0].getLatLngs().map(coordinate => {
+            return { lat: coordinate.lat, lng: coordinate.lng }
+        }));
+        document.getElementById('coordinates').setAttribute('value', coordinates);
+
+
+        /*
+        SOLUCION PREVIA
+
         const route_id = document.querySelector('#route-id').value;
         const name = document.querySelector('#name').value;
         const description = document.querySelector('#description').value;
+        const status = document.getElementById('status').checked;
         const coordinates = map.drawnLayers[0].getLatLngs().map(coordinate => {
             return { lat: coordinate.lat, lng: coordinate.lng }
         });
-
         var formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
+        formData.append('status', status);
         formData.append('coordinates', JSON.stringify(coordinates));
-
+    
         fetch('/recorrido_de_evacuacion/actualizar/' + route_id, {
             method: 'POST',
             body: formData
@@ -29,6 +41,7 @@ const submitHandler = (event, map) => {
                 window.location.href = response.url;
             }
         });
+        */
     }
 }
 
