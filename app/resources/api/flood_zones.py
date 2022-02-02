@@ -16,12 +16,18 @@ def index():
     zones_page = FloodZone.query.paginate(page=page, per_page=Configuration.per_page())
     if (page>zones_page.total):
         abort(404)
-    zones = zone_pagination_schema.dump(zones_page)
+    try:
+        zones = zone_pagination_schema.dump(zones_page)
+    except:
+        abort(500)
     return jsonify(zones), 200
 
 @flood_zones_api.get('/<int:id>')
 def get_zone(id):
-    zone = FloodZone.with_id(id)
+    try:
+        zone = FloodZone.with_id(id)
+    except:
+        abort(500)
     if zone != None:
         return jsonify(zone_schema.dump(zone)), 200    
     abort(404)

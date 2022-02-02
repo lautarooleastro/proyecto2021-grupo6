@@ -13,8 +13,6 @@ class FloodZoneSchema(Schema):
     status = fields.Bool()
     color = fields.Str()
     flood_points = fields.Nested(FloodPointSchema, many=true, data_key="points")
-    """flood_points = fields.List(fields.List(fields.Str())) """
-    """Un diccionario donde la key es la posición del punto, y cada punto es una lista de dos strings"""
 
 class FloodZonePaginationSchema(Schema):
     page = fields.Int()

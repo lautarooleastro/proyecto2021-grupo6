@@ -67,7 +67,7 @@ def create():
 @login_required
 @permission_required('denuncia_show')
 def show(id):
-    """Prepara y lanza la vista de una denuncia pasa por ID"""
+    """Prepara y lanza la vista de una denuncia pasada por ID"""
     issue = Issue.with_id(id)
     operator = User.with_id(issue.operator)
     status = Status.with_id(issue.status_id)

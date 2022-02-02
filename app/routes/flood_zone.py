@@ -23,5 +23,3 @@ def set_routes(app):
                      flood_zone.importZones)    
     app.add_url_rule("/zonas_inundables/importar", "flood_zone_imported_zones",
                      flood_zone.importedZones, methods=['POST'])   
-    """app.add_url_rule("/zonas_inundables/shearch", "flood_zone_filtrar",
-                     flood_zone.filtrar, methods=['POST', 'GET'])"""

@@ -61,6 +61,11 @@ class FloodZone(db.Model):
     
     @staticmethod
     def get_filter(pos=1, cant=10, code='', status=None):
+        """Retorna, paginada, una selección de zonas de la DB (por código y estado)
+        - pos=página actual
+        - cant=líneas por página
+        - code=código buscado (string,optional)
+        - status=estado buscado (boolean,optional)"""
         consulta = FloodZone.query.filter(FloodZone.code.like('%'+code+'%'))
         if (status!=None):
             return consulta.filter(FloodZone.status == bool(status)).paginate(page=int(pos), per_page=cant)
