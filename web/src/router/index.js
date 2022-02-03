@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import InfoMap from '../views/InfoMap.vue'
+import Denuncia from '../views/Issue.vue'
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/mapa-informativo',
     name: 'Mapa informativo',
     component: InfoMap
+  },
+  {
+    path: '/denunciar',
+    name: 'Denuncia',
+    component: Denuncia
   },
   {
     path: '/about',
