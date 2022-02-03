@@ -6,7 +6,7 @@ from app.models.category import Category
 from app.schemas.issue import issues_schema, issue_schema, issue_pagination_schema
 import re
 
-issue_api = Blueprint("consultas", __name__, url_prefix="/consultas")
+issue_api = Blueprint("denuncias", __name__, url_prefix="/denuncias")
 
 
 @issue_api.get('/')
